@@ -9,14 +9,19 @@ import { SalesModule } from './modules/sales/sales.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { dbConfig } from './config/configuration';
+import { LoggerModule } from 'nestjs-pino';
+import { pinoConfig } from './common/logger/logger.config';
 
 @Module({
   imports: [
+    LoggerModule.forRoot(pinoConfig),
+
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: ['.env.development.local', 'env'],
       load: [dbConfig],
     }),
+
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService): TypeOrmModuleOptions => {
