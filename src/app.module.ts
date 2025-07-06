@@ -6,9 +6,28 @@ import { SupportModule } from './modules/_support/_support.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { InventoryModule } from './modules/inventory/inventory.module';
 import { SalesModule } from './modules/sales/sales.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { dbConfig } from './config/configuration';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: ['.env.development.local', 'env'],
+      load: [dbConfig],
+    }),
+    TypeOrmModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService): TypeOrmModuleOptions => {
+        const config = configService.get<TypeOrmModuleOptions>('postgres');
+        
+        if (!config) {
+          throw new Error('Database configuration not found');
+        }
+        return config;
+      },
+    }),
     PlatformModule, 
     SupportModule, 
     AuthModule, 
