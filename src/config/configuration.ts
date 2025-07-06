@@ -1,0 +1,1 @@
+// Acá va la configuración del config service
