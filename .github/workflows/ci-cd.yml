@@ -24,8 +24,7 @@ jobs:
           tags: ${{secrets.DOCKERHUB_USERNAME}}/ecommerce-platform:latest
           build-args:  |
             NODE_ENV=${{ github.ref_name == 'main' && 'production' || 'development' }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+
 
       ##Deploy to render
 
