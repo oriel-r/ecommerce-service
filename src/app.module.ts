@@ -15,14 +15,11 @@ import { RequestLoggerMiddleware } from './common/middlewares/request-logger/req
 
 @Module({
   imports: [
-    LoggerModule.forRoot(pinoConfig),
-
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: ['.env.development.local', 'env'],
       load: [dbConfig],
     }),
-
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService): TypeOrmModuleOptions => {
