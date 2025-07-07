@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ImATeapotException } from '@nestjs/common';
 import { StoresService } from './stores.service';
 import { CreateStoreDto } from './dto/create-store.dto';
 import { UpdateStoreDto } from './dto/update-store.dto';
@@ -14,7 +14,7 @@ export class StoresController {
 
   @Get()
   findAll() {
-    return this.storesService.findAll();
+    throw new ImATeapotException();
   }
 
   @Get(':id')
