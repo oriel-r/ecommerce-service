@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PlatformModule } from './modules/_platform/_platform.module';
@@ -9,19 +9,17 @@ import { SalesModule } from './modules/sales/sales.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { dbConfig } from './config/configuration';
-import { LoggerModule } from 'nestjs-pino';
-import { pinoConfig } from './common/logger/logger.config';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { RequestLoggerMiddleware } from './common/middlewares/request-logger/request-logger.middleware';
+
 
 @Module({
   imports: [
-    LoggerModule.forRoot(pinoConfig),
-
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: ['.env.development.local', 'env'],
       load: [dbConfig],
     }),
-
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService): TypeOrmModuleOptions => {
@@ -33,6 +31,9 @@ import { pinoConfig } from './common/logger/logger.config';
         return config;
       },
     }),
+    EventEmitterModule.forRoot({
+      wildcard: true
+    }),
     PlatformModule, 
     SupportModule, 
     AuthModule, 
@@ -42,4 +43,9 @@ import { pinoConfig } from './common/logger/logger.config';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+    .apply(RequestLoggerMiddleware).exclude('/favicon.ico').forRoutes('*')
+  }
+}
