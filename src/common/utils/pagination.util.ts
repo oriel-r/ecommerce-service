@@ -1,5 +1,3 @@
-// src/shared/utils/pagination.util.ts
-
 import { ObjectLiteral, SelectQueryBuilder } from 'typeorm';
 import { PaginatedResponse } from '../interceptors/response/response.interceptor';
 
@@ -9,7 +7,7 @@ export interface PaginationOptions {
 }
 
 export async function paginate<T extends ObjectLiteral>(
-     queryBuilder:SelectQueryBuilder<T>,
+      queryBuilder:SelectQueryBuilder<T>,
       options: PaginationOptions,
     ): Promise<PaginatedResponse<T>> {
   const { page, limit } = options;
