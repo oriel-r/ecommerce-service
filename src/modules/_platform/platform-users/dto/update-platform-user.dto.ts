@@ -1,4 +1,4 @@
 import { PartialType } from '@nestjs/mapped-types';
-import { CreatePlatformUserDto } from './create-platform-user.dto';
+import { CreatePlatformUserWithStoreDto } from './create-platform-user-with-store.dto';
 
-export class UpdatePlatformUserDto extends PartialType(CreatePlatformUserDto) {}
+export class UpdatePlatformUserDto extends PartialType(CreatePlatformUserWithStoreDto) {}

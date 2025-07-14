@@ -1,6 +1,6 @@
 import { IsEmail, IsNotEmpty, MinLength } from 'class-validator';
 
-export class CreatePlatformUserDto {
+export class CreatePlatformUserWithStoreDto {
   @IsNotEmpty()
   fullName: string;
 
@@ -9,4 +9,11 @@ export class CreatePlatformUserDto {
 
   @MinLength(6)
   password: string;
+
+  @IsNotEmpty()
+  storeName: string;
+
+  @IsNotEmpty()
+  domain: string;
 }
+

@@ -1,10 +1,13 @@
+import { Exclude } from 'class-transformer';
 import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
-  UpdateDateColumn
+  UpdateDateColumn,
+  OneToMany
 } from 'typeorm';
+import { Store } from '../../stores/entities/store.entity';
 
 @Entity()
 export class PlatformUser {
@@ -17,6 +20,7 @@ export class PlatformUser {
   @Column({unique: true})
   email: string;
 
+  @Exclude()
   @Column()
   password: string;
 
@@ -25,5 +29,8 @@ export class PlatformUser {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @OneToMany(() => Store, store => store.platformUser)
+  stores: Store[];
 }
 
