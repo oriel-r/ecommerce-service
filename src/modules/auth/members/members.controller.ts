@@ -17,10 +17,10 @@ export class MembersController {
     return this.membersService.findAll();
   }
 
-  @Get(':id')
+  /* @Get(':id')
   findOne(@Param('id') id: string) {
     return this.membersService.findOne(+id);
-  }
+  } */
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateMemberDto: UpdateMemberDto) {

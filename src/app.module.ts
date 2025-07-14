@@ -8,13 +8,17 @@ import { InventoryModule } from './modules/inventory/inventory.module';
 import { SalesModule } from './modules/sales/sales.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
-import { dbConfig } from './config/configuration';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { RequestLoggerMiddleware } from './common/middlewares/request-logger/request-logger.middleware';
+import { JwtModule } from '@nestjs/jwt';
+import { Store } from './modules/_platform/stores/entities/store.entity';
+import { StoreResolverMiddleware } from './common/middlewares/store/store-resolver.middleware';
+import { dbConfig } from './config/configuration';
 
 
 @Module({
   imports: [
+    TypeOrmModule.forFeature([Store]), 
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: ['.env.development.local', 'env'],
@@ -34,6 +38,16 @@ import { RequestLoggerMiddleware } from './common/middlewares/request-logger/req
     EventEmitterModule.forRoot({
       wildcard: true
     }),
+    JwtModule.registerAsync({
+      global: true,
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        secret: config.get<string>('JWT_SECRET'),
+        signOptions: {
+          expiresIn: config.get<string>('JWT_EXPIRES_IN') || '7d',
+        },
+      }),
+    }),
     PlatformModule, 
     SupportModule, 
     AuthModule, 
@@ -46,6 +60,10 @@ import { RequestLoggerMiddleware } from './common/middlewares/request-logger/req
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
-    .apply(RequestLoggerMiddleware).exclude('/favicon.ico').forRoutes('*')
+    .apply(StoreResolverMiddleware ,RequestLoggerMiddleware)
+    .exclude(
+    '/favicon.ico',
+    '/auth/platform/register')
+    .forRoutes('*')
   }
 }
