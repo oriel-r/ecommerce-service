@@ -1,15 +1,17 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { PlatformUsersService } from './platform-users.service';
-import { CreatePlatformUserDto } from './dto/create-platform-user.dto';
 import { UpdatePlatformUserDto } from './dto/update-platform-user.dto';
+import { CreatePlatformUserWithStoreDto } from './dto/create-platform-user-with-store.dto';
+import { CurrentStore } from 'src/common/decorators/store/store.decorator';
+import { Store } from '../stores/entities/store.entity';
 
 @Controller('platform-users')
 export class PlatformUsersController {
   constructor(private readonly platformUsersService: PlatformUsersService) {}
 
   @Post()
-  create(@Body() createPlatformUserDto: CreatePlatformUserDto) {
-    return this.platformUsersService.create(createPlatformUserDto);
+  async create(@Body() dto: CreatePlatformUserWithStoreDto) {
+    return await this.platformUsersService.create(dto);
   }
 
   @Get()

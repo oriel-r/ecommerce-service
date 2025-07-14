@@ -9,7 +9,7 @@ export class StoresController {
 
   @Post()
   create(@Body() createStoreDto: CreateStoreDto) {
-    return this.storesService.create(createStoreDto);
+    return this.storesService.createStore(createStoreDto);
   }
 
   @Get()
