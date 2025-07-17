@@ -13,9 +13,10 @@ import { RequestLoggerMiddleware } from './common/middlewares/request-logger/req
 import { JwtModule } from '@nestjs/jwt';
 import { Store } from './modules/_platform/stores/entities/store.entity';
 import { StoreResolverMiddleware } from './common/middlewares/store/store-resolver.middleware';
-import { dbConfig } from './config/configuration';
+import { dbConfig } from './database/data-source';
 
 
+ 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Store]), 
