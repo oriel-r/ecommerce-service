@@ -8,11 +8,11 @@ import { InventoryModule } from './modules/inventory/inventory.module';
 import { SalesModule } from './modules/sales/sales.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
-import { dbConfig } from './config/configuration';
+import { dbConfig } from './database/data-source';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { RequestLoggerMiddleware } from './common/middlewares/request-logger/request-logger.middleware';
 
-
+ 
 @Module({
   imports: [
     ConfigModule.forRoot({
