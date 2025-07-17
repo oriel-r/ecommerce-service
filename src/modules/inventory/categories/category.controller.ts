@@ -5,6 +5,8 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 import { ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { ApiWrappedResponse } from 'src/common/decorators/api-wrapped-response/api-wrapped-response.decorator';
 import { Category } from './entities/category.entity';
+import { StoreByIdPipe } from '../../_platform/stores/pipes/store-by-id/store-by-id.pipe';
+import { Store } from 'src/modules/_platform/stores/entities/store.entity';
 
 @Controller('stores/:storeId/categories')
 export class CategoriesController {
@@ -20,10 +22,10 @@ export class CategoriesController {
   @ApiWrappedResponse(Category)
   @Post()
   async create(
-    @Param('storeId') storeId,
+    @Param('storeId', StoreByIdPipe) store: Store,
     @Body() data: CreateCategoryDto
   ) {
-    return await this.categoryService.create(storeId, data) 
+    return await this.categoryService.create(store, data) 
   }
   
   @ApiOperation({

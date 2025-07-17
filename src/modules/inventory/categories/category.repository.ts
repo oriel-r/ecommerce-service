@@ -7,15 +7,17 @@ export class CategoryRepository {
         @InjectRepository(Category) private readonly categoryRepository: Repository<Category>
     ) {}
 
-    async create(store: string, data) {
+    async create(data: Partial<Category>) {
         const newCategory = await this.categoryRepository.save(
             this.categoryRepository.create(data)
         )
         return newCategory
     }
 
-    async find(storeId: string) {
-        const categories = await this.categoryRepository.find()
+    async findByStore(storeId: string) {
+        const categories = await this.categoryRepository.find({
+            where: {storeId}
+        })
         return categories
     }
 

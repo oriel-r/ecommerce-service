@@ -5,6 +5,7 @@ import { Category } from './entities/category.entity';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { hasSameValues } from 'src/common/utils/has-same-values.util';
 import { NothingToUpdateException } from 'src/common/exeptions/nothing-to-update.exception';
+import { Store } from 'src/modules/_platform/stores/entities/store.entity';
 
 @Injectable()
 export class CategoryService {
@@ -15,15 +16,14 @@ export class CategoryService {
         private readonly categoryRepository: CategoryRepository
     ) {}
 
-    async create(storeId: string, data: CreateCategoryDto) {
-        const store = storeId
+    async create(store: Store, data: CreateCategoryDto) {
 
         let parent: Category | null = null
         const { name, parentId } = data;
 
-        const namePromise = this.categoryRepository.findOneByName(storeId, name);
+        const namePromise = this.categoryRepository.findOneByName(store.id, name);
         const parentPromise = parentId
-            ? this.categoryRepository.findById(storeId, parentId)
+            ? this.categoryRepository.findById(store.id, parentId)
             : Promise.resolve(null);
 
         const [nameResult, parentResult] = await Promise.allSettled([namePromise, parentPromise]);
@@ -44,9 +44,10 @@ export class CategoryService {
             parent = parentResult.value;
         }
 
-        const newCategory = await this.categoryRepository.create(storeId, {
+        const newCategory = await this.categoryRepository.create({
             name,
             parent,
+            store
         });
 
         if (!newCategory) {
@@ -60,7 +61,7 @@ export class CategoryService {
     async get(storeId: string) {
         const store = storeId
 
-        const categories = await this.categoryRepository.find(storeId)
+        const categories = await this.categoryRepository.findByStore(storeId)
         return categories
     }
 
