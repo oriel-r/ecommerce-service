@@ -12,10 +12,10 @@ export class ProductCategory extends BaseEntity {
     @PrimaryColumn()
     categoryId: string
 
-    @ManyToOne(() => Product, product => product.categoryAssignments)
+    @ManyToOne(() => Product, product => product.categoryAssignments, {onDelete: 'CASCADE'})
     product: Product
 
-    @ManyToOne(() => Category, category => category.productAssignments)
+    @ManyToOne(() => Category, category => category.productAssignments, {onDelete: 'CASCADE'})
     category: Category
  /*
     @ManyToOne(() => Store, (store) => store.productCategories)

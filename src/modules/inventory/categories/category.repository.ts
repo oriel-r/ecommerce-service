@@ -1,6 +1,6 @@
 import { InjectRepository } from "@nestjs/typeorm";
 import { Category } from "./entities/category.entity";
-import { Repository } from "typeorm";
+import { EntityManager, In, Repository } from "typeorm";
 
 export class CategoryRepository {
     constructor(
@@ -16,7 +16,9 @@ export class CategoryRepository {
 
     async findByStore(storeId: string) {
         const categories = await this.categoryRepository.find({
-            where: {storeId}
+            where: {
+                store: {id: storeId}
+            },
         })
         return categories
     }
@@ -32,6 +34,16 @@ export class CategoryRepository {
     async findOneByName (store: string, name: string) {
         const category = await this.categoryRepository.findOneBy({name})
         return category
+    }
+
+    async validateIdsExist(categoryIds: string[], storeId?: string, manager?: EntityManager): Promise<boolean> {
+        const categoryRepository = manager ? manager.getRepository(Category) : this.categoryRepository
+        
+        if (categoryIds.length === 0) return true
+        
+        const count = await this.categoryRepository.count({ where: { id: In(categoryIds) } });
+            
+        return count === categoryIds.length;
     }
 
     async update(storeId: string, id: string, data: Partial<Category>) {

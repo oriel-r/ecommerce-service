@@ -9,13 +9,15 @@ import { ProductRepository } from './product.repository';
 import { CategoryModule } from '../categories/category.module';
 import { ProductVariantRepository } from './product-variant.repository';
 import { ProductCategoryRepository } from './product-category,repository';
+import { StoresModule } from 'src/modules/_platform/stores/stores.module';
 
 @Module({
   imports: [TypeOrmModule.forFeature([
     Product,
     ProductVariant,
     ProductCategory,
-  ]), 
+  ]),
+    StoresModule, 
     CategoryModule
   ],
   controllers: [ProductController],
@@ -25,5 +27,6 @@ import { ProductCategoryRepository } from './product-category,repository';
     ProductVariantRepository,
     ProductCategoryRepository
   ],
+  exports: [ProductService]
 })
 export class ProductModule {}
