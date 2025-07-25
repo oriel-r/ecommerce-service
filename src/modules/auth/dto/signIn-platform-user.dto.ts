@@ -1,14 +1,10 @@
-import { IsEmail, IsNotEmpty, IsString, Matches} from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, Matches } from 'class-validator';
 
-export class CreatePlatformUserDto {
-  @IsString()
-  @IsNotEmpty()
-  fullName: string;
-
+export class SignInPlatformUserDto {
   @IsEmail()
   @IsNotEmpty()
   email: string;
-
+  
   @IsString()
   @IsNotEmpty()
   @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/, {

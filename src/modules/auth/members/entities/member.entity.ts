@@ -5,8 +5,9 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
-  Unique,
+  JoinColumn,
 } from 'typeorm';
+import { Role } from '../../roles/entities/role.entity';
 
 @Entity()
 export class Member {
@@ -15,9 +16,6 @@ export class Member {
 
   @Column()
   storeId: string;
-
-  @Column()
-  roleId: string
 
   @Column()
   fullName: string;
@@ -32,6 +30,9 @@ export class Member {
   phoneNumber: string;
 
   @Column()
+  dni: string;
+
+  @Column()
   isActive: boolean;
 
   @CreateDateColumn()
@@ -39,4 +40,8 @@ export class Member {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @ManyToOne(() => Role)
+  @JoinColumn({ name: 'roleId' })
+  role: Role;
 }

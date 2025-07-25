@@ -8,10 +8,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Member } from './members/entities/member.entity';
 import { PlatformUser } from '../_platform/platform-users/entities/platform-user.entity';
 import { Store } from '../_platform/stores/entities/store.entity';
+import { Role } from './roles/entities/role.entity';
+import { StoresModule } from '../_platform/stores/stores.module';
 
 @Module({
-  imports: [ TypeOrmModule.forFeature([Member, PlatformUser, Store])
-  ,RolesModule, MembersModule,  forwardRef(() => PlatformModule),],
+  imports: [ TypeOrmModule.forFeature([Member, PlatformUser, Store, Role])
+  ,RolesModule, MembersModule,  forwardRef(() => PlatformModule), StoresModule],
   controllers: [AuthController],
   providers: [AuthService],
   exports: [TypeOrmModule], 

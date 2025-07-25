@@ -1,34 +1,64 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ImATeapotException } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { StoresService } from './stores.service';
 import { CreateStoreDto } from './dto/create-store.dto';
 import { UpdateStoreDto } from './dto/update-store.dto';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
+import { Store } from './entities/store.entity';
 
+@ApiTags('Stores')
 @Controller('stores')
 export class StoresController {
   constructor(private readonly storesService: StoresService) {}
 
   @Post()
-  create(@Body() createStoreDto: CreateStoreDto) {
+  @ApiOperation({ summary: 'Crear una tienda' })
+  @ApiResponse({ status: 201, description: 'Tienda creada exitosamente', type: Store })
+  @ApiResponse({ status: 404, description: 'Usuario de plataforma no encontrado' })
+  createStore(@Body() createStoreDto: CreateStoreDto) {
     return this.storesService.createStore(createStoreDto);
   }
 
   @Get()
-  findAll() {
-    throw new ImATeapotException();
+  @ApiOperation({ summary: 'Obtener todas las tiendas' })
+  @ApiResponse({ status: 200, description: 'Listado de tiendas', type: [Store] })
+  @ApiResponse({ status: 404, description: 'No se encontraron tiendas' })
+  findAllStores() {
+    return this.storesService.findAllStores();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.storesService.findOne(+id);
+  @ApiOperation({ summary: 'Obtener una tienda por ID' })
+  @ApiParam({ name: 'id', description: 'ID de la tienda' })
+  @ApiResponse({ status: 200, description: 'Tienda encontrada', type: Store })
+  @ApiResponse({ status: 404, description: 'Tienda no encontrada' })
+  findOneById(@Param('id') id: string) {
+    return this.storesService.findOneById(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateStoreDto: UpdateStoreDto) {
-    return this.storesService.update(+id, updateStoreDto);
+  @ApiOperation({ summary: 'Actualizar una tienda por ID' })
+  @ApiParam({ name: 'id', description: 'ID de la tienda' })
+  @ApiResponse({ status: 200, description: 'Tienda actualizada exitosamente', type: Store })
+  @ApiResponse({ status: 404, description: 'Tienda no encontrada' })
+  updateStore(@Param('id') id: string, @Body() updateStoreDto: UpdateStoreDto) {
+    return this.storesService.updateStore(id, updateStoreDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.storesService.remove(+id);
+  @ApiOperation({ summary: 'Eliminar una tienda por ID' })
+  @ApiParam({ name: 'id', description: 'ID de la tienda' })
+  @ApiResponse({ status: 200, description: 'Tienda eliminada correctamente' })
+  @ApiResponse({ status: 404, description: 'Tienda no encontrada' })
+  deleteStore(@Param('id') id: string) {
+    return this.storesService.deleteStore(id);
   }
 }
+
