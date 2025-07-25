@@ -5,6 +5,8 @@ import { Category } from './entities/category.entity';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { hasSameValues } from 'src/common/utils/has-same-values.util';
 import { NothingToUpdateException } from 'src/common/exeptions/nothing-to-update.exception';
+import { Store } from 'src/modules/_platform/stores/entities/store.entity';
+import { EntityManager } from 'typeorm';
 
 @Injectable()
 export class CategoryService {
@@ -15,15 +17,14 @@ export class CategoryService {
         private readonly categoryRepository: CategoryRepository
     ) {}
 
-    async create(storeId: string, data: CreateCategoryDto) {
-        const store = storeId
+    async create(store: Store, data: CreateCategoryDto) {
 
         let parent: Category | null = null
         const { name, parentId } = data;
 
-        const namePromise = this.categoryRepository.findOneByName(storeId, name);
+        const namePromise = this.categoryRepository.findOneByName(store.id, name);
         const parentPromise = parentId
-            ? this.categoryRepository.findById(storeId, parentId)
+            ? this.categoryRepository.findById(store.id, parentId)
             : Promise.resolve(null);
 
         const [nameResult, parentResult] = await Promise.allSettled([namePromise, parentPromise]);
@@ -44,9 +45,10 @@ export class CategoryService {
             parent = parentResult.value;
         }
 
-        const newCategory = await this.categoryRepository.create(storeId, {
+        const newCategory = await this.categoryRepository.create({
             name,
             parent,
+            store
         });
 
         if (!newCategory) {
@@ -58,9 +60,7 @@ export class CategoryService {
     }
 
     async get(storeId: string) {
-        const store = storeId
-
-        const categories = await this.categoryRepository.find(storeId)
+        const categories = await this.categoryRepository.findByStore(storeId)
         return categories
     }
 
@@ -71,6 +71,12 @@ export class CategoryService {
         
         if(!category) throw new NotFoundException('No se encontro la tienda')
         return category
+    }
+
+    async getByName(storeId: string, categoryName: string) {
+        const category = await this.categoryRepository.findOneByName(storeId, categoryName)
+        if(!category) throw new NotFoundException(`No se encontro la categoria ${categoryName}`)
+            return category
     }
 
     async update(storeId: string, id: string, data: UpdateCategoryDto) {
@@ -154,6 +160,10 @@ export class CategoryService {
 
         const deletResult = await this.categoryRepository.delete(store, id)
         return deletResult
+    }
+
+    async validateIdsExist(categoriesIds: string[], storeId: string) {
+        return await this.categoryRepository.validateIdsExist(categoriesIds, storeId)
     }
 
 }

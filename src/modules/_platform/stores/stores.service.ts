@@ -55,8 +55,10 @@ export class StoresService {
     return `This action returns all stores`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} store`;
+  async findOne(id: string) {
+    const store = await this.storeRepo.findOneBy({id})
+    if(!store) throw new NotFoundException('No se encontro la tienda')
+      return store
   }
 
   update(id: number, updateStoreDto: UpdateStoreDto) {

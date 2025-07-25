@@ -8,7 +8,12 @@ import { ProductVariantRepository } from './product-variant.repository';
 import { ProductCategoryRepository } from './product-category,repository';
 import { CategoryService } from '../categories/category.service';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { DeepPartial } from 'typeorm';
+import { DataSource, DeepPartial } from 'typeorm';
+import { AssignProductCategoryDto } from './dto/assign-product-category.dto';
+import { InjectDataSource } from '@nestjs/typeorm';
+import { ProductCategory } from './entities/product-category.entity';
+import { Store } from 'src/modules/_platform/stores/entities/store.entity';
+import { CreateProductVariantDto } from './dto/create-product-variant.dto';
 
 @Injectable()
 export class ProductService {
@@ -22,20 +27,20 @@ export class ProductService {
         private readonly categoriesService: CategoryService
     ) {}
 
-    async create(storeId: string, data: CreateProductDto) {
-        const store = storeId
+    async create(store: Store, data: CreateProductDto) {
 
         const { name } = data;
 
-        const existName = await this.productRepository.findOneByName(storeId, name);;
+        const existName = await this.productRepository.findOneByName(store.id, name);;
 
 
         if (existName) {
             throw new UnprocessableEntityException(`El producto ${name} ya existe`);
         } 
 
-        const newProduct = await this.productRepository.create(storeId, {
+        const newProduct = await this.productRepository.create({
             name,
+            store
         });
 
         if (!newProduct) {
@@ -47,10 +52,7 @@ export class ProductService {
     }
 
     async get(storeId: string) {
-        const store = storeId
-
         const products = await this.productRepository.find(storeId)
-        
         return products
     }
 
@@ -80,7 +82,7 @@ export class ProductService {
 
         if(alreadyExistName) throw new ConflictException(`Ya existe un producto llamado ${name}`)
         
-        const updateResul = await this.productRepository.update(storeId, id, data)
+        const updateResul = await this.productRepository.update(id, data)
 
         if(!updateResul) throw new InternalServerErrorException('Hubo un error desconocido al modificar la categoria')
 
@@ -104,21 +106,105 @@ export class ProductService {
         return deletResult
     }
     
-    async assignCategoryToProduct() {
-        return
+    async assignCategoryToProduct({categoriesIds}: AssignProductCategoryDto , productId: string, storeId: string) {
+        
+        const [productExists, categoriesExist] = await Promise.all([
+            this.productRepository.exists(storeId, productId),
+            this.categoriesService.validateIdsExist(categoriesIds, storeId),
+        ]);
+
+        if (!productExists) {
+            throw new UnprocessableEntityException(`El producto con ID '${productId}' no fue encontrado.`);
+        }
+        if (!categoriesExist) {
+            throw new UnprocessableEntityException('Una o más de las categorías proporcionadas no son válidas.');
+        }
+
+        const existingCategoryIds = await this.productCategoryRepository.findExistingCategoryIds(
+            productId,
+            categoriesIds,
+        );
+        
+        const categoryIdsToCreate = categoriesIds.filter(
+            id => !existingCategoryIds.includes(id)
+        );
+        
+        if (categoryIdsToCreate.length === 0) {
+        return {
+            assignedCount: 0,
+            alreadyExistedCount: categoriesIds.length
+            };
+        }
+
+        const newAssignments = categoryIdsToCreate.map(categoryId => ({
+            productId,
+            categoryId,
+        }));
+
+        await this.productCategoryRepository.createBulk(newAssignments);
+
+        return {
+            assignedCount: newAssignments.length,
+            alreadyExistedCount: existingCategoryIds.length
+        };
     }
 
-    async syncProductCategories () {
-        return
-    }
-    
+    async syncProductCategories (data: AssignProductCategoryDto, productId: string, storeId: string) {
+        const { categoriesIds } = data;
 
-    async removeProductCategory () {
-        return
+        const [productExists, categoriesExist] = await Promise.all([
+            this.productRepository.exists(storeId, productId), 
+            this.categoriesService.validateIdsExist(categoriesIds, storeId)
+        ]);
+
+        this.logger.debug(productExists)
+
+        if (!productExists) {
+            throw new UnprocessableEntityException(`El producto con ID '${productId}' no fue encontrado en esta tienda.`);
+        }
+
+        if (!categoriesExist) {
+            throw new UnprocessableEntityException('Una o más de las categorías proporcionadas no son válidas para esta tienda.');
+        }
+
+        const newAssignments = categoriesIds.map(categoryId => ({
+            productId,
+            categoryId,
+            storeId,
+        }));
+
+        try {
+         await this.productCategoryRepository.syncCategoriesInTransaction(newAssignments);
+        } catch (error) {
+        throw new InternalServerErrorException('No se pudo completar la sincronización de categorías.');
+        }
+
+        return { assignedCount: newAssignments.length };
     }
 
-    async createProductVariant () {
-        return
+    async deleteProductCategory (storeId: string, productId: string, categoriesIds: string[]) {
+        const productCategory = await this.productCategoryRepository.findById(storeId, productId, categoriesIds)
+
+        if(!productCategory) throw new NotFoundException('Produto o categorias inexistentes')
+
+        const results = await Promise.all(
+            categoriesIds.map(id => this.productCategoryRepository.delete(storeId, productId, id))
+        )
+
+        return results
+    }
+
+    async createProductVariant(storeId: string, productId: string, data: CreateProductVariantDto) {
+        const product = await this.productRepository.findById(storeId, productId)
+
+        if(!product) throw new UnprocessableEntityException(`El producto con el ID ${productId} no existe`)
+
+        return await this.productVariantRepository.create(
+            {
+                ...data,
+                product 
+            })
+
     }
 
     async deleteProductVariant () {
@@ -133,5 +219,14 @@ export class ProductService {
         return
     }
 
+    private async getProductOrFail(storeid: string, productId: string) {
+        const product = await this.productRepository.findByIdOrFail(storeid, productId)
+
+        if(!product) {
+            throw new NotFoundException('Producto no encontrado')
+        }
+
+        return product
+    }
 
 }

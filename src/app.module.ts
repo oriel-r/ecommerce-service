@@ -14,6 +14,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { Store } from './modules/_platform/stores/entities/store.entity';
 import { StoreResolverMiddleware } from './common/middlewares/store/store-resolver.middleware';
 import { dbConfig } from './database/data-source';
+import { SeedersModule } from './database/seeding/seeders.module'; 
 
 
  
@@ -53,7 +54,7 @@ import { dbConfig } from './database/data-source';
     SupportModule, 
     AuthModule, 
     InventoryModule, 
-    SalesModule
+    SalesModule, SeedersModule
   ],
   controllers: [AppController],
   providers: [AppService],
@@ -61,7 +62,7 @@ import { dbConfig } from './database/data-source';
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
-    .apply(StoreResolverMiddleware ,RequestLoggerMiddleware)
+    .apply( /* StoreResolverMiddleware ,*/ RequestLoggerMiddleware)
     .exclude(
     '/favicon.ico',
     '/auth/platform/register')
