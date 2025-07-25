@@ -41,7 +41,7 @@ export class CategoryRepository {
         
         if (categoryIds.length === 0) return true
         
-        const count = await this.categoryRepository.count({ where: { id: In(categoryIds) } });
+        const count = await this.categoryRepository.count({ where: { id: In(categoryIds) , store: {id: storeId}} });
             
         return count === categoryIds.length;
     }

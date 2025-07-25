@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger"
 import { IsDecimal, IsInt, IsNotEmpty, IsNumber, IsOptional, IsString, Min } from "class-validator"
 
-export class CreateProductVariant {
+export class CreateProductVariantDto {
 
     @ApiProperty({
         description: 'the price of variant. min 0, acept decimal values',
@@ -18,7 +18,7 @@ export class CreateProductVariant {
     @IsInt({message: 'No valor de stock debe ser un enteo tener '})
     @Min(0, {message: 'El stock debe ser mayor o igual a 0'})
     @IsOptional()
-    stock: number
+    stock?: number
 
     @ApiProperty({
         description: "variant's sku"

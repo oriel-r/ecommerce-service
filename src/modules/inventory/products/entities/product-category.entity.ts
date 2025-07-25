@@ -25,4 +25,5 @@ export class ProductCategory extends BaseEntity {
     @RelationId((productCategory: ProductCategory) => productCategory.store)
     storeId: string
 */
+
 }

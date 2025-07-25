@@ -10,6 +10,9 @@ import { Product } from './entities/product.entity';
 import { createPaginatedResponseDto } from 'src/common/dtos/api-response-paginated.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { AssignProductCategoryDto } from './dto/assign-product-category.dto';
+import { plainToInstance } from 'class-transformer';
+import { ProductArrayResponseDto } from './dto/product-array-response.dto';
+import { ProductReponseDto } from './dto/product-reponse.dto';
 
 @Controller('stores/:storeId/products')
 export class ProductController {
@@ -61,8 +64,9 @@ export class ProductController {
     status: HttpStatus.OK, type: createPaginatedResponseDto(Product)
   })
   @Get()
-  async get(@Param('id') store: string) {
-    return await this.productService.get(store)
+  async get(@Param('sotreId') store: string) {
+    const products = await this.productService.get(store)
+    return products.map(product => new ProductArrayResponseDto(product))
   }
 
   @ApiOperation({
@@ -74,7 +78,8 @@ export class ProductController {
     @Param('storeId') store: string,
     @Param('id') id: string
   ) {
-    return await this.productService.getById(store, id)
+    const product = await this.productService.getById(store, id)
+    return new ProductReponseDto(product)
   }
 
   @ApiOperation({

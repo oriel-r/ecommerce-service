@@ -47,6 +47,16 @@ export class ProductsSeeder {
         const product = await this.productService.create(store, {name})
         const categoriesIds = categoriesToAssign.map(category => category.id)
 
+        const variantPromises = variants.map(
+            variant => this.productService.createProductVariant(store.id, product.id, {
+                optionName: variant.optionName!,
+                optionValue: variant.optionValue!,
+                price: variant.price!
+            })
+        )
+
+        await Promise.all(variantPromises)
+
         await this.productService.assignCategoryToProduct(
             {categoriesIds: categoriesIds},
             product.id,

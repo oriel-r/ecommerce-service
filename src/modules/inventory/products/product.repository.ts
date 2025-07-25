@@ -15,11 +15,13 @@ export class ProductRepository {
     }
 
     async find(storeId: string) {
+        const qb = this.productRepository.createQueryBuilder()
+
         const products = await this.productRepository.find({
             where: {
                 store: {id: storeId}
             },
-            relations: {store: false}
+            relations: ['variants']
         })
         return products
     }
@@ -30,7 +32,7 @@ export class ProductRepository {
                 id,
                 store: {id: storeId}
             },
-            relations: { categoryAssignments: true , variants: true}
+            relations: { categoryAssignments: {category: true} , variants: true}
         })
         return product
     }
@@ -65,7 +67,7 @@ export class ProductRepository {
     async exists(storeId: string, productId : string, manager?: EntityManager): Promise<boolean> {
         const productRepository = manager ? manager.getRepository(Product) : this.productRepository
 
-        const count = await this.productRepository.countBy({ id: productId });
+        const count = await this.productRepository.countBy({ id: productId, store: {id: storeId} });
         
         return count > 0;
     }

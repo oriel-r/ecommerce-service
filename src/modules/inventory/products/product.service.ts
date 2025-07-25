@@ -13,6 +13,7 @@ import { AssignProductCategoryDto } from './dto/assign-product-category.dto';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { ProductCategory } from './entities/product-category.entity';
 import { Store } from 'src/modules/_platform/stores/entities/store.entity';
+import { CreateProductVariantDto } from './dto/create-product-variant.dto';
 
 @Injectable()
 export class ProductService {
@@ -51,10 +52,7 @@ export class ProductService {
     }
 
     async get(storeId: string) {
-        const store = storeId
-
         const products = await this.productRepository.find(storeId)
-        
         return products
     }
 
@@ -196,8 +194,17 @@ export class ProductService {
         return results
     }
 
-    async createProductVariant () {
-        return
+    async createProductVariant(storeId: string, productId: string, data: CreateProductVariantDto) {
+        const product = await this.productRepository.findById(storeId, productId)
+
+        if(!product) throw new UnprocessableEntityException(`El producto con el ID ${productId} no existe`)
+
+        return await this.productVariantRepository.create(
+            {
+                ...data,
+                product 
+            })
+
     }
 
     async deleteProductVariant () {

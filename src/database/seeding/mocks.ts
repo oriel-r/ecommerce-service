@@ -35,7 +35,7 @@ export const productsMock: ProductMock[] = [
         name: 'Espátula de Fieltro Anti-Rayas',
         categories: ['Herramientas', 'Espatulas'],
         variants: [
-            { optionName: 'Tamaño', optionValue: '10cm', price: 3500.00 },
+            { optionName: 'Tamaño', optionValue: '10cm', price: 3500.15 },
             { optionName: 'Tamaño', optionValue: '15cm', price: 4800.00 },
         ]
     },

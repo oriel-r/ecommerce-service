@@ -7,7 +7,7 @@ export class ProductVariantRepository {
         @InjectRepository(ProductVariant) private readonly productVariantRepository: Repository<ProductVariant>
     ) {}
 
-    async create(store: string, data) {
+    async create(data: Partial<ProductVariant>) {
         const newproduct = await this.productVariantRepository.save(
             this.productVariantRepository.create(data)
         )
