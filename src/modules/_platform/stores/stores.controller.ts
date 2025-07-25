@@ -9,7 +9,7 @@ export class StoresController {
 
   @Post()
   create(@Body() createStoreDto: CreateStoreDto) {
-    return this.storesService.create(createStoreDto);
+    return this.storesService.createStore(createStoreDto);
   }
 
   @Get()
@@ -19,7 +19,7 @@ export class StoresController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.storesService.findOne(+id);
+    return this.storesService.findOne(id);
   }
 
   @Patch(':id')

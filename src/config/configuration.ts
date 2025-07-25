@@ -1,7 +1,7 @@
-import { DataSource, DataSourceOptions } from 'typeorm';
+  import { DataSource, DataSourceOptions } from 'typeorm';
 import { config as dotenvConfig } from 'dotenv';
 import { registerAs } from '@nestjs/config';
-
+/*
 dotenvConfig({ path: '.env.development.local' });
 
 const isProd = process.env.ENVIRONMENT === 'PROD';
@@ -21,14 +21,14 @@ const dataSourceConfig: DataSourceOptions = {
     ? process.env.DB_PASSWORD_PROD
     : process.env.DB_PASSWORD_LOCAL,
   database: isProd ? process.env.DB_NAME_PROD : process.env.DB_NAME_LOCAL,
-  synchronize: false,
+  synchronize: true,
   dropSchema: false,
   logging: ['error'],
   ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false,
-  entities: ['dist/**/*.entity{.ts,.js}'],
-  migrations: ['dist/migrations/*{.js,.ts}'],
+ // entities: 
+ // migrations: ['dist/migrations/*{.js,.ts}'],
 };
 
 export const dbConfig = registerAs('postgres', () => dataSourceConfig);
 
-export const appDataSource = new DataSource(dataSourceConfig);
+export const appDataSource = new DataSource(dataSourceConfig); */
