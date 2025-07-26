@@ -43,4 +43,13 @@ export class CreateProductVariantDto {
     @IsString()
     optionValue: string
 
+    @ApiProperty({
+        description: "weight in kg",
+        example: 25
+    })
+    @IsNotEmpty()
+    @IsNumber()
+    @IsOptional()
+    weigth?: number
+
 }

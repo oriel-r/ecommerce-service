@@ -14,7 +14,10 @@ export class Product extends BaseEntity {
     name: string
 
     @Column({type: 'text', nullable: true})
-    detail: string
+    description: string
+
+    @Column({type: 'text', nullable: true})
+    longDescription: string
 
     @Column('boolean', {default: true})
     isActive: boolean
