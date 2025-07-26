@@ -13,11 +13,15 @@ import { AssignProductCategoryDto } from './dto/assign-product-category.dto';
 import { plainToInstance } from 'class-transformer';
 import { ProductArrayResponseDto } from './dto/product-array-response.dto';
 import { ProductReponseDto } from './dto/product-reponse.dto';
+import { CreateProductVariantDto } from './dto/create-product-variant.dto';
 
 @Controller('stores/:storeId/products')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
+  //                                                  //
+  // ------------------- PRODUCT -------------------- //
+  //                                                  //
 
   @ApiOperation({
     description: 'Create new product'
@@ -29,32 +33,6 @@ export class ProductController {
     @Body() data: CreateProductDto
   ) {
     return await this.productService.create(store, data)
-  }
-
-  @ApiOperation({
-    description: 'Create new product'
-  })
-  @ApiWrappedResponse(Product)
-  @Post(':id/categories')
-  async assignCategoryToProdut(
-    @Param('storeId') store: string,
-    @Param('id') productId: string,
-    @Body() data: AssignProductCategoryDto
-  ) {
-    return await this.productService.assignCategoryToProduct(data, productId, store)
-  }
-
-    @ApiOperation({
-    description: 'Replace all categories assigned to a product'
-  })
-  @ApiWrappedResponse(Product)
-  @Put(':id/categories')
-  async syncProductsCategories(
-    @Param('storeId') store: string,
-    @Param('id') productId: string,
-    @Body() data: AssignProductCategoryDto
-  ) {
-    return await this.productService.syncProductCategories(data, productId, store)
   }
 
   @ApiOperation({
@@ -117,6 +95,36 @@ export class ProductController {
     return await this.productService.delete(store, id)
   }
 
+  //                                                  //
+  // ------------------- CATEGORY ------------------- //
+  //                                                  //
+
+  @ApiOperation({
+    description: 'assign categories to a product'
+  })
+  @ApiWrappedResponse(Product)
+  @Post(':id/categories')
+  async assignCategoryToProdut(
+    @Param('storeId') store: string,
+    @Param('id') productId: string,
+    @Body() data: AssignProductCategoryDto
+  ) {
+    return await this.productService.assignCategoryToProduct(data, productId, store)
+  }
+
+    @ApiOperation({
+    description: 'Replace all categories assigned to a product'
+  })
+  @ApiWrappedResponse(Product)
+  @Put(':id/categories')
+  async syncProductsCategories(
+    @Param('storeId') store: string,
+    @Param('id') productId: string,
+    @Body() data: AssignProductCategoryDto
+  ) {
+    return await this.productService.syncProductCategories(data, productId, store)
+  }
+
   @ApiOperation({
     description: 'delete product category'
   })
@@ -127,6 +135,50 @@ export class ProductController {
     @Body() categoriesIds: AssignProductCategoryDto
   ) {
     return await this.productService.deleteProductCategory(store, id, categoriesIds.categoriesIds)
+  }
+
+  //                                                  //
+  // ------------------- VARIANTS ------------------- //
+  //                                                  //
+
+  @ApiOperation({
+    description: 'create a product variant'
+  })
+  @ApiResponse({})
+  @Post(':productId/variants')
+  async createProductVaraint(
+    @Param('storeId') storeId: string,
+    @Param('productId') productId: string,
+    @Body() data: CreateProductVariantDto
+  ) {
+    const productWithNewVariant = await this.productService.createProductVariant(storeId, productId, data)
+    return new ProductReponseDto(productWithNewVariant!)
+  }
+
+  @ApiOperation({
+      description: 'edit product variant'
+  })
+  @ApiResponse({})
+  @Patch(':productId/variants/:id')
+  async editVariant(
+    @Param('storeId') storeId: string,
+    @Param('productId') productId: string,
+    @Param('id') variantId: string,
+    @Body() data: CreateProductVariantDto
+  ) {
+    return
+  }
+
+  @ApiOperation({})
+  @ApiResponse({})
+  @Delete(':productId/variants/:id')
+  async deleteProductVariant(
+    @Param('storeId') storeId: string,
+    @Param('productId') productId: string,
+    @Param('id') vairnatId: string,
+    @Body() data: CreateProductVariantDto
+  ) {
+    return
   }
 
 

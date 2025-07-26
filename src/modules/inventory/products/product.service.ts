@@ -199,12 +199,15 @@ export class ProductService {
 
         if(!product) throw new UnprocessableEntityException(`El producto con el ID ${productId} no existe`)
 
-        return await this.productVariantRepository.create(
+        const newProductVariant = await this.productVariantRepository.create(
             {
                 ...data,
                 product 
             })
-
+        
+        if(!newProductVariant) throw new InternalServerErrorException('Hubo un error inesperado al crear la variante')
+        
+        return await this.productRepository.findById(storeId, productId)
     }
 
     async deleteProductVariant () {
