@@ -1,8 +1,6 @@
-import { DeepPartial } from "typeorm";
-import { ProductCategory } from "../entities/product-category.entity";
-import { ProductVariant } from "../entities/product-variant.entity";
+// en product-array-response.dto.ts
+
 import { Product } from "../entities/product.entity";
-import { Category } from "../../categories/entities/category.entity";
 
 export class ProductArrayResponseDto {
     id: string;
@@ -17,21 +15,24 @@ export class ProductArrayResponseDto {
     detail: string;
     offer: {
         percentage: number | null
-    }
-    categoryId: string[] | Partial<ProductCategory>[]
+    };
+    categories: string[];
 
-    constructor({name , id , longDescription, description, createdAt, variants, isFeatured, categoryAssignments}: Product) {
-        this.id = id,
-        this.name = name,
-        this.description = description
-        this.detail = longDescription
-        this.novelty = isFeatured
-        this.sku = variants[0].sku
-        this.price = variants[0].price
-        this.stock = variants[0].stock
-        this.images = variants[0].images
-        this.createdAt = createdAt
-        this.offer = {percentage: variants[0].discount}
-        this.categoryId = categoryAssignments
+    constructor(product: Product) {
+        this.id = product.id;
+        this.name = product.name;
+        this.description = product.description;
+        this.detail = product.longDescription;
+        this.novelty = product.isFeatured;
+        this.createdAt = product.createdAt;
+        const defaultVariant = product.variants?.[0]; // Accede a la primera (y única) variante
+        this.sku = defaultVariant?.sku;
+        this.price = defaultVariant?.price || 0;
+        this.stock = defaultVariant?.stock || 0;
+        this.images = defaultVariant?.images || [];
+        this.offer = { percentage: defaultVariant?.discount || null };
+        this.categories = (product.categoryAssignments || []).map(
+            assignment => assignment.category?.name
+        ).filter(Boolean);
     }
 }

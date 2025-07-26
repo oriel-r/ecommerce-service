@@ -44,6 +44,9 @@ export class ProductController {
   @Get()
   async get(@Param('storeId') store: string) {
     const products = await this.productService.get(store)
+    const productsToSend = products.map(product => new ProductArrayResponseDto(product))
+    console.log(productsToSend)
+    return productsToSend
   }
 
   @ApiOperation({

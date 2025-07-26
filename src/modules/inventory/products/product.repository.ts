@@ -46,21 +46,8 @@ export class ProductRepository {
 
     const products = await qb.getMany();
 
-      console.log(products)
-
-    return products.map(product => {
-        const categoryNames = (product.categoryAssignments || []).map(
-            assignment => assignment.category?.name
-        ).filter(Boolean);
-        
-        const { categoryAssignments, ...restOfProduct } = product;
-
-        return {
-            ...restOfProduct,
-            categoryAssigments: categoryNames,
-        };
-    });
-}
+        return products 
+    }
 
 
     async find(storeId: string) {
