@@ -19,7 +19,7 @@ export class ProductRepository {
 
         const products = await this.productRepository.find({
             where: {
-                store: {id: storeId}
+                storeId: storeId
             },
             relations: ['variants']
         })

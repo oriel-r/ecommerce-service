@@ -32,6 +32,15 @@ export class ProductVariant extends BaseEntity {
     @Column({type: 'varchar', nullable: true, name: 'option_value'})
     optionValue: string
 
+    @Column({ type: 'decimal', precision: 5, scale: 2, nullable: true })
+    weight: number | null
+
+    @Column({type: 'boolean', default: false, name: 'is_default'})
+    isDefault: boolean
+
+    @Column({type: 'int', nullable: true })
+    discount: number | null
+
     @ManyToOne(() => Product, product => product.variants, {nullable: false})
     @JoinColumn({name: 'product_id'})
     product: Product

@@ -13,8 +13,14 @@ export class Product extends BaseEntity {
     @Column('varchar', {nullable: false})
     name: string
 
+    @Column({type: 'text', nullable: true})
+    detail: string
+
     @Column('boolean', {default: true})
     isActive: boolean
+
+    @Column({type: 'boolean', default: false, name: 'is_featured'})
+    isFeatured: boolean
 
     @OneToMany(() => ProductCategory, productCategory => productCategory.product, {nullable: true})
     categoryAssignments: ProductCategory[]
@@ -26,7 +32,7 @@ export class Product extends BaseEntity {
     @JoinColumn({name: 'store_id'})
     store: Store
 
-    @RelationId((product: Product) => product.store)
+    @Column({type: 'uuid', nullable: false, name: 'store_id', onUpdate: 'CASCADE'})
     storeId: string
 
 }
