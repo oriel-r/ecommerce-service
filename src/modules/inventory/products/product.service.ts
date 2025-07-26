@@ -29,7 +29,7 @@ export class ProductService {
 
     async create(store: Store, data: CreateProductDto) {
 
-        const { name } = data;
+        const { name, ...otherData } = data;
 
         const existName = await this.productRepository.findOneByName(store.id, name);;
 
@@ -39,6 +39,7 @@ export class ProductService {
         } 
 
         const newProduct = await this.productRepository.create({
+            ...otherData,
             name,
             store
         });

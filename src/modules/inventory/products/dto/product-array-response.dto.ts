@@ -10,20 +10,24 @@ export class ProductArrayResponseDto {
     stock: number;
     images: string[];
     sku: string;
-    createdAt: Date
+    novelty: boolean;
+    createdAt: Date;
+    detail: string;
     offer: {
-        porcentage: number | null
+        percentage: number | null
     }
 
-    constructor({name, id, detail, createdAt, variants}: Product) {
+    constructor({name, id, longDescription, description, createdAt, variants, isFeatured}: Product) {
         this.id = id,
         this.name = name,
-        this.description = detail
+        this.description = description
+        this.detail = longDescription
+        this.novelty = isFeatured
         this.sku = variants[0].sku
         this.price = variants[0].price
         this.stock = variants[0].stock
         this.images = variants[0].images
         this.createdAt = createdAt
-        this.offer = {porcentage: variants[0].discount}
+        this.offer = {percentage: variants[0].discount}
     }
 }
