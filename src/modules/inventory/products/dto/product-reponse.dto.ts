@@ -5,12 +5,14 @@ import { Product } from "../entities/product.entity";
 export class ProductReponseDto  {
     id: string;
     name: string;
+    detail: string;
     variants: Partial<ProductVariant>[];
     categoryAssignments: string[];
 
-    constructor({id, name, variants, categoryAssignments}: Product) {
+    constructor({id, name, variants, categoryAssignments, detail}: Product) {
         this.id = id,
         this.name = name,
+        this.detail = detail
         this.variants = variants.map(
             (variant) => {
              return {
@@ -18,7 +20,10 @@ export class ProductReponseDto  {
             optionName: variant.optionName,
             optionValue: variant.optionValue,
             price: variant.price,
-            images: variant.images
+            images: variant.images,
+            weight: variant.weight,
+            discount: variant.discount,
+            isDefault: variant.isDefault
         }}),
         this.categoryAssignments = categoryAssignments.map(
             (productCategory) => productCategory.category.name

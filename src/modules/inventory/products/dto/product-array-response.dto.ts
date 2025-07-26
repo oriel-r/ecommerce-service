@@ -5,17 +5,25 @@ import { Product } from "../entities/product.entity";
 export class ProductArrayResponseDto {
     id: string;
     name: string;
-    variants: Partial<ProductVariant>;
+    description: string;
+    price: number;
+    stock: number;
+    images: string[];
+    sku: string;
+    createdAt: Date
+    offer: {
+        porcentage: number | null
+    }
 
-    constructor(data: Product) {
-        this.id = data.id,
-        this.name = data.name,
-        this.variants = {
-            id: data.variants[0].id,
-            optionName: data.variants[0].optionName,
-            optionValue: data.variants[0].optionValue,
-            price: data.variants[0].price,
-            images: data.variants[0].images
-        }
+    constructor({name, id, detail, createdAt, variants}: Product) {
+        this.id = id,
+        this.name = name,
+        this.description = detail
+        this.sku = variants[0].sku
+        this.price = variants[0].price
+        this.stock = variants[0].stock
+        this.images = variants[0].images
+        this.createdAt = createdAt
+        this.offer = {porcentage: variants[0].discount}
     }
 }
