@@ -53,7 +53,7 @@ export class ProductService {
     }
 
     async get(storeId: string) {
-        const products = await this.productRepository.find(storeId)
+        const products = await this.productRepository.findByStore(storeId)
         return products
     }
 

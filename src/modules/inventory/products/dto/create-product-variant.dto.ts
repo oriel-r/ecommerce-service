@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger"
-import { IsDecimal, IsInt, IsNotEmpty, IsNumber, IsOptional, IsString, Min } from "class-validator"
+import { IsBoolean, IsDecimal, IsInt, IsNotEmpty, IsNumber, IsOptional, IsString, Max, Min } from "class-validator"
 
 export class CreateProductVariantDto {
 
@@ -50,6 +50,21 @@ export class CreateProductVariantDto {
     @IsNotEmpty()
     @IsNumber()
     @IsOptional()
-    weigth?: number
+    weight?: number
+
+    @ApiProperty({
+        description: 'if this is in true this are returend by default'
+    })
+    @IsBoolean()
+    @IsOptional()
+    isDefault?: boolean
+
+    @ApiProperty({
+        description: 'percent of discount'
+    })
+    @IsInt()
+    @Max(100)
+    @IsOptional()
+    discount?: number
 
 }
