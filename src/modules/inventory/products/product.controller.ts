@@ -42,9 +42,11 @@ export class ProductController {
     status: HttpStatus.OK, type: createPaginatedResponseDto(Product)
   })
   @Get()
-  async get(@Param('sotreId') store: string) {
+  async get(@Param('storeId') store: string) {
     const products = await this.productService.get(store)
-    return products.map(product => new ProductArrayResponseDto(product))
+    const productsToSend = products.map(product => new ProductArrayResponseDto(product))
+    console.log(productsToSend)
+    return productsToSend
   }
 
   @ApiOperation({

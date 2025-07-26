@@ -17,7 +17,7 @@ export class ProductVariant extends BaseEntity {
     @Column({type: 'decimal', precision: 11, scale: 2})
     price: number
 
-    @Column({type: 'integer', nullable: true})
+    @Column({type: 'integer', nullable: true, default: 999})
     stock: number
     
     @Column({type: 'varchar', nullable: true, unique: true})
