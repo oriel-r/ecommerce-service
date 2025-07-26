@@ -9,10 +9,10 @@ export class ProductReponseDto  {
     variants: Partial<ProductVariant>[];
     categoryAssignments: string[];
 
-    constructor({id, name, variants, categoryAssignments, detail}: Product) {
+    constructor({id, name, variants, categoryAssignments, longDescription}: Product) {
         this.id = id,
         this.name = name,
-        this.detail = detail
+        this.detail = longDescription
         this.variants = variants.map(
             (variant) => {
              return {

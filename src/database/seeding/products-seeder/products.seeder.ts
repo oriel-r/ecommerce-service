@@ -39,12 +39,15 @@ export class ProductsSeeder {
     }
 
     private async createProduct(data: ProductMock, store: Store ) {
-        const {name, categories, variants} = data
+        const { variants, name, categories, ...others } = data
 
         const categoriesToAssign = await Promise.all(
             categories.map(name => this.categoryService.getByName(store.id, name))
         )
-        const product = await this.productService.create(store, {name})
+        const product = await this.productService.create(store, {
+            ...others,
+            name
+        })
         const categoriesIds = categoriesToAssign.map(category => category.id)
 
         const variantPromises = variants.map(
