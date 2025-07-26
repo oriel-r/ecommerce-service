@@ -1,6 +1,8 @@
+import { DeepPartial } from "typeorm";
 import { ProductCategory } from "../entities/product-category.entity";
 import { ProductVariant } from "../entities/product-variant.entity";
 import { Product } from "../entities/product.entity";
+import { Category } from "../../categories/entities/category.entity";
 
 export class ProductArrayResponseDto {
     id: string;
@@ -16,8 +18,9 @@ export class ProductArrayResponseDto {
     offer: {
         percentage: number | null
     }
+    categoryId: string[] | Partial<ProductCategory>[]
 
-    constructor({name, id, longDescription, description, createdAt, variants, isFeatured}: Product) {
+    constructor({name , id , longDescription, description, createdAt, variants, isFeatured, categoryAssignments}: Product) {
         this.id = id,
         this.name = name,
         this.description = description
@@ -29,5 +32,6 @@ export class ProductArrayResponseDto {
         this.images = variants[0].images
         this.createdAt = createdAt
         this.offer = {percentage: variants[0].discount}
+        this.categoryId = categoryAssignments
     }
 }

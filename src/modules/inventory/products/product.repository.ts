@@ -14,6 +14,55 @@ export class ProductRepository {
         return newproduct
     }
 
+    async findByStore(storeId: string) {
+    const qb = this.productRepository.createQueryBuilder('product');
+
+    qb.where('product.storeId = :storeId', { storeId })
+      .andWhere('product.isActive = :isActive', { isActive: true })
+
+      .leftJoinAndSelect(
+          'product.variants', 
+          'variant', 
+          'variant.isDefault = :isDefault', 
+          { isDefault: true }
+      )
+
+      .leftJoinAndSelect('product.categoryAssignments', 'categoryAssignment')
+      .leftJoinAndSelect('categoryAssignment.category', 'category')
+      
+      .select([
+          'product.id',
+          'product.name',
+          'product.description',
+          'product.isFeatured',
+          'variant',
+          'categoryAssignment.productId',
+          'categoryAssignment.categoryId',
+          'category.id',
+          'category.name'
+      ])
+
+      .orderBy('product.createdAt', 'DESC');
+
+    const products = await qb.getMany();
+
+      console.log(products)
+
+    return products.map(product => {
+        const categoryNames = (product.categoryAssignments || []).map(
+            assignment => assignment.category?.name
+        ).filter(Boolean);
+        
+        const { categoryAssignments, ...restOfProduct } = product;
+
+        return {
+            ...restOfProduct,
+            categoryAssigments: categoryNames,
+        };
+    });
+}
+
+
     async find(storeId: string) {
         const qb = this.productRepository.createQueryBuilder()
 
