@@ -15,7 +15,9 @@ import { Store } from './modules/_platform/stores/entities/store.entity';
 import { StoreResolverMiddleware } from './common/middlewares/store/store-resolver.middleware';
 import { dbConfig } from './database/data-source';
 import { RolesService } from './modules/auth/roles/roles.service';
+import { SeedersModule } from './database/seeding/seeders.module'; 
 
+ 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Store]), 
@@ -52,7 +54,8 @@ import { RolesService } from './modules/auth/roles/roles.service';
     SupportModule, 
     AuthModule, 
     InventoryModule, 
-    SalesModule],
+    SalesModule, SeedersModule
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
@@ -61,7 +64,7 @@ export class AppModule implements NestModule, OnApplicationBootstrap  {
   
   configure(consumer: MiddlewareConsumer) {
     consumer
-    .apply(StoreResolverMiddleware ,RequestLoggerMiddleware)
+    .apply( /* StoreResolverMiddleware ,*/ RequestLoggerMiddleware)
     .exclude(
     '/favicon.ico',
     '/auth/platform/register')
