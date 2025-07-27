@@ -9,7 +9,7 @@ export class StoreByIdPipe implements PipeTransform {
   )  {}
   
   async transform(value: string) {
-    return await this.storeService.findOne(value)
+    return await this.storeService.findOneById(value)
   }
 
 }
