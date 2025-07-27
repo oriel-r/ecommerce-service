@@ -1,9 +1,10 @@
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { InjectDataSource, InjectRepository } from "@nestjs/typeorm";
+import { DataSource, EntityManager, Repository, UpdateResult } from "typeorm";
 import { ProductVariant } from "./entities/product-variant.entity";
 
 export class ProductVariantRepository {
     constructor(
+        @InjectDataSource() private readonly dataSource: DataSource,
         @InjectRepository(ProductVariant) private readonly productVariantRepository: Repository<ProductVariant>
     ) {}
 
@@ -19,16 +20,63 @@ export class ProductVariantRepository {
         return productVariants
     }
 
-    async findById(storeId: string, id: string) {
+    async exist(storeId: string, productId: string, variantId: string) {
+        const count = await this.productVariantRepository.count({
+            where: {
+                id: variantId,
+                product: {
+                    id: productId,
+                    storeId: storeId
+                }
+            }
+        
+        })
+
+        return count > 0
+    }
+
+    async findById(product: string, id: string) {
         const productVariant = await this.productVariantRepository.findOne({
-            where: {id},
+            where: {
+                id,
+                product: {id: product}
+            }
         })
         return productVariant
     }
 
-    async update(storeId: string, id: string, data: Partial<ProductVariant>) {
+    async update( id: string, data ) {
         return await this.productVariantRepository.update(id, data)
-    
+    }
+
+    async setDefaultVariantInTransaction(
+    productId: string,
+    variantId: string,
+    updateDto,
+  ): Promise<UpdateResult> {
+    return this.dataSource.transaction(async (manager) => {
+      await this.unsetCurrentDefault(productId, manager);
+      
+      const updateResult = await this.getRepository(manager).update(
+        { id: variantId, product: { id: productId } },
+        updateDto,
+      );
+
+      return updateResult
+    });
+  }
+
+
+    async unsetCurrentDefault(productId: string, manager?: EntityManager) {
+        return await this.getRepository(manager).update(
+            {
+                product: {id: productId},
+                isDefault: true
+            }, 
+            {
+                isDefault: false
+            }
+        )
     }
 
     async save(data: ProductVariant) {
@@ -39,7 +87,13 @@ export class ProductVariantRepository {
         return await this.productVariantRepository.softDelete(id)
     }
 
-    async delete (storeId: string, id: string) {
+    async delete (id: string) {
         return await this.productVariantRepository.delete(id)
+    }
+
+    private getRepository(manager?: EntityManager) {
+        return manager
+        ? manager.getRepository(ProductVariant)
+        : this.productVariantRepository
     }
 }
