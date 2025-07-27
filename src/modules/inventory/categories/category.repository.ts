@@ -14,13 +14,16 @@ export class CategoryRepository {
         return newCategory
     }
 
-    async findByStore(storeId: string) {
-        const categories = await this.categoryRepository.find({
-            where: {
-                store: {id: storeId}
-            },
-        })
-        return categories
+    async findCategoryTreeByStore(storeId: string): Promise<Category[]> {
+        const qb = this.categoryRepository.createQueryBuilder('category');
+
+        qb.where('category.store = :storeId', { storeId })
+        .andWhere('category.parentId IS NULL')
+        .leftJoinAndSelect('category.children', 'child')
+        .orderBy('category.name', 'ASC')
+        .addOrderBy('child.name', 'ASC');
+
+        return qb.getMany();
     }
 
     async findById(storeId: string, id: string) {

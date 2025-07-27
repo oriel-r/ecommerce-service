@@ -8,6 +8,7 @@ import { Category } from './entities/category.entity';
 import { StoreByIdPipe } from '../../_platform/stores/pipes/store-by-id/store-by-id.pipe';
 import { Store } from 'src/modules/_platform/stores/entities/store.entity';
 import { createPaginatedResponseDto } from 'src/common/dtos/api-response-paginated.dto';
+import { CategoryTreeResponseDto } from './dto/category-array-responde.dto';
 
 @Controller('stores/:storeId/categories')
 export class CategoriesController {
@@ -39,7 +40,8 @@ export class CategoriesController {
   async get(
     @Param('storeId') storeId: string
   ) {
-    return await this.categoryService.get(storeId)
+    const categoriesRawTree = await this.categoryService.get(storeId)
+    return categoriesRawTree.map(parent => new CategoryTreeResponseDto(parent))
   }
 
   @ApiOperation({

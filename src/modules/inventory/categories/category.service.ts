@@ -60,7 +60,7 @@ export class CategoryService {
     }
 
     async get(storeId: string) {
-        const categories = await this.categoryRepository.findByStore(storeId)
+        const categories = await this.categoryRepository.findCategoryTreeByStore(storeId)
         return categories
     }
 
