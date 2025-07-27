@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, OnApplicationBootstrap } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PlatformModule } from './modules/_platform/_platform.module';
@@ -14,8 +14,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { Store } from './modules/_platform/stores/entities/store.entity';
 import { StoreResolverMiddleware } from './common/middlewares/store/store-resolver.middleware';
 import { dbConfig } from './database/data-source';
+import { RolesService } from './modules/auth/roles/roles.service';
 import { SeedersModule } from './database/seeding/seeders.module'; 
-
 
  
 @Module({
@@ -59,7 +59,9 @@ import { SeedersModule } from './database/seeding/seeders.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule implements NestModule {
+export class AppModule implements NestModule, OnApplicationBootstrap  {
+  constructor(private readonly rolesService: RolesService) {} 
+  
   configure(consumer: MiddlewareConsumer) {
     consumer
     .apply( /* StoreResolverMiddleware ,*/ RequestLoggerMiddleware)
@@ -67,5 +69,8 @@ export class AppModule implements NestModule {
     '/favicon.ico',
     '/auth/platform/register')
     .forRoutes('*')
+  }
+  async onApplicationBootstrap() {
+    await this.rolesService.createRoleIfNotExists('customer');
   }
 }

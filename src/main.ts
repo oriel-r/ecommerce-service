@@ -1,16 +1,18 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { PerformanceLoggerInterceptor } from './common/interceptors/performance/performance.interceptor';
 import { ResponseInterceptor } from './common/interceptors/response/response.interceptor';
 import { SwaggerModule } from '@nestjs/swagger';
 import swaggerConfig from './config/api-docs';
+import { ClassSerializerInterceptor } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.useGlobalInterceptors(
     new PerformanceLoggerInterceptor(),
-    new ResponseInterceptor()
+    new ResponseInterceptor(),
+    new ClassSerializerInterceptor(app.get(Reflector)),
   )
 
   if(process.env.ENVIRONMENT !== 'PRODUCTION') {

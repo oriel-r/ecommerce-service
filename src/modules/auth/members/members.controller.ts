@@ -2,14 +2,18 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { MembersService } from './members.service';
 import { CreateMemberDto } from './dto/create-member.dto';
 import { UpdateMemberDto } from './dto/update-member.dto';
+import { CurrentStoreId } from 'src/common/decorators/store/current-store-id.decorator';
 
 @Controller('members')
 export class MembersController {
   constructor(private readonly membersService: MembersService) {}
 
   @Post()
-  create(@Body() createMemberDto: CreateMemberDto) {
-    return this.membersService.create(createMemberDto);
+  async createMember(
+    @Body() createMemberDto: CreateMemberDto,
+    @CurrentStoreId() storeId: string,
+  ) {
+    return await this.membersService.createMember(createMemberDto, storeId);
   }
 
   @Get()
