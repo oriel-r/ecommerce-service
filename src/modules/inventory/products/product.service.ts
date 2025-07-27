@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, Injectable, InternalServerErrorException, Logger, NotFoundException, UnprocessableEntityException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, InternalServerErrorException, Logger, NotFoundException, UnauthorizedException, UnprocessableEntityException } from '@nestjs/common';
 import { hasSameValues } from 'src/common/utils/has-same-values.util';
 import { NothingToUpdateException } from 'src/common/exeptions/nothing-to-update.exception';
 import { ProductRepository } from './product.repository';
@@ -8,12 +8,13 @@ import { ProductVariantRepository } from './product-variant.repository';
 import { ProductCategoryRepository } from './product-category,repository';
 import { CategoryService } from '../categories/category.service';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { DataSource, DeepPartial } from 'typeorm';
+import { DataSource, DeepPartial, UpdateResult } from 'typeorm';
 import { AssignProductCategoryDto } from './dto/assign-product-category.dto';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { ProductCategory } from './entities/product-category.entity';
 import { Store } from 'src/modules/_platform/stores/entities/store.entity';
 import { CreateProductVariantDto } from './dto/create-product-variant.dto';
+import { UpdateProductVariantDto } from './dto/update-variant.dto';
 
 @Injectable()
 export class ProductService {
@@ -106,7 +107,11 @@ export class ProductService {
         const deletResult = await this.productRepository.delete(store, id)
         return deletResult
     }
-    
+
+    //                                                  //
+    // ------------------- CATEGORIES ----------------- //
+    //                                                  // 
+
     async assignCategoryToProduct({categoriesIds}: AssignProductCategoryDto , productId: string, storeId: string) {
         
         const [productExists, categoriesExist] = await Promise.all([
@@ -195,10 +200,18 @@ export class ProductService {
         return results
     }
 
+    //                                                  //
+    // ------------------- VARIANTS ------------------- //
+    //                                                  //
+
     async createProductVariant(storeId: string, productId: string, data: CreateProductVariantDto) {
         const product = await this.productRepository.findById(storeId, productId)
 
         if(!product) throw new UnprocessableEntityException(`El producto con el ID ${productId} no existe`)
+
+        if(data.isDefault) {
+            await this.productVariantRepository.unsetCurrentDefault(productId)
+        }
 
         const newProductVariant = await this.productVariantRepository.create(
             {
@@ -211,17 +224,39 @@ export class ProductService {
         return await this.productRepository.findById(storeId, productId)
     }
 
-    async deleteProductVariant () {
-        return
+    async deleteProductVariant ( sotreId: string, productId: string, variantId: string) {
+        const exist = this.productVariantRepository.exist(sotreId, productId, variantId)
+
+        if(!exist) throw new NotFoundException('No se encontro la variante')
+
+        return await this.productVariantRepository.delete(variantId)
     }
 
-    async updateProductVariant () {
-        return
+    async updateProductVariant (storeId: string, productId: string, variantId: string, data: UpdateProductVariantDto) {
+        const exist = await this.productVariantRepository.exist(storeId, productId, variantId)
+        
+        if(!exist) throw new NotFoundException('No se encontro la variante')
+
+        let result: UpdateResult | null = null 
+
+        if(data.isDefault) {
+            result = await this.productVariantRepository.setDefaultVariantInTransaction(productId, variantId, data)
+        } else {
+            result = await this.productVariantRepository.update(variantId, data)
+        }
+
+        if(!result || !result.affected) throw new InternalServerErrorException('Hubo un error al actualizar la variante')
+
+        return await this.productRepository.findById(storeId, productId)
     }
 
     async getProductVariantsByProductId () {
         return
     }
+
+    //                                                  //
+    // ---------------------- AUX --------------------- //
+    //                                                  //
 
     private async getProductOrFail(storeid: string, productId: string) {
         const product = await this.productRepository.findByIdOrFail(storeid, productId)

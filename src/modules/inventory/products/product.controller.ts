@@ -168,7 +168,7 @@ export class ProductController {
     @Param('id') variantId: string,
     @Body() data: CreateProductVariantDto
   ) {
-    return
+    return await this.productService.updateProductVariant(storeId, productId, variantId, data)
   }
 
   @ApiOperation({})
@@ -180,7 +180,7 @@ export class ProductController {
     @Param('id') vairnatId: string,
     @Body() data: CreateProductVariantDto
   ) {
-    return
+    return await this.productService.deleteProductVariant(storeId, productId, vairnatId)
   }
 
 
