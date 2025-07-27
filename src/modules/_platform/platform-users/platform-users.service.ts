@@ -9,6 +9,8 @@ import { PlatformUser } from './entities/platform-user.entity';
 import { EntityManager, Repository } from 'typeorm';
 import { hash, compare } from 'bcrypt';
 import { Store } from '../stores/entities/store.entity';
+import { plainToInstance } from 'class-transformer';
+import { PlatformUserResponseDto } from './dto/platform-user-response.dto';
 import { CreatePlatformUserDto } from './dto/create-platform-user.dto';
 
 @Injectable()
@@ -19,23 +21,25 @@ export class PlatformUsersService {
   ) {}
 
   async create(
-  dto: CreatePlatformUserDto,
-  manager?: EntityManager,
-): Promise<PlatformUser> {
-  const repo = manager ? manager.getRepository(PlatformUser) : this.platformUserRepo;
+    dto: CreatePlatformUserDto,
+    manager?: EntityManager,
+  ): Promise<PlatformUser> {
+    const repo = manager
+      ? manager.getRepository(PlatformUser)
+      : this.platformUserRepo;
 
-  const findOwner = await repo.findOne({ where: { email: dto.email } });
-  if (findOwner) throw new ConflictException('Email existente');
+    const findOwner = await repo.findOne({ where: { email: dto.email } });
+    if (findOwner) throw new ConflictException('Email existente');
 
-  const hashedPassword = await hash(dto.password, 10);
+    const hashedPassword = await hash(dto.password, 10);
 
-  const newOwner = repo.create({
-    ...dto,
-    password: hashedPassword,
-  });
+    const newOwner = repo.create({
+      ...dto,
+      password: hashedPassword,
+    });
 
-  return await repo.save(newOwner);
-}
+    return await repo.save(newOwner);
+  }
 
   async findByEmailWithStore(email: string, store: Store) {
     const existing = await this.platformUserRepo.findOne({
@@ -65,8 +69,12 @@ export class PlatformUsersService {
     return await compare(plainPassword, hashedPassword);
   }
 
-  findAll() {
-    return `This action returns all platformUsers`;
+  async findAllPlatformUsers() {
+    const owners = await this.platformUserRepo.find();
+
+    return plainToInstance(PlatformUserResponseDto, owners, {
+      excludeExtraneousValues: true,
+    });
   }
 
   findOne(id: number) {

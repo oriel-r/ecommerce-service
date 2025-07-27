@@ -2,7 +2,6 @@ import { Injectable, UnauthorizedException, BadRequestException, ConflictExcepti
 import { JwtService } from '@nestjs/jwt';
 import { PlatformUsersService } from '../_platform/platform-users/platform-users.service';
 import { CreatePlatformUserWithStoreDto } from '../_platform/platform-users/dto/create-platform-user-with-store.dto';
-import { SignInPlatformUserDto } from './members/dto/signIn-platform.dto';
 import { Store } from '../_platform/stores/entities/store.entity';
 import { StoresService } from '../_platform/stores/stores.service';
 import { DataSource } from 'typeorm';
@@ -10,6 +9,7 @@ import { PlatformUser } from '../_platform/platform-users/entities/platform-user
 import { plainToInstance } from 'class-transformer';
 import { PlatformUserResponseDto } from '../_platform/platform-users/dto/platform-user-response.dto';
 import { StoreResponseDto } from '../_platform/stores/dto/store-response.dto';
+import { SignInPlatformUserDto } from './dto/signIn-platform-user.dto';
 
 @Injectable()
 export class AuthService {

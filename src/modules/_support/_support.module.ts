@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { GeographyModule } from './geography/geography.module';
 
 @Module({
-  imports: [GeographyModule]
+  imports: [GeographyModule],
+  exports: [GeographyModule],
 })
 export class SupportModule {}

@@ -1,9 +1,9 @@
 import { Body, Controller, Post } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { CreatePlatformUserWithStoreDto } from "../_platform/platform-users/dto/create-platform-user-with-store.dto";
-import { SignInPlatformUserDto } from "./members/dto/signIn-platform.dto";
 import { CurrentStore } from "src/common/decorators/store/store.decorator";
 import { Store } from "../_platform/stores/entities/store.entity";
+import { SignInPlatformUserDto } from "./dto/signIn-platform-user.dto";
 
 @Controller('auth')
 export class AuthController {
