@@ -1,4 +1,6 @@
 import {
+  forwardRef,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -17,6 +19,7 @@ export class StoresService {
     private readonly storeRepo: Repository<Store>,
     @InjectRepository(PlatformUser)
     private readonly platformUserRepo: Repository<PlatformUser>,
+    @Inject(forwardRef(() => MembersService))
     private readonly memberService: MembersService,
   ) {}
 

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Role } from './entities/role.entity';
@@ -10,6 +10,7 @@ export class RolesService {
   constructor(
     @InjectRepository(Role)
     private readonly roleRepo: Repository<Role>,
+    @Inject(forwardRef(() => StoresService))
     private readonly storeService: StoresService,
   ) {}
 

@@ -1,4 +1,16 @@
-import { IsString, IsEmail, IsNotEmpty, IsBoolean, Matches } from 'class-validator';
+import {
+  IsString,
+  IsEmail,
+  IsNotEmpty,
+  IsBoolean,
+  IsUUID,
+  MinLength,
+  Matches,
+  IsArray,
+  ValidateNested,
+} from 'class-validator';
+import { Type } from 'class-transformer';
+import { CreateAddressDto } from 'src/modules/_support/geography/address/dto/create-address.dto';
 
 export class CreateMemberDto {
   @IsString()
@@ -6,14 +18,13 @@ export class CreateMemberDto {
   fullName: string;
 
   @IsEmail()
-  @IsNotEmpty()
   email: string;
 
   @IsString()
-  @IsNotEmpty()
-  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/, {
+  @MinLength(8)
+  @Matches(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).+$/, {
     message:
-      'La contraseña debe tener al menos 8 caracteres, incluyendo una letra mayúscula, una minúscula, un número y un carácter especial',
+      'La contraseña debe tener al menos una mayúscula, una minúscula y un número',
   })
   password: string;
 
@@ -25,8 +36,19 @@ export class CreateMemberDto {
   @IsNotEmpty()
   dni: string;
 
-  @IsBoolean()
+  @IsString()
   @IsNotEmpty()
-  isActive: boolean;
+  cuit: string;
+
+  @IsString()
+  @IsNotEmpty()
+  taxCondition: string;
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CreateAddressDto)
+  addresses: CreateAddressDto[];
 }
+
+
 

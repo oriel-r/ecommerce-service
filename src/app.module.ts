@@ -15,9 +15,6 @@ import { Store } from './modules/_platform/stores/entities/store.entity';
 import { StoreResolverMiddleware } from './common/middlewares/store/store-resolver.middleware';
 import { dbConfig } from './database/data-source';
 import { RolesService } from './modules/auth/roles/roles.service';
-import { RolesModule } from './modules/auth/roles/roles.module';
-import { MembersModule } from './modules/auth/members/members.module';
-import { StoresModule } from './modules/_platform/stores/stores.module';
 
 @Module({
   imports: [
@@ -55,10 +52,9 @@ import { StoresModule } from './modules/_platform/stores/stores.module';
     SupportModule, 
     AuthModule, 
     InventoryModule, 
-    SalesModule,
-    RolesModule],
+    SalesModule],
   controllers: [AppController],
-  providers: [AppService, RolesService],
+  providers: [AppService],
 })
 export class AppModule implements NestModule, OnApplicationBootstrap  {
   constructor(private readonly rolesService: RolesService) {} 

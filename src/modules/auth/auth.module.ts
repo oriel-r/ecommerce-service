@@ -4,18 +4,11 @@ import { MembersModule } from './members/members.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { PlatformModule } from '../_platform/_platform.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { Member } from './members/entities/member.entity';
-import { PlatformUser } from '../_platform/platform-users/entities/platform-user.entity';
-import { Store } from '../_platform/stores/entities/store.entity';
-import { Role } from './roles/entities/role.entity';
-import { StoresModule } from '../_platform/stores/stores.module';
 
 @Module({
-  imports: [ TypeOrmModule.forFeature([Member, PlatformUser, Store, Role])
-  ,RolesModule, MembersModule,  forwardRef(() => PlatformModule), StoresModule],
+  imports: [RolesModule, MembersModule, forwardRef(() => PlatformModule)],
   controllers: [AuthController],
   providers: [AuthService],
-  exports: [TypeOrmModule], 
+  exports: [RolesModule, MembersModule], 
 })
 export class AuthModule {}

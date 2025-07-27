@@ -6,8 +6,10 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
 import { Role } from '../../roles/entities/role.entity';
+import { Address } from 'src/modules/_support/geography/address/entities/address.entity';
 
 @Entity()
 export class Member {
@@ -32,8 +34,14 @@ export class Member {
   @Column()
   dni: string;
 
-  @Column()
+  @Column({ default: true })
   isActive: boolean;
+
+  @Column({ nullable: true })
+  cuit?: string;
+
+  @Column({ nullable: true })
+  taxCondition?: string;
 
   @CreateDateColumn()
   createdAt: Date;
@@ -44,4 +52,7 @@ export class Member {
   @ManyToOne(() => Role)
   @JoinColumn({ name: 'roleId' })
   role: Role;
+
+  @OneToMany(() => Address, (address) => address.member, { cascade: true })
+  addresses: Address[];
 }

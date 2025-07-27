@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateMemberDto } from './dto/create-member.dto';
 import { UpdateMemberDto } from './dto/update-member.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -13,7 +13,9 @@ export class MembersService {
   constructor(
     @InjectRepository(Member)
     private readonly memberRepo: Repository<Member>,
+    @Inject(forwardRef(() => StoresService))
     private readonly storeService: StoresService,
+    @Inject(forwardRef(() => RolesService))
     private readonly roleService: RolesService
   ) {}
 

@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { GeographyService } from './geography.service';
-import { GeographyController } from './geography.controller';
-
+import { CityModule } from './city/city.module';
+import { ProvinceModule } from './province/province.module';
+import { AddressModule } from './address/address.module';
 @Module({
-  controllers: [GeographyController],
-  providers: [GeographyService],
+  imports: [AddressModule, CityModule, ProvinceModule],
+  exports: [AddressModule, CityModule, ProvinceModule],
 })
 export class GeographyModule {}
