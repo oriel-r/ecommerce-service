@@ -16,7 +16,7 @@ export class ProductArrayResponseDto {
     offer: {
         percentage: number | null
     };
-    categories: string[];
+    categoryId: string | null;
 
     constructor(product: Product) {
         this.id = product.id;
@@ -31,8 +31,8 @@ export class ProductArrayResponseDto {
         this.stock = defaultVariant?.stock || 0;
         this.images = defaultVariant?.images || [];
         this.offer = { percentage: defaultVariant?.discount || null };
-        this.categories = (product.categoryAssignments || []).map(
-            assignment => assignment.category?.name
-        ).filter(Boolean);
+        const assignments = product.categoryAssignments || [];
+        const lastAssignment = assignments[assignments.length - 1];
+        this.categoryId = lastAssignment?.category?.name || null;
     }
 }
