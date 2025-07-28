@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { CityService } from './city.service';
 import { CreateCityDto } from './dto/create-city.dto';
 import { UpdateCityDto } from './dto/update-city.dto';
@@ -8,8 +8,8 @@ export class CityController {
   constructor(private readonly cityService: CityService) {}
 
   @Post()
-  create(@Body() createCityDto: CreateCityDto) {
-    return this.cityService.create(createCityDto);
+  findOrCreateCity(@Body() createCityDto: CreateCityDto) {
+    return this.cityService.findOrCreateCity(createCityDto);
   }
 
   @Get()
@@ -19,7 +19,7 @@ export class CityController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.cityService.findOne(+id);
+    return this.cityService.findOne(id);
   }
 
   @Patch(':id')

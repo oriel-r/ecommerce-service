@@ -1,4 +1,10 @@
-import { ConflictException, forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateMemberDto } from './dto/create-member.dto';
 import { UpdateMemberDto } from './dto/update-member.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -7,6 +13,7 @@ import { Repository } from 'typeorm';
 import { StoresService } from 'src/modules/_platform/stores/stores.service';
 import { RolesService } from '../roles/roles.service';
 import { hash } from 'bcrypt';
+import { AddressService } from 'src/modules/_support/geography/address/address.service';
 
 @Injectable()
 export class MembersService {
@@ -16,12 +23,15 @@ export class MembersService {
     @Inject(forwardRef(() => StoresService))
     private readonly storeService: StoresService,
     @Inject(forwardRef(() => RolesService))
-    private readonly roleService: RolesService
+    private readonly roleService: RolesService,
+    @Inject(forwardRef(() => AddressService))
+    private readonly addressService: AddressService,
   ) {}
 
   async createMember(createMemberDto: CreateMemberDto, storeId: string) {
     const store = await this.storeService.findOneById(storeId);
-    const { email, dni, phoneNumber, password } = createMemberDto;
+    const { email, dni, phoneNumber, password, addresses, ...memberData } =
+      createMemberDto;
 
     const existingEmail = await this.memberRepo.findOne({
       where: { email },
@@ -53,15 +63,29 @@ export class MembersService {
     const hashedPassword = await hash(password, 10);
 
     const newUser = this.memberRepo.create({
-      ...createMemberDto,
+      ...memberData,
+      phoneNumber,
+      dni,
+      email,
       password: hashedPassword,
       storeId: store.id,
-      role: role
+      role: role,
     });
 
     await this.memberRepo.save(newUser);
 
-    return newUser;
+    for (const addressDto of addresses) {
+      await this.addressService.createAddress({
+        ...addressDto,
+        memberId: newUser.id,
+      });
+    }
+
+    const userWithRelations = await this.memberRepo.findOne({
+      where: { id: newUser.id },
+      relations: ['role', 'addresses'],
+    });
+    return userWithRelations;
   }
 
   findAll() {
@@ -74,11 +98,17 @@ export class MembersService {
     });
 
     if (!member) {
-          throw new NotFoundException(
-            `No se encontró un miembro en la tienda con id ${storeId}`,
-          );
-        }
-        return member;
+      throw new NotFoundException(
+        `No se encontró un miembro en la tienda con id ${storeId}`,
+      );
+    }
+    return member;
+  }
+
+  async findOneById(id: string) {
+    const member = await this.memberRepo.findOne({ where: { id } });
+    if (!member) throw new NotFoundException('Ciudad no encontrada');
+    return member;
   }
 
   update(id: number, updateMemberDto: UpdateMemberDto) {

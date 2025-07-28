@@ -2,8 +2,6 @@ import {
   IsString,
   IsEmail,
   IsNotEmpty,
-  IsBoolean,
-  IsUUID,
   MinLength,
   Matches,
   IsArray,

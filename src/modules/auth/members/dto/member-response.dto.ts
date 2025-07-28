@@ -1,5 +1,6 @@
 import { Expose, Type } from 'class-transformer';
 import { Role } from '../../roles/entities/role.entity';
+import { Address } from 'src/modules/_support/geography/address/entities/address.entity';
 
 export class MemberResponseDto {
   @Expose()
@@ -29,4 +30,9 @@ export class MemberResponseDto {
   @Expose()
   @Type(() => Role)
   role: Role;
+
+  @Expose()
+  @Type(() => Address)   
+  addresses: Address[];
 }
+

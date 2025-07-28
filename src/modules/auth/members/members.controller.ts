@@ -2,7 +2,8 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { MembersService } from './members.service';
 import { CreateMemberDto } from './dto/create-member.dto';
 import { UpdateMemberDto } from './dto/update-member.dto';
-import { CurrentStoreId } from 'src/common/decorators/store/current-store-id.decorator';
+import { CurrentStore } from 'src/common/decorators/store/store.decorator';
+import { Store } from 'src/modules/_platform/stores/entities/store.entity';
 
 @Controller('members')
 export class MembersController {
@@ -11,9 +12,9 @@ export class MembersController {
   @Post()
   async createMember(
     @Body() createMemberDto: CreateMemberDto,
-    @CurrentStoreId() storeId: string,
+    @CurrentStore() store: Store,
   ) {
-    return await this.membersService.createMember(createMemberDto, storeId);
+    return await this.membersService.createMember(createMemberDto, store.id);
   }
 
   @Get()
