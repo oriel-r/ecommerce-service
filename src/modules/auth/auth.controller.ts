@@ -4,6 +4,7 @@ import { CreatePlatformUserWithStoreDto } from "../_platform/platform-users/dto/
 import { CurrentStore } from "src/common/decorators/store/store.decorator";
 import { Store } from "../_platform/stores/entities/store.entity";
 import { SignInPlatformUserDto } from "./dto/signIn-platform-user.dto";
+import { CreateMemberDto } from "./members/dto/create-member.dto";
 
 @Controller('auth')
 export class AuthController {
@@ -12,6 +13,14 @@ export class AuthController {
   @Post('platform/register')
   async registerPlatform(@Body() dto: CreatePlatformUserWithStoreDto) {
     return await this.authService.registerPlatformUser(dto);
+  }
+
+  @Post('member/register')
+  async registerMember(
+    @Body() creatememberDto: CreateMemberDto,
+    @CurrentStore() store: Store,
+  ) {
+    return await this.authService.registerMember(creatememberDto, store.id);
   }
 
   @Post('platform/login')

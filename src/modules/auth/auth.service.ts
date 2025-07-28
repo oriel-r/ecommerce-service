@@ -10,6 +10,9 @@ import { plainToInstance } from 'class-transformer';
 import { PlatformUserResponseDto } from '../_platform/platform-users/dto/platform-user-response.dto';
 import { StoreResponseDto } from '../_platform/stores/dto/store-response.dto';
 import { SignInPlatformUserDto } from './dto/signIn-platform-user.dto';
+import { CreateMemberDto } from './members/dto/create-member.dto';
+import { MembersService } from './members/members.service';
+import { MemberResponseDto } from './members/dto/member-response.dto';
 
 @Injectable()
 export class AuthService {
@@ -18,6 +21,7 @@ export class AuthService {
     private readonly storesService: StoresService,
     private readonly jwtService: JwtService,
     private readonly dataSource: DataSource, 
+    private readonly memberService: MembersService
   ) {}
 
   async registerPlatformUser(dto: CreatePlatformUserWithStoreDto) {
@@ -86,5 +90,10 @@ export class AuthService {
     const token = await this.jwtService.signAsync(payload);
 
     return { token };
+  }
+
+  async registerMember( createMemberDto: CreateMemberDto , storeId: string) {
+    const member = await this.memberService.createMember(createMemberDto, storeId);
+    return plainToInstance(MemberResponseDto, member, { excludeExtraneousValues: true })
   }
 }
