@@ -66,7 +66,8 @@ export class AppModule implements NestModule, OnApplicationBootstrap  {
     consumer
     .apply( StoreResolverMiddleware , RequestLoggerMiddleware)
     .exclude(
-    '/favicon.ico')
+    '/favicon.ico',
+    '/auth/platform/register')
     .forRoutes('*')
   }
   async onApplicationBootstrap() {
