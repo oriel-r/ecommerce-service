@@ -26,6 +26,9 @@ export class Member {
   @Column()
   email: string;
 
+  @Column({ type: 'date'})
+  birthDate: Date;
+
   @Exclude()
   @Column()
   password: string;

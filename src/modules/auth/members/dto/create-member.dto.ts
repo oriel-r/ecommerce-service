@@ -6,6 +6,7 @@ import {
   Matches,
   IsArray,
   ValidateNested,
+  IsDateString,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { CreateAddressDto } from 'src/modules/_support/geography/address/dto/create-address.dto';
@@ -25,6 +26,10 @@ export class CreateMemberDto {
       'La contraseña debe tener al menos una mayúscula, una minúscula y un número',
   })
   password: string;
+
+  @IsDateString()
+  @IsNotEmpty()
+  birthDate: string;
 
   @IsString()
   @IsNotEmpty()
