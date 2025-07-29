@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException, BadRequestException, ConflictException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, BadRequestException, ConflictException, Logger, InternalServerErrorException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PlatformUsersService } from '../_platform/platform-users/platform-users.service';
 import { CreatePlatformUserWithStoreDto } from '../_platform/platform-users/dto/create-platform-user-with-store.dto';
@@ -73,6 +73,13 @@ export class AuthService {
     };
     } catch (error) {
       await queryRunner.rollbackTransaction();
+
+    Logger.error('Error en registerPlatformUser', error?.stack || error?.message || error);
+
+    if (!(error instanceof ConflictException)) {
+      throw new InternalServerErrorException('Ocurrió un error inesperado al registrar el usuario');
+    }
+
       throw error;
     } finally {
       await queryRunner.release();
