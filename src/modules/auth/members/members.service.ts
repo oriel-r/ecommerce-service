@@ -14,6 +14,7 @@ import { StoresService } from 'src/modules/_platform/stores/stores.service';
 import { RolesService } from '../roles/roles.service';
 import { hash } from 'bcrypt';
 import { AddressService } from 'src/modules/_support/geography/address/address.service';
+import { Store } from 'src/modules/_platform/stores/entities/store.entity';
 
 @Injectable()
 export class MembersService {
@@ -107,7 +108,13 @@ export class MembersService {
 
   async findOneById(id: string) {
     const member = await this.memberRepo.findOne({ where: { id } });
-    if (!member) throw new NotFoundException('Ciudad no encontrada');
+    if (!member) throw new NotFoundException('Usuario no encontrado');
+    return member;
+  }
+
+  async findOneByEmail(email: string) {
+    const member = await this.memberRepo.findOne({ where: { email } });
+    if (!member) throw new NotFoundException('Email inexistente');
     return member;
   }
 
@@ -118,4 +125,17 @@ export class MembersService {
   remove(id: number) {
     return `This action removes a #${id} member`;
   }
+
+  async findMemberByEmailWithStore(email: string, store: Store) {
+      const existing = await this.memberRepo.findOne({
+        where: {
+          email,
+          storeId: store.id ,
+        },
+      });
+      if (!existing)
+        throw new NotFoundException('No se ha encontrado el email indicado');
+  
+      return existing;
+    }
 }
