@@ -21,13 +21,12 @@ export class AuthController {
     @Body() creatememberDto: CreateMemberDto,
     @CurrentStore() store: Store,
   ) {
-    console.log('Store recibido:', store); 
     return await this.authService.registerMember(creatememberDto, store?.id);
   }
 
   @Post('platform/login')
-  async loginPlatform(@CurrentStore() store: Store, @Body() dto: SignInPlatformUserDto) {
-    return await this.authService.loginPlatformUser(store, dto);
+  async loginPlatform(@Body() dto: SignInPlatformUserDto) {
+    return await this.authService.loginPlatformUser(dto);
   }
 
   @Post('member/login')

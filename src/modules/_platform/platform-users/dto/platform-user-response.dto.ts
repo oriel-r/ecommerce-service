@@ -1,4 +1,5 @@
-import { Expose } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
+import { StoreResponseDto } from '../../stores/dto/store-response.dto';
 
 export class PlatformUserResponseDto {
   @Expose()
@@ -15,5 +16,9 @@ export class PlatformUserResponseDto {
 
   @Expose()
   updatedAt: Date;
+
+  @Expose()
+  @Type(() => StoreResponseDto) 
+  stores: StoreResponseDto[];
 }
 

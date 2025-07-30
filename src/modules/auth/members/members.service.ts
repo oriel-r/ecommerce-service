@@ -109,7 +109,7 @@ export class MembersService {
   async findOneById(id: string) {
     const member = await this.memberRepo.findOne({ 
       where: { id } ,
-      relations: ['role', 'addresses', 'store'],
+      relations: ['role', 'addresses'],
     });
     if (!member) throw new NotFoundException('Usuario no encontrado');
     return member;
@@ -118,7 +118,7 @@ export class MembersService {
   async findOneByEmail(email: string) {
     const member = await this.memberRepo.findOne({ 
       where: { email } ,
-      relations: ['role', 'addresses', 'store'],
+      relations: ['role', 'addresses'],
     });
     if (!member) throw new NotFoundException('Email inexistente');
     return member;
