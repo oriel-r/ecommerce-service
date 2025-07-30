@@ -45,6 +45,16 @@ export class ProductVariantRepository {
         return productVariant
     }
 
+        async findByStoreId(storeId: string, id: string) {
+        const productVariant = await this.productVariantRepository.findOne({
+            where: {
+                id,
+                product: {storeId}
+            }
+        })
+        return productVariant
+    }
+
     async update( id: string, data ) {
         return await this.productVariantRepository.update(id, data)
     }
