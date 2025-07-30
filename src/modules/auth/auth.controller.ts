@@ -26,8 +26,8 @@ export class AuthController {
   }
 
   @Post('platform/login')
-  async loginPlatform(@CurrentStore() store: Store, @Body() dto: SignInPlatformUserDto) {
-    return await this.authService.loginPlatformUser(store, dto);
+  async loginPlatform(@Body() dto: SignInPlatformUserDto) {
+    return await this.authService.loginPlatformUser(dto);
   }
 
   @Post('member/login')

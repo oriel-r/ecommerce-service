@@ -104,11 +104,8 @@ export class AuthService {
     }
   }
 
-  async loginPlatformUser(store: Store, dto: SignInPlatformUserDto) {
-    const user = await this.platformUserService.findByEmailWithStore(
-      dto.email,
-      store,
-    );
+  async loginPlatformUser(dto: SignInPlatformUserDto) {
+    const user = await this.platformUserService.findByEmail(dto.email);
     if (!user) throw new UnauthorizedException('Credenciales incorrectas');
 
     const valid = await this.platformUserService.checkPassword(
@@ -120,7 +117,12 @@ export class AuthService {
     const payload = { sub: user.id, type: 'platform' };
     const token = await this.jwtService.signAsync(payload);
 
-    return { token };
+    return {
+      token,
+      user: plainToInstance(PlatformUserResponseDto, user, {
+        excludeExtraneousValues: true,
+      }),
+    };
   }
 
   async registerMember(createMemberDto: CreateMemberDto, storeId: string) {
@@ -168,7 +170,7 @@ export class AuthService {
       storeId: user.storeId,
     };
 
-    const token = this.jwtService.sign(payload);
+    const token = this.jwtService.signAsync(payload);
 
     return {
       accessToken: token,
