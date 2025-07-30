@@ -2,6 +2,7 @@ import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, Pri
 import { PlatformUser } from "../../platform-users/entities/platform-user.entity";
 import { Category } from "src/modules/inventory/categories/entities/category.entity";
 import { Product } from "src/modules/inventory/products/entities/product.entity";
+import { Cart } from "src/modules/sales/carts/entities/cart.entity";
 
 @Entity()
 export class Store {
@@ -32,4 +33,7 @@ export class Store {
 
     @OneToMany(() => Product, product => product.store, {nullable: true})
     products: Product[]
+
+    @OneToMany(() => Cart, cart => cart.store, {nullable: true})
+    carts: Cart[]
 }

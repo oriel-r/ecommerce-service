@@ -232,6 +232,11 @@ export class ProductService {
         return await this.productVariantRepository.delete(variantId)
     }
 
+    async getVariantByIdAndStoreId(storeId: string, productVariantId: string) {
+        const variant = await this.productVariantRepository.findByStoreId(storeId, productVariantId)
+        return variant
+    }
+
     async updateProductVariant (storeId: string, productId: string, variantId: string, data: UpdateProductVariantDto) {
         const exist = await this.productVariantRepository.exist(storeId, productId, variantId)
         
