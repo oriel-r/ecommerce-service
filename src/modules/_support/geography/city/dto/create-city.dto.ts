@@ -1,12 +1,12 @@
-import { IsString, IsNotEmpty, IsUUID } from 'class-validator';
+import { IsString, IsNotEmpty } from 'class-validator';
 
 export class CreateCityDto {
   @IsString()
   @IsNotEmpty()
   name: string;
 
-  @IsUUID()
+  @IsString()
   @IsNotEmpty()
-  provinceId: string;
+  province: string;
 }
 

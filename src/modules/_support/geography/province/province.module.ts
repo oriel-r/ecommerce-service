@@ -8,5 +8,6 @@ import { Province } from './entities/province.entity';
   imports: [TypeOrmModule.forFeature([Province])],
   controllers: [ProvinceController],
   providers: [ProvinceService],
+  exports: [ProvinceService], 
 })
 export class ProvinceModule {}

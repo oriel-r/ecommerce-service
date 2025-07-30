@@ -8,8 +8,8 @@ export class ProvinceController {
   constructor(private readonly provinceService: ProvinceService) {}
 
   @Post()
-  create(@Body() createProvinceDto: CreateProvinceDto) {
-    return this.provinceService.create(createProvinceDto);
+  findOrCreateProvince(@Body() createProvinceDto: CreateProvinceDto) {
+    return this.provinceService.findOrCreateProvince(createProvinceDto);
   }
 
   @Get()
@@ -19,7 +19,7 @@ export class ProvinceController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.provinceService.findOne(+id);
+    return this.provinceService.findOneById(id);
   }
 
   @Patch(':id')

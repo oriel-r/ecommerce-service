@@ -10,14 +10,6 @@ import { PlatformUser } from './entities/platform-user.entity';
 export class PlatformUsersController {
   constructor(private readonly platformUsersService: PlatformUsersService) {}
 
-  @Post()
-  @ApiOperation({ summary: 'Crear un dueño de tienda' })
-  @ApiResponse({ status: 201, description: 'Dueño creado exitosamente', type: PlatformUser })
-  @ApiResponse({ status: 404, description: 'No se encontro el email indicado' })
-  async create(@Body() dto: CreatePlatformUserWithStoreDto) {
-    return await this.platformUsersService.create(dto);
-  }
-
   @Get()
   findAllPlatformUsers() {
     return this.platformUsersService.findAllPlatformUsers();

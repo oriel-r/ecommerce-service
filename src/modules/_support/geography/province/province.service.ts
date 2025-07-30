@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateProvinceDto } from './dto/create-province.dto';
 import { UpdateProvinceDto } from './dto/update-province.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -12,17 +12,32 @@ export class ProvinceService {
     private readonly provinceRepo: Repository<Province>,
   ) {}
 
-  async create(dto: CreateProvinceDto) {
-    const province = this.provinceRepo.create(dto);
-    return this.provinceRepo.save(province);
+  async findOrCreateProvince(
+    createProvince: CreateProvinceDto,
+  ): Promise<Province> {
+    const { name } = createProvince;
+    let province = await this.provinceRepo.findOne({ where: { name } });
+    if (!province) {
+      province = this.provinceRepo.create({ name });
+      await this.provinceRepo.save(province);
+    }
+    return province;
   }
 
   async findAll() {
     return this.provinceRepo.find({ relations: ['cities'] });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} province`;
+  async findOneById(id: string) {
+    const province = await this.provinceRepo.findOne({ where: { id } });
+    if (!province) throw new NotFoundException('Provincia no encontrada');
+    return province;
+  }
+
+  async findOneByName(name: string) {
+    const province = await this.provinceRepo.findOne({ where: { name } });
+    if (!province) throw new NotFoundException('Provincia no encontrada');
+    return province;
   }
 
   update(id: number, updateProvinceDto: UpdateProvinceDto) {

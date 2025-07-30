@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { Role } from '../../roles/entities/role.entity';
 import { Address } from 'src/modules/_support/geography/address/entities/address.entity';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export class Member {
@@ -25,6 +26,10 @@ export class Member {
   @Column()
   email: string;
 
+  @Column({ type: 'date'})
+  birthDate: Date;
+
+  @Exclude()
   @Column()
   password: string;
 
