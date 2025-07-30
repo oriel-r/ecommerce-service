@@ -135,17 +135,11 @@ export class AuthService {
       type: 'customer',
       storeId: storeId,
     });
-    const response = plainToInstance(
-      MemberResponseDto,
-      {
-        ...member,
-        storeId,
-      },
-      { excludeExtraneousValues: true },
+    const response = plainToInstance(MemberResponseDto, member, { excludeExtraneousValues: true },
     );
 
     return {
-      accessToken: token,
+      token,
       member: response,
     };
   }
@@ -170,10 +164,10 @@ export class AuthService {
       storeId: user.storeId,
     };
 
-    const token = this.jwtService.signAsync(payload);
+    const token = this.jwtService.sign(payload);
 
     return {
-      accessToken: token,
+      token,
       member: plainToInstance(MemberResponseDto, user, {
         excludeExtraneousValues: true,
       }),

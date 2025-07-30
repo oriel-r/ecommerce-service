@@ -21,7 +21,6 @@ export class AuthController {
     @Body() creatememberDto: CreateMemberDto,
     @CurrentStore() store: Store,
   ) {
-    console.log('Store recibido:', store); 
     return await this.authService.registerMember(creatememberDto, store?.id);
   }
 
