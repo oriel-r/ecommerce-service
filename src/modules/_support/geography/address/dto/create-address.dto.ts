@@ -17,8 +17,16 @@ export class CreateAddressDto {
   @IsNotEmpty()
   country: string;
 
+  @IsString()
+  @IsNotEmpty()
+  city: string;
+
+  @IsString()
+  @IsNotEmpty()
+  province: string;
+
   @IsUUID()
   @IsNotEmpty()
-  cityId: string; 
+  memberId: string;
 }
 

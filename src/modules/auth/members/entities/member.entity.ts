@@ -7,9 +7,12 @@ import {
   ManyToOne,
   JoinColumn,
   OneToMany,
+  OneToOne,
 } from 'typeorm';
 import { Role } from '../../roles/entities/role.entity';
 import { Address } from 'src/modules/_support/geography/address/entities/address.entity';
+import { Exclude } from 'class-transformer';
+import { Cart } from 'src/modules/sales/carts/entities/cart.entity';
 
 @Entity()
 export class Member {
@@ -25,6 +28,10 @@ export class Member {
   @Column()
   email: string;
 
+  @Column({ type: 'date'})
+  birthDate: Date;
+
+  @Exclude()
   @Column()
   password: string;
 
@@ -55,4 +62,7 @@ export class Member {
 
   @OneToMany(() => Address, (address) => address.member, { cascade: true })
   addresses: Address[];
+
+  @OneToOne(() => Cart, cart => cart.member)
+  cart: Cart
 }
