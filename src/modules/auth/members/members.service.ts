@@ -107,13 +107,19 @@ export class MembersService {
   }
 
   async findOneById(id: string) {
-    const member = await this.memberRepo.findOne({ where: { id } });
+    const member = await this.memberRepo.findOne({ 
+      where: { id } ,
+      relations: ['role', 'addresses', 'store'],
+    });
     if (!member) throw new NotFoundException('Usuario no encontrado');
     return member;
   }
 
   async findOneByEmail(email: string) {
-    const member = await this.memberRepo.findOne({ where: { email } });
+    const member = await this.memberRepo.findOne({ 
+      where: { email } ,
+      relations: ['role', 'addresses', 'store'],
+    });
     if (!member) throw new NotFoundException('Email inexistente');
     return member;
   }
