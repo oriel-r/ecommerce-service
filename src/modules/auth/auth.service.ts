@@ -19,7 +19,6 @@ import { StoreResponseDto } from '../_platform/stores/dto/store-response.dto';
 import { SignInPlatformUserDto } from './dto/signIn-platform-user.dto';
 import { CreateMemberDto } from './members/dto/create-member.dto';
 import { MembersService } from './members/members.service';
-import { MemberResponseDto } from './members/dto/member-response.dto';
 import { SignInMemberDto } from './dto/signIn-member.dto';
 import * as bcrypt from 'bcrypt';
 
@@ -119,9 +118,7 @@ export class AuthService {
 
     return {
       token,
-      user: plainToInstance(PlatformUserResponseDto, user, {
-        excludeExtraneousValues: true,
-      }),
+      user
     };
   }
 
@@ -135,12 +132,10 @@ export class AuthService {
       type: 'customer',
       storeId: storeId,
     });
-    const response = plainToInstance(MemberResponseDto, member, { excludeExtraneousValues: true },
-    );
 
     return {
       token,
-      member: response,
+      member
     };
   }
 
@@ -168,9 +163,8 @@ export class AuthService {
 
     return {
       token,
-      member: plainToInstance(MemberResponseDto, user, {
-        excludeExtraneousValues: true,
-      }),
+      user,
+      store
     };
   }
 }
