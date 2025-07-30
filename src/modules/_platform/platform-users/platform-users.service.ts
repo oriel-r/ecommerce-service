@@ -56,9 +56,8 @@ export class PlatformUsersService {
 
   async findByEmail(email: string) {
     return await this.platformUserRepo.findOne({
-      where: {
-        email,
-      },
+      where: {email},
+      relations: ['stores'],
     });
   }
 
