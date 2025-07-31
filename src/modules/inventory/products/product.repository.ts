@@ -22,19 +22,13 @@ export class ProductRepository {
 
       .leftJoinAndSelect(
           'product.variants', 
-          'variant', 
-          'variant.isDefault = :isDefault', 
-          { isDefault: true }
+          'variant',
       )
-
       .leftJoinAndSelect('product.categoryAssignments', 'categoryAssignment')
       .leftJoinAndSelect('categoryAssignment.category', 'category')
       
       .select([
-          'product.id',
-          'product.name',
-          'product.description',
-          'product.isFeatured',
+          'product',
           'variant',
           'categoryAssignment.productId',
           'categoryAssignment.categoryId',
@@ -42,7 +36,8 @@ export class ProductRepository {
           'category.name'
       ])
 
-      .orderBy('product.createdAt', 'DESC');
+      .orderBy('product.createdAt', 'DESC')
+      .addOrderBy('variant.isDefault', 'DESC');
 
     const products = await qb.getMany();
 
