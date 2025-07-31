@@ -90,17 +90,20 @@ export class MembersService {
     return userWithRelations;
   }
 
-  async findAll() {
-    const members = await this.memberRepo.find({ relations: ['role', 'addresses']});
-    if (!members) throw new NotFoundException('Usuarios no encontrados');
+  async findAll(storeId: string) {
+    const members = await this.memberRepo.find({
+      where: { storeId },
+      relations: ['role', 'addresses'],
+    });
+    if (!members.length) throw new NotFoundException('Usuarios no encontrados');
     return members;
   }
 
   async findOneByStore(storeId: string, memberId: string) {
     const member = await this.memberRepo.findOne({
-      where: { storeId, id: memberId },
+      where: { id: memberId, storeId },
+      relations: ['role', 'addresses'],
     });
-
     if (!member) {
       throw new NotFoundException(
         `No se encontró un miembro en la tienda con id ${storeId}`,
@@ -109,62 +112,84 @@ export class MembersService {
     return member;
   }
 
-  async findOneById(id: string) {
-    const member = await this.memberRepo.findOne({ 
-      where: { id } ,
+  async findOneById(id: string ) {
+    const member = await this.memberRepo.findOne({
+      where: { id },
       relations: ['role', 'addresses'],
     });
     if (!member) throw new NotFoundException('Usuario no encontrado');
     return member;
   }
 
-  async findOneByEmail(email: string) {
-    const member = await this.memberRepo.findOne({ 
-      where: { email } ,
+  async findOneByEmail(email: string, storeId: string) {
+    const member = await this.memberRepo.findOne({
+      where: { email, storeId },
       relations: ['role', 'addresses'],
     });
     if (!member) throw new NotFoundException('Email inexistente');
     return member;
   }
 
-  async updateMember(id: string, updateMemberDto: UpdateMemberDto) {
-    const member = await this.findOneById(id);
+  async updateMember(
+    id: string,
+    updateMemberDto: UpdateMemberDto,
+    storeId: string,
+  ) {
+    const member = await this.memberRepo.findOne({
+      where: { id, storeId: storeId },
+      relations: ['role', 'addresses'],
+    });
+
+    if (!member)
+      throw new NotFoundException('Usuario no encontrado');
+
     Object.assign(member, updateMemberDto);
-    return await this.memberRepo.save(member);
+    return this.memberRepo.save(member);
   }
 
-  async removeMember(id: string) {
-    const member = await this.findOneById(id);
-    await this.memberRepo.remove(member);
+  async removeMember(id: string, storeId: string) {
+    const member = await this.memberRepo.findOne({
+      where: { id, storeId: storeId },
+      relations: ['role', 'addresses'],
+    });
 
+    if (!member)
+      throw new NotFoundException('Usuario no encontrado');
+    await this.memberRepo.remove(member);
     return { message: 'Usuario eliminado correctamente' };
   }
 
   async findMemberByEmailWithStore(email: string, store: Store) {
-      const existing = await this.memberRepo.findOne({
-        where: {
-          email,
-          storeId: store.id ,
-        },
-        relations: ['role', 'addresses'],
-      });
-      if (!existing)
-        throw new NotFoundException('No se ha encontrado el email indicado');
-  
-      return existing;
+    const existing = await this.memberRepo.findOne({
+      where: { email, storeId: store.id },
+      relations: ['role', 'addresses'],
+    });
+    if (!existing)
+      throw new NotFoundException('No se ha encontrado el email indicado');
+    return existing;
   }
 
-  async updateMemberBillingInfo(memberId: string, dto: UpdateMemberBillingDto) {
-  const member = await this.findOneById(memberId);
+  async updateMemberBillingInfo(
+    memberId: string,
+    dto: UpdateMemberBillingDto,
+    storeId: string,
+  ) {
+    const member = await this.memberRepo.findOne({
+      where: { id: memberId, storeId: storeId },
+      relations: ['role', 'addresses'],
+    });
 
-  if (dto.cuit !== undefined) {
-    member.cuit = dto.cuit;
+    if (!member)
+      throw new NotFoundException('Usuario no encontrado');
+
+    if (dto.cuit !== undefined) {
+      member.cuit = dto.cuit;
+    }
+
+    if (dto.taxCondition !== undefined) {
+      member.taxCondition = dto.taxCondition;
+    }
+
+    return this.memberRepo.save(member);
   }
-
-  if (dto.taxCondition !== undefined) {
-    member.taxCondition = dto.taxCondition;
-  }
-
-  return await this.memberRepo.save(member);
-}
 }

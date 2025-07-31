@@ -74,5 +74,6 @@ export class AppModule implements NestModule, OnApplicationBootstrap  {
   }
   async onApplicationBootstrap() {
     await this.rolesService.createRoleIfNotExists('customer');
+    await this.rolesService.createRoleIfNotExists('platform');
   }
 }
