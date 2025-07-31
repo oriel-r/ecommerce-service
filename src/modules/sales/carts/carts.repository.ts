@@ -38,7 +38,7 @@ export class CartsRepository {
                 memberId,
                 storeId
             },
-            relations: {items: {productVariant: true}}
+            relations: {items: {productVariant: {product: true}}}
         })
         
         return cart

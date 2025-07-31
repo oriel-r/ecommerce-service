@@ -13,6 +13,7 @@ import { Role } from '../../roles/entities/role.entity';
 import { Address } from 'src/modules/_support/geography/address/entities/address.entity';
 import { Exclude } from 'class-transformer';
 import { Cart } from 'src/modules/sales/carts/entities/cart.entity';
+import { Order } from 'src/modules/sales/orders/entities/order.entity';
 
 @Entity()
 export class Member {
@@ -65,4 +66,7 @@ export class Member {
 
   @OneToOne(() => Cart, cart => cart.member)
   cart: Cart
+
+  @OneToMany(() => Order, order => order.member)
+  orders: Order[]
 }
