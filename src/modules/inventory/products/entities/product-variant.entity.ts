@@ -1,6 +1,7 @@
 import { BaseEntity } from "src/common/entities/base.entity";
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, RelationId } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, RelationId } from "typeorm";
 import { Product } from "./product.entity";
+import { CartItem } from "src/modules/sales/carts/entities/cart-item.entity";
 
 const imagesArray = [
     "https://i.postimg.cc/0N524FMM/Screenshot-from-2025-07-25-14-42-31.png",
@@ -41,10 +42,13 @@ export class ProductVariant extends BaseEntity {
     @Column({type: 'int', nullable: true })
     discount: number | null
 
-    @ManyToOne(() => Product, product => product.variants, {nullable: false})
+    @ManyToOne(() => Product, product => product.variants, {nullable: false, onDelete: 'CASCADE'})
     @JoinColumn({name: 'product_id'})
     product: Product
 
     @RelationId((productVariant: ProductVariant) => productVariant.product)
     productId: string
+
+    @OneToMany(() => CartItem, cartItem => cartItem.productVariant, {nullable: true})
+    cartItems: CartItem[]
 }
