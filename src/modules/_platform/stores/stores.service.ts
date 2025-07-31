@@ -8,9 +8,10 @@ import { CreateStoreDto } from './dto/create-store.dto';
 import { UpdateStoreDto } from './dto/update-store.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Store } from './entities/store.entity';
-import { EntityManager, Repository } from 'typeorm';
+import { EntityManager, Repository} from 'typeorm';
 import { MembersService } from 'src/modules/auth/members/members.service';
 import { PlatformUser } from '../platform-users/entities/platform-user.entity';
+import { UpdateStatusStoreDto } from './dto/update-status-store.dto';
 
 @Injectable()
 export class StoresService {
@@ -82,6 +83,12 @@ export class StoresService {
     Object.assign(store, updateStoreDto);
     const updateStore = await this.storeRepo.save(store);
     return updateStore;
+  }
+
+  async updateStatusStore(id: string, updateStatusStore: UpdateStatusStoreDto) {
+    const store = await this.findOneById(id);
+    store.isActive = updateStatusStore.isActive;
+    return await this.storeRepo.save(store);
   }
 
   async deleteStore(id: string) {
