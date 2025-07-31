@@ -1,15 +1,31 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
 import { MembersService } from './members.service';
 import { CreateMemberDto } from './dto/create-member.dto';
 import { UpdateMemberDto } from './dto/update-member.dto';
-import { CurrentStore } from 'src/common/decorators/store/store.decorator';
+import { UpdateMemberBillingDto } from './dto/update-member-billing.dto';
 import { Store } from 'src/modules/_platform/stores/entities/store.entity';
+import { CurrentStore } from 'src/common/decorators/store/store.decorator';
+import { Roles } from 'src/common/decorators/roles/roles.decorators';
+import { AuthGuard } from 'src/common/guards/auth/auth.guard';
+import { RolesGuard } from 'src/common/guards/roles/roles.guard';
+import { StoreAccessGuard } from 'src/common/guards/auth/store-access.guard';
 
+@UseGuards(AuthGuard, RolesGuard, StoreAccessGuard)
 @Controller('members')
 export class MembersController {
   constructor(private readonly membersService: MembersService) {}
 
   @Post()
+  @Roles('platform')
   async createMember(
     @Body() createMemberDto: CreateMemberDto,
     @CurrentStore() store: Store,
@@ -18,22 +34,50 @@ export class MembersController {
   }
 
   @Get()
-  findAll() {
-    return this.membersService.findAll();
+  @Roles('platform')
+  async findAll(@CurrentStore() store: Store) {
+    return await this.membersService.findAll(store.id);
   }
 
-  /* @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.membersService.findOne(+id);
-  } */
+  @Get(':id')
+  @Roles('platform')
+  async findOneById(
+    @Param('id') id: string,
+    @CurrentStore() store: Store,
+  ) {
+    return await this.membersService.findOneByStore(store.id, id);
+  }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateMemberDto: UpdateMemberDto) {
-    return this.membersService.update(+id, updateMemberDto);
+  @Roles('platform')
+  async updateMember(
+    @Param('id') id: string,
+    @Body() updateMemberDto: UpdateMemberDto,
+    @CurrentStore() store: Store,
+  ) {
+    await this.membersService.findOneByStore(store.id, id);
+    return await this.membersService.updateMember(id, updateMemberDto, store.id);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.membersService.remove(+id);
+  @Roles('platform')
+  async removeMember(
+    @Param('id') id: string,
+    @CurrentStore() store: Store,
+  ) {
+    await this.membersService.findOneByStore(store.id, id);
+    return await this.membersService.removeMember(id, store.id);
+  }
+
+  @Patch(':id/billing')
+  @Roles('platform')
+  async updateBillingInfo(
+    @Param('id') memberId: string,
+    @Body() dto: UpdateMemberBillingDto,
+    @CurrentStore() store: Store,
+  ) {
+    await this.membersService.findOneByStore(store.id, memberId);
+    return await this.membersService.updateMemberBillingInfo(memberId, dto, store.id);
   }
 }
+

@@ -68,8 +68,12 @@ export class PlatformUsersService {
     return await compare(plainPassword, hashedPassword);
   }
 
-  async findAllPlatformUsers() {
-    const owners = await this.platformUserRepo.find();
+  async findAllPlatformUsers(storeId: string) {
+    const owners = await this.platformUserRepo.find({
+      where: { stores: { id: storeId } },
+      relations: ['stores'],
+    });
+    if (!owners.length) throw new NotFoundException('Admins no encontrados');
 
     return plainToInstance(PlatformUserResponseDto, owners, {
       excludeExtraneousValues: true,

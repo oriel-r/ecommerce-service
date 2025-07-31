@@ -10,7 +10,7 @@ import { AddItemToCartDto } from './dto/add-item-to-cart.dto';
 import { Member } from 'src/modules/auth/members/entities/member.entity';
 import { UpdateCartItemDto } from './dto/update-cart-item.dto';
 
-@Controller('cart')
+@Controller('carts')
 @UseGuards(AuthGuard)
 export class CartsController {
   constructor(private readonly cartsService: CartsService) {}
@@ -24,23 +24,15 @@ export class CartsController {
     return await this.cartsService.getMemberCart(data)
   }
 
-  @Post('item')
+  @Post('items')
   async addItem(
     @CurrentMember() member: CurrentCustomer,
     @Body() data: AddItemToCartDto ) {
     return await this.cartsService.addItem(member, data)
   }
 
-  @Post('items')
-  addItemToMyCart(
-    @CurrentMember() member: CurrentCustomer,
-    @Body() addItemToCartDto: AddItemToCartDto,
-  ) {
-    return this.cartsService.addItem(member, addItemToCartDto);
-  }
-
   @Patch('items/:productVariantId')
-  updateMyCartItem(
+  async updateMyCartItem(
     @CurrentMember() member: CurrentCustomer,
     @Param('productVariantId', ParseUUIDPipe) productVariantId: string,
     @Body() updateCartItemDto: UpdateCartItemDto,
@@ -64,7 +56,7 @@ export class CartsController {
 
   @Delete()
   @HttpCode(HttpStatus.NO_CONTENT)
-  clearMyCart(@CurrentMember() member: CurrentCustomer) {
-    return this.cartsService.clearCart(member);
+  async clearMyCart(@CurrentMember() member: CurrentCustomer) {
+    return await this.cartsService.clearCart(member);
   }
 }

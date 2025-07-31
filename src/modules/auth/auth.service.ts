@@ -1,7 +1,6 @@
 import {
   Injectable,
   UnauthorizedException,
-  BadRequestException,
   ConflictException,
   Logger,
   InternalServerErrorException,

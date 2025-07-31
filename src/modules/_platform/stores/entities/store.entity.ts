@@ -3,6 +3,7 @@ import { PlatformUser } from "../../platform-users/entities/platform-user.entity
 import { Category } from "src/modules/inventory/categories/entities/category.entity";
 import { Product } from "src/modules/inventory/products/entities/product.entity";
 import { Cart } from "src/modules/sales/carts/entities/cart.entity";
+import { Order } from "src/modules/sales/orders/entities/order.entity";
 
 @Entity()
 export class Store {
@@ -36,4 +37,7 @@ export class Store {
 
     @OneToMany(() => Cart, cart => cart.store, {nullable: true})
     carts: Cart[]
+
+    @OneToMany(() => Order, order => order.store)
+    orders: Order[]
 }
