@@ -8,4 +8,16 @@ export class OrderItemsRepository {
     constructor (
         @InjectRepository(OrderItem) private readonly orderItemsRepository: Repository<OrderItem>
     ) {}
+
+    create(data: Partial<OrderItem>): OrderItem {
+        return this.orderItemsRepository.create(data);
+    }
+
+    createMany(data: Partial<OrderItem>[]): OrderItem[] {
+        return this.orderItemsRepository.create(data);
+    }
+
+    async saveMany(items: OrderItem[]): Promise<OrderItem[]> {
+        return this.orderItemsRepository.save(items);
+    }
 }
