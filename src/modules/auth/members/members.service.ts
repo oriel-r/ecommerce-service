@@ -85,7 +85,12 @@ export class MembersService {
 
     const userWithRelations = await this.memberRepo.findOne({
       where: { id: newUser.id },
-      relations: ['role', 'addresses'],
+      relations: [
+      'role',
+      'addresses',
+      'addresses.city',
+      'addresses.city.province'
+  ],
     });
     return userWithRelations;
   }
