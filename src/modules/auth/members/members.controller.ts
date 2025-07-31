@@ -4,6 +4,7 @@ import { CreateMemberDto } from './dto/create-member.dto';
 import { UpdateMemberDto } from './dto/update-member.dto';
 import { CurrentStore } from 'src/common/decorators/store/store.decorator';
 import { Store } from 'src/modules/_platform/stores/entities/store.entity';
+import { UpdateMemberBillingDto } from './dto/update-member-billing.dto';
 
 @Controller('members')
 export class MembersController {
@@ -22,18 +23,26 @@ export class MembersController {
     return this.membersService.findAll();
   }
 
-  /* @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.membersService.findOne(+id);
-  } */
+  @Get(':id')
+  findOneById(@Param('id') id: string) {
+    return this.membersService.findOneById(id);
+  }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateMemberDto: UpdateMemberDto) {
-    return this.membersService.update(+id, updateMemberDto);
+  updateMember(@Param('id') id: string, @Body() updateMemberDto: UpdateMemberDto) {
+    return this.membersService.updateMember(id, updateMemberDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.membersService.remove(+id);
+  removeMember(@Param('id') id: string) {
+    return this.membersService.removeMember(id);
+  }
+
+  @Patch(':id/billing')
+  async updateBillingInfo(
+    @Param('id') memberId: string,
+    @Body() dto: UpdateMemberBillingDto,
+  ) {
+    return await this.membersService.updateMemberBillingInfo(memberId, dto);
   }
 }

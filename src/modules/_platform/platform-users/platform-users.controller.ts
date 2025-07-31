@@ -1,9 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Body, Patch, Param, Delete } from '@nestjs/common';
 import { PlatformUsersService } from './platform-users.service';
 import { UpdatePlatformUserDto } from './dto/update-platform-user.dto';
-import { CreatePlatformUserWithStoreDto } from './dto/create-platform-user-with-store.dto';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { PlatformUser } from './entities/platform-user.entity';
+import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('platform-users (Dueño)')
 @Controller('platform-users')

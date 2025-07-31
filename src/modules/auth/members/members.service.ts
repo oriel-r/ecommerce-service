@@ -15,6 +15,7 @@ import { RolesService } from '../roles/roles.service';
 import { hash } from 'bcrypt';
 import { AddressService } from 'src/modules/_support/geography/address/address.service';
 import { Store } from 'src/modules/_platform/stores/entities/store.entity';
+import { UpdateMemberBillingDto } from './dto/update-member-billing.dto';
 
 @Injectable()
 export class MembersService {
@@ -89,8 +90,10 @@ export class MembersService {
     return userWithRelations;
   }
 
-  findAll() {
-    return `This action returns all members`;
+  async findAll() {
+    const members = await this.memberRepo.find({ relations: ['role', 'addresses']});
+    if (!members) throw new NotFoundException('Usuarios no encontrados');
+    return members;
   }
 
   async findOneByStore(storeId: string, memberId: string) {
@@ -124,12 +127,17 @@ export class MembersService {
     return member;
   }
 
-  update(id: number, updateMemberDto: UpdateMemberDto) {
-    return `This action updates a #${id} member`;
+  async updateMember(id: string, updateMemberDto: UpdateMemberDto) {
+    const member = await this.findOneById(id);
+    Object.assign(member, updateMemberDto);
+    return await this.memberRepo.save(member);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} member`;
+  async removeMember(id: string) {
+    const member = await this.findOneById(id);
+    await this.memberRepo.remove(member);
+
+    return { message: 'Usuario eliminado correctamente' };
   }
 
   async findMemberByEmailWithStore(email: string, store: Store) {
@@ -138,10 +146,25 @@ export class MembersService {
           email,
           storeId: store.id ,
         },
+        relations: ['role', 'addresses'],
       });
       if (!existing)
         throw new NotFoundException('No se ha encontrado el email indicado');
   
       return existing;
-    }
+  }
+
+  async updateMemberBillingInfo(memberId: string, dto: UpdateMemberBillingDto) {
+  const member = await this.findOneById(memberId);
+
+  if (dto.cuit !== undefined) {
+    member.cuit = dto.cuit;
+  }
+
+  if (dto.taxCondition !== undefined) {
+    member.taxCondition = dto.taxCondition;
+  }
+
+  return await this.memberRepo.save(member);
+}
 }
