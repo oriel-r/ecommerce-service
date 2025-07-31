@@ -19,7 +19,7 @@ import { Roles } from 'src/common/decorators/roles/roles.decorators';
 import { UpdateStatusStoreDto} from './dto/update-status-store.dto';
 
 @ApiTags('Stores')
-@UseGuards(AuthGuard, RolesGuard)
+//@UseGuards(AuthGuard, RolesGuard)
 @Roles('platform')
 @Controller('stores')
 export class StoresController {
