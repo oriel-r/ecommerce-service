@@ -3,14 +3,22 @@ import { Store } from "src/modules/_platform/stores/entities/store.entity";
 import { Member } from "src/modules/auth/members/entities/member.entity";
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, RelationId } from "typeorm";
 import { OrderItem } from "./order-item.entity";
+import { OrderStatus } from "src/common/enums/order-status.enum";
+import { Address } from "src/modules/_support/geography/address/entities/address.entity";
 
 @Entity('orders')
 export class Order extends BaseEntity{
     
     @PrimaryGeneratedColumn('uuid')
     id: string
-    
- @Column({type: 'decimal',
+
+    @Column({
+        type: 'timestamptz',
+        name: 'order_date'
+    })
+    orderDate: Date
+
+    @Column({type: 'decimal',
         precision: 12,
         scale: 2,
         name: 'sub_total',
@@ -45,6 +53,13 @@ export class Order extends BaseEntity{
     })
     totalAmount: Number
 
+    @Column({
+        type: 'enum',
+        enum: OrderStatus,
+        default: OrderStatus.PENDING_PAYMENT
+    })
+    status: OrderStatus
+    
     @OneToMany(
         () => OrderItem,
         orderItem => orderItem.order,
@@ -52,6 +67,14 @@ export class Order extends BaseEntity{
     )
     items: OrderItem[]
     
+    @ManyToOne(
+        () => Address,
+        address => address.shippingOrders,
+        {nullable: false, onDelete: 'RESTRICT'}
+    )
+    @JoinColumn({name: 'shipping_address_id'})
+    shippingAddress: Address
+
     @ManyToOne(
         () => Store,
         store => store ,

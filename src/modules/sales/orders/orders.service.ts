@@ -1,6 +1,121 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { OrdersRepository } from './orders.repository';
+import { OrderItemsRepository } from './order-items.repository';
+import { CurrentCustomer } from 'src/common/interfaces/current-customer.interface';
+import { CartsService } from '../carts/carts.service';
+import { ProductService } from 'src/modules/inventory/products/product.service';
+import { Order } from './entities/order.entity';
+import { OrderStatus } from 'src/common/enums/order-status.enum';
+import { OrderItem } from './entities/order-item.entity';
+import { Member } from 'src/modules/auth/members/entities/member.entity';
+import { Store } from 'src/modules/_platform/stores/entities/store.entity';
+import { MembersService } from 'src/modules/auth/members/members.service';
+import { FindOptionsWhere } from 'typeorm';
 
 @Injectable()
 export class OrdersService {
+    constructor (
+        private readonly ordersRepository: OrdersRepository,
+        private readonly cartsService: CartsService,
+        private readonly membersService: MembersService,
+        private readonly productsService: ProductService
+    ) {}
 
+    async createOrderFromCart(payload: CurrentCustomer): Promise<Order | null> {
+        const cart = await this.cartsService.getMemberCart(payload);
+
+        if (!cart || cart.items.length === 0) {
+            throw new BadRequestException('El carrito está vacío.');
+        }
+
+        await this.productsService.validateStockForOrder(cart.items);
+
+        const subTotal = cart.items.reduce(
+            (sum, item) => sum + item.productVariant.price * item.quantity,
+            0,
+        );
+
+        const totalAmount = subTotal;
+
+        const member = await this.membersService.findOneByStore(payload.storeId, payload.memberId)
+
+        const orderData: Partial<Order> = {
+        member: member,
+        store: {id: member.storeId} as Store,
+        shippingAddress: member.addresses[0],
+        subTotal,
+        shippingCost: 0,
+        discountAmount: 0,
+        totalAmount,
+        status: OrderStatus.PENDING_PAYMENT,
+        orderDate: new Date(),
+        };
+
+        const itemsData: Partial<OrderItem>[] = cart.items.map((item) => ({
+        productVariantId: item.productVariantId,
+        quantity: item.quantity,
+        priceAtPurchase: item.productVariant.price,
+        }));
+
+        const variantsToUpdate = cart.items.map((item) => ({
+        id: item.productVariantId,
+        quantity: item.quantity,
+        }));
+
+        const newOrder = await this.ordersRepository.createOrderInTransaction(
+        orderData,
+        itemsData,
+        variantsToUpdate,
+        cart.id,
+        );
+
+        return this.ordersRepository.findOneBy({ id: newOrder.id });
+    }
+
+    async findAllForAdmin(storeId: string, options?) {
+        return this.ordersRepository.findPaginated({
+        where: { storeId },
+        order: { createdAt: 'DESC' },
+        ...options,
+        });
+    }
+
+    async findAllForMember(memberId: string, options?) {
+        return await this.ordersRepository.findPaginated({
+        where: { memberId },
+        order: { createdAt: 'DESC' },
+        ...options,
+        });
+    }
+
+    async findOne(orderId: string, memberId?: string): Promise<Order> {
+        const criteria: FindOptionsWhere<Order> = { id: orderId };
+        if (memberId) {
+        criteria.memberId = memberId;
+        }
+
+        const order = await this.ordersRepository.findOneBy(criteria);
+        if (!order) {
+        throw new NotFoundException('Orden no encontrada.');
+        }
+        return order;
+    }
+
+    async markAsPaid(orderId: string): Promise<Order> {
+        const order = await this.ordersRepository.findOneBy({ id: orderId });
+        if (!order) {
+        throw new NotFoundException(
+            `Orden con ID ${orderId} no encontrada para marcar como pagada.`,
+        );
+        }
+
+        if (order.status !== OrderStatus.PENDING_PAYMENT) {
+        throw new BadRequestException(
+            'Solo las órdenes pendientes de pago pueden ser marcadas como pagadas.',
+        );
+        }
+
+        order.status = OrderStatus.PAID;
+        return this.ordersRepository.save(order);
+    }
 }

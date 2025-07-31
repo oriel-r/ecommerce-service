@@ -15,6 +15,7 @@ import { ProductCategory } from './entities/product-category.entity';
 import { Store } from 'src/modules/_platform/stores/entities/store.entity';
 import { CreateProductVariantDto } from './dto/create-product-variant.dto';
 import { UpdateProductVariantDto } from './dto/update-variant.dto';
+import { CartItem } from 'src/modules/sales/carts/entities/cart-item.entity';
 
 @Injectable()
 export class ProductService {
@@ -64,6 +65,20 @@ export class ProductService {
     
         if(!product) throw new NotFoundException('No se el producto')
             return product
+    }
+
+    async validateStockForOrder(items: CartItem[]): Promise<void> {
+        for (const item of items) {
+            const variant = item.productVariant;
+            const requestedQuantity = item.quantity;
+
+            if (variant.stock < requestedQuantity) {
+                throw new BadRequestException(
+                `Stock insuficiente para el producto "${variant.product.name}" (Variante: ${variant.optionValue}). Solicitado: ${requestedQuantity}, Disponible: ${variant.stock}`
+                );
+             }
+        }
+        return
     }
 
     async update(storeId: string, id: string, data: UpdateProductDto) {
