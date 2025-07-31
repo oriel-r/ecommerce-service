@@ -3,9 +3,11 @@ import {
   PrimaryGeneratedColumn,
   Column,
   ManyToOne,
+  OneToMany,
 } from 'typeorm';
 import { City } from '../../city/entities/city.entity';
 import { Member } from 'src/modules/auth/members/entities/member.entity';
+import { Order } from 'src/modules/sales/orders/entities/order.entity';
 
 @Entity()
 export class Address {
@@ -29,5 +31,12 @@ export class Address {
 
   @ManyToOne(() => Member, (member) => member.addresses, { onDelete: 'CASCADE' })
   member: Member;
+
+  @OneToMany(
+    () => Order,
+    order => order.shippingAddress,
+    {nullable: true}
+  )
+  shippingOrders: Order[]
 }
 

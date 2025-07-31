@@ -16,9 +16,10 @@ import { Store } from './entities/store.entity';
 import { AuthGuard } from 'src/common/guards/auth/auth.guard';
 import { RolesGuard } from 'src/common/guards/roles/roles.guard';
 import { Roles } from 'src/common/decorators/roles/roles.decorators';
+import { UpdateStatusStoreDto} from './dto/update-status-store.dto';
 
 @ApiTags('Stores')
-@UseGuards(AuthGuard, RolesGuard)
+//@UseGuards(AuthGuard, RolesGuard)
 @Roles('platform')
 @Controller('stores')
 export class StoresController {
@@ -28,16 +29,16 @@ export class StoresController {
   @ApiOperation({ summary: 'Crear una tienda' })
   @ApiResponse({ status: 201, description: 'Tienda creada exitosamente', type: Store })
   @ApiResponse({ status: 404, description: 'Usuario de plataforma no encontrado' })
-  createStore(@Body() createStoreDto: CreateStoreDto) {
-    return this.storesService.createStore(createStoreDto);
+  async createStore(@Body() createStoreDto: CreateStoreDto) {
+    return await this.storesService.createStore(createStoreDto);
   }
 
   @Get()
   @ApiOperation({ summary: 'Obtener todas las tiendas' })
   @ApiResponse({ status: 200, description: 'Listado de tiendas', type: [Store] })
   @ApiResponse({ status: 404, description: 'No se encontraron tiendas' })
-  findAllStores() {
-    return this.storesService.findAllStores();
+  async findAllStores() {
+    return await this.storesService.findAllStores();
   }
 
   @Get(':id')
@@ -45,12 +46,21 @@ export class StoresController {
   @ApiParam({ name: 'id', description: 'ID de la tienda' })
   @ApiResponse({ status: 200, description: 'Tienda encontrada', type: Store })
   @ApiResponse({ status: 404, description: 'Tienda no encontrada' })
-  findOneById(@Param('id') id: string) {
-    return this.storesService.findOneById(id);
+  async findOneById(@Param('id') id: string) {
+    return await this.storesService.findOneById(id);
+  }
+
+  @Patch(':id/status')
+  @ApiOperation({ summary: 'Actualizar una tienda por ID' })
+  @ApiParam({ name: 'id', description: 'ID de la tienda' })
+  @ApiResponse({ status: 200, description: 'Tienda actualizada exitosamente', type: Store })
+  @ApiResponse({ status: 404, description: 'Tienda no encontrada' })
+  async updateStatusStore(@Param('id') id: string, @Body() updateStatusStoreDto: UpdateStatusStoreDto) {
+    return this.storesService.updateStatusStore(id, updateStatusStoreDto);
   }
 
   @Patch(':id')
-  @ApiOperation({ summary: 'Actualizar una tienda por ID' })
+  @ApiOperation({ summary: 'Actualizar el estado de una tienda por ID' })
   @ApiParam({ name: 'id', description: 'ID de la tienda' })
   @ApiResponse({ status: 200, description: 'Tienda actualizada exitosamente', type: Store })
   @ApiResponse({ status: 404, description: 'Tienda no encontrada' })
