@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, Logger, NotFoundException } from '@nestjs/common';
 import { CartsRepository } from './carts.repository';
 import { NotFoundError } from 'rxjs';
 import { cartItemsRepository } from './cart-items.repository';
@@ -9,6 +9,8 @@ import { UpdateCartItemDto } from './dto/update-cart-item.dto';
 
 @Injectable()
 export class CartsService {
+  private logger = new Logger(CartsService.name)
+
     constructor(
         private readonly cartsRepository: CartsRepository,
         private readonly cartItemsRepository: cartItemsRepository,

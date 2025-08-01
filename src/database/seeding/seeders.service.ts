@@ -23,7 +23,7 @@ export class SeederService implements OnModuleInit {
          await this.platformUserSeeder.seedAdminUser() 
          await this.storeSeeder.seedDefaultStore() 
          await this.categoriesSeeder.seedBaseCategories()
-        await this.productSeeder.seedProducts() 
+         await this.productSeeder.seedProducts() 
         this.logger.warn('Seeding finalizado')
     }
 }

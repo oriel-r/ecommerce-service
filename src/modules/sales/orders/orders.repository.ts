@@ -30,8 +30,23 @@ export class OrdersRepository {
         return this.ordersRepository.save(order);
     }
 
-    async find(options): Promise<[Order[], number]> {
-        return this.ordersRepository.findAndCount(options);
+    async find(options): Promise<Order[]| void[]> {
+        return this.ordersRepository.find(options);
+    }
+
+    async findOne(criteria: FindOptionsWhere<Order>): Promise<Order | null> {
+        return this.ordersRepository.findOne({
+        where: criteria,
+        relations: {
+            items: {
+            productVariant: {
+                product: true,
+            },
+            },
+            member: true,
+            shippingAddress: true, // Asumo que quieres esto también
+        },
+        });
     }
 
     async findOneBy(criteria: FindOptionsWhere<Order>): Promise<Order | null> {
@@ -52,13 +67,16 @@ export class OrdersRepository {
         const { page, limit, where, order } = options;
 
         const queryBuilder = this.ordersRepository.createQueryBuilder('order')
-        .where(where!)
         .leftJoinAndSelect('order.member','member')
         .leftJoinAndSelect('order.items','item')
         .leftJoinAndSelect('item.productVariant','variant')
         .leftJoinAndSelect('variant.product','product'); 
 
-        return await paginate(queryBuilder, { page, limit });
+        if(where) {
+            queryBuilder.where(where)
+        }
+
+        return await queryBuilder.getMany();
     }
 
     async createOrderInTransaction(
