@@ -88,7 +88,7 @@ export class Order extends BaseEntity{
     
     @ManyToOne(
         () => Member,
-        member => member,
+        member => member.orders,
         {nullable: false, onDelete: 'CASCADE'}
     )
     @JoinColumn({name: 'member_id'})

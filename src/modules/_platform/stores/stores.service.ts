@@ -64,7 +64,6 @@ export class StoresService {
     const stores = await this.storeRepo.find();
 
     if(!stores) throw new NotFoundException('No se encontraron tiendas');
-
     return stores;
   }
 
