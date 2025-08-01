@@ -42,8 +42,8 @@ export class SendEmailDto {
     example: 'Tenemos nuevos precios',
   })
   @IsString()
-  @IsNotEmpty()
-  message: string;
+  @IsOptional()
+  message?: string;
 
   @ApiPropertyOptional({
     description: 'Contenido del mail en formato HTML',
@@ -51,4 +51,10 @@ export class SendEmailDto {
   })
   @IsOptional()
   html?: string;
+
+  @IsOptional()
+  template?: string; 
+
+  @IsOptional()
+  context?: Record<string, any>;
 }
