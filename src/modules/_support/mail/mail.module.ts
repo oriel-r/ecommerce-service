@@ -4,6 +4,15 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ContactMessage } from './entities/contact-message.entity';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MailService } from './mail.service';
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+import { join } from 'path';
+import { MailController } from './mail.controller';
+
+const isProduction = process.env.ENVIRONMENT === 'PRODUCTION';
+
+const templateDir = isProduction
+  ? join(process.cwd(), 'dist', 'modules', '_support', 'mail', 'templates')
+  : join(process.cwd(), 'src', 'modules', '_support', 'mail', 'templates');
 
 @Module({
   imports: [
@@ -24,13 +33,22 @@ import { MailService } from './mail.service';
           },
         },
         defaults: {
-          from: `SeInstalaShop <${configService.get<string>('MAIL_USERNAME')}>`,
+          from: `CódigoTotal <${configService.get<string>('MAIL_USERNAME')}>`,
+        },
+        template: {
+          dir: templateDir,
+          adapter: new HandlebarsAdapter(),
+          options: {
+            strict: true,
+          },
         },
       }),
       inject: [ConfigService],
     }),
   ],
+  controllers: [MailController],
   providers: [MailService],
   exports: [MailService],
 })
 export class MailModule {}
+

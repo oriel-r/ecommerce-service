@@ -27,12 +27,14 @@ export class MailService {
   }
 
   async sendEmail(sendEmailDto: SendEmailDto): Promise<string> {
-    const { to, subject, message, html } = sendEmailDto;
+    const { to, subject, message, html, template, context } = sendEmailDto;
     await this.mailerService.sendMail({
       to: to,
       subject: subject,
       text: message,
       html: html,
+      template: template,
+      context: context,
     });
 
     return 'Correo electrónico enviado exitosamente.';
@@ -42,7 +44,7 @@ export class MailService {
     const { surname, from, subject, message } = formContactDto;
 
     await this.mailerService.sendMail({
-      to: 'GF Instalaciones <codigototaldevs@gmail.com>',
+      to: 'SeInstalaShop <codigototaldevs@gmail.com>',
       from: this.configService.get<string>('EMAIL_FROM'),
       replyTo: from,
       subject: `[Formulario contacto] ${subject}`,
@@ -68,5 +70,20 @@ export class MailService {
 
   async getAllInfoContact() {
     return await this.contactMessageRepository.find();
+  }
+
+  async sendPagoConfirmadoAdmin(data: {
+    name: string;
+    email: string;
+    orderId: string;
+    amount: string;
+  }): Promise<string> {
+    await this.sendEmail({
+      to: 'codigototaldevs@gmail.com',
+      subject: '💳 Nuevo pago acreditado',
+      template: 'admin-payments-notice',
+      context: data,
+    });
+    return 'Correo de pago confirmado enviado.';
   }
 }
