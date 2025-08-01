@@ -178,8 +178,6 @@ export class ProductService {
             this.categoriesService.validateIdsExist(categoriesIds, storeId)
         ]);
 
-        this.logger.debug(productExists)
-
         if (!productExists) {
             throw new UnprocessableEntityException(`El producto con ID '${productId}' no fue encontrado en esta tienda.`);
         }

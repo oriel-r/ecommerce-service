@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { OrdersRepository } from './orders.repository';
 import { OrderItemsRepository } from './order-items.repository';
 import { CurrentCustomer } from 'src/common/interfaces/current-customer.interface';
@@ -10,10 +10,12 @@ import { OrderItem } from './entities/order-item.entity';
 import { Member } from 'src/modules/auth/members/entities/member.entity';
 import { Store } from 'src/modules/_platform/stores/entities/store.entity';
 import { MembersService } from 'src/modules/auth/members/members.service';
-import { FindOptionsWhere } from 'typeorm';
+import { FindManyOptions, FindOptionsWhere } from 'typeorm';
 
 @Injectable()
 export class OrdersService {
+    private logger = new Logger(OrdersService.name)
+
     constructor (
         private readonly ordersRepository: OrdersRepository,
         private readonly cartsService: CartsService,
@@ -23,7 +25,7 @@ export class OrdersService {
 
     async createOrderFromCart(payload: CurrentCustomer): Promise<Order | null> {
         const cart = await this.cartsService.getMemberCart(payload);
-
+        
         if (!cart || cart.items.length === 0) {
             throw new BadRequestException('El carrito está vacío.');
         }
@@ -72,33 +74,45 @@ export class OrdersService {
         return this.ordersRepository.findOneBy({ id: newOrder.id });
     }
 
-    async findAllForAdmin(storeId: string, options?) {
-        return this.ordersRepository.findPaginated({
-        where: { storeId },
-        order: { createdAt: 'DESC' },
-        ...options,
-        });
-    }
+    async findAllForAdmin(storeId: string) {
+    return await this.ordersRepository.find({
+      where: { store: {id: storeId} }, 
+      order: { createdAt: 'DESC' },
+      relations: { 
+        member: true,
+        items: true,
+      },
+    });
+  }
 
-    async findAllForMember(memberId: string, options?) {
-        return await this.ordersRepository.findPaginated({
-        where: { memberId },
+    async findAllForMember(memberId: string) {
+        return await this.ordersRepository.find({
+        where: { member: { id: memberId } }, 
         order: { createdAt: 'DESC' },
-        ...options,
+        relations: { 
+            items: {
+            productVariant: {
+                product: true
+            }
+            },
+            shippingAddress: true,
+        },
         });
     }
 
     async findOne(orderId: string, memberId?: string): Promise<Order> {
-        const criteria: FindOptionsWhere<Order> = { id: orderId };
-        if (memberId) {
-        criteria.memberId = memberId;
-        }
+    const criteria: FindOptionsWhere<Order> = { id: orderId };
 
-        const order = await this.ordersRepository.findOneBy(criteria);
-        if (!order) {
-        throw new NotFoundException('Orden no encontrada.');
-        }
-        return order;
+    if (memberId) {
+      criteria.member = { id: memberId };
+    }
+
+    const order = await this.ordersRepository.findOne(criteria);
+    
+    if (!order) {
+      throw new NotFoundException('Orden no encontrada.');
+    }
+    return order;
     }
 
     async markAsPaid(orderId: string): Promise<Order> {

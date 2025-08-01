@@ -11,7 +11,11 @@ export class OrderItem extends BaseEntity {
     @PrimaryColumn('uuid', {name: 'product_variant_id'})
     productVariantId: string
 
-    @Column({type: 'decimal', precision: 12, scale: 2, nullable: false})
+    @Column({type: 'smallint', nullable: false})
+    quantity: Number
+
+    @Column({type: 'decimal', precision: 12, scale: 2, nullable: false, name: 'price_at_purchase'})
+    priceAtPurchase: number;
 
     @ManyToOne(
         () => Order,
