@@ -23,11 +23,6 @@ export class PlatformUsersController {
     return await this.platformUsersService.findAllPlatformUsers(store.id);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.platformUsersService.findOne(+id);
-  }
-
   @Patch(':id')
   update(@Param('id') id: string, @Body() updatePlatformUserDto: UpdatePlatformUserDto) {
     return this.platformUsersService.update(+id, updatePlatformUserDto);

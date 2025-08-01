@@ -51,30 +51,21 @@ export class StoresController {
   }
 
   @Patch(':id/status')
-  @ApiOperation({ summary: 'Actualizar una tienda por ID' })
-  @ApiParam({ name: 'id', description: 'ID de la tienda' })
-  @ApiResponse({ status: 200, description: 'Tienda actualizada exitosamente', type: Store })
-  @ApiResponse({ status: 404, description: 'Tienda no encontrada' })
-  async updateStatusStore(@Param('id') id: string, @Body() updateStatusStoreDto: UpdateStatusStoreDto) {
-    return this.storesService.updateStatusStore(id, updateStatusStoreDto);
-  }
-
-  @Patch(':id')
   @ApiOperation({ summary: 'Actualizar el estado de una tienda por ID' })
   @ApiParam({ name: 'id', description: 'ID de la tienda' })
   @ApiResponse({ status: 200, description: 'Tienda actualizada exitosamente', type: Store })
   @ApiResponse({ status: 404, description: 'Tienda no encontrada' })
-  updateStore(@Param('id') id: string, @Body() updateStoreDto: UpdateStoreDto) {
-    return this.storesService.updateStore(id, updateStoreDto);
+  async updateStatusStore(@Param('id') id: string, @Body() updateStatusStoreDto: UpdateStatusStoreDto) {
+    return await this.storesService.updateStatusStore(id, updateStatusStoreDto);
   }
 
-  @Delete(':id')
-  @ApiOperation({ summary: 'Eliminar una tienda por ID' })
+  @Patch(':id')
+  @ApiOperation({ summary: 'Actualizar una tienda por ID' })
   @ApiParam({ name: 'id', description: 'ID de la tienda' })
-  @ApiResponse({ status: 200, description: 'Tienda eliminada correctamente' })
+  @ApiResponse({ status: 200, description: 'Tienda actualizada exitosamente', type: Store })
   @ApiResponse({ status: 404, description: 'Tienda no encontrada' })
-  deleteStore(@Param('id') id: string) {
-    return this.storesService.deleteStore(id);
+  async updateStore(@Param('id') id: string, @Body() updateStoreDto: UpdateStoreDto) {
+    return await this.storesService.updateStore(id, updateStoreDto);
   }
 }
 

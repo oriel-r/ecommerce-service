@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+/* import { Module } from '@nestjs/common';
 import { PlatformUserSeeder } from './platform-seeder/platform-user.seeder';
 import { StoreSeeder } from './store-seeder/store.seeder';
 import { PlatformModule } from 'src/modules/_platform/_platform.module';
@@ -13,4 +13,4 @@ import { ProductsSeeder } from './products-seeder/products.seeder';
     imports: [PlatformModule, StoresModule, CategoryModule, ProductModule],
     providers: [SeederService, PlatformUserSeeder, StoreSeeder, CategorySeeder, ProductsSeeder]
 })
-export class SeedersModule {}
+export class SeedersModule {} */

@@ -26,10 +26,9 @@ export class StoreResolverMiddleware implements NestMiddleware {
       throw new NotFoundException('Dominio no detectado');
     }
 
-
-
     const store = await this.storeRepository.findOne({
       where: { domain: 'localhost' },
+      relations: ['platformUser'],
     });
 
     if (!store) {
