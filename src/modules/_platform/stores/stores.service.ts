@@ -91,9 +91,16 @@ export class StoresService {
     return await this.storeRepo.save(store);
   }
 
-  async deleteStore(id: string) {
-    const store = await this.findOneById(id);
-    await this.storeRepo.remove(store);
-    return { message: 'Tienda eliminada correctamente.' };
+  async findByPlatformUserId(platformUserId: string): Promise<Store> {
+  const store = await this.storeRepo.findOne({
+    where: { platformUser: { id: platformUserId } },
+    relations: ['platformUser'], 
+  });
+
+  if (!store) {
+    throw new NotFoundException('No se encontró una tienda para este usuario');
   }
+
+  return store;
+}
 }

@@ -67,10 +67,13 @@ export class AuthService {
 
       await queryRunner.commitTransaction();
 
+      console.log('user.role:', user.role);
+
       const token = await this.jwtService.signAsync({
         sub: user.id,
         type: 'platform',
         storeId: store.id,
+        role: user.role.name, 
       });
 
       return {
@@ -112,12 +115,19 @@ export class AuthService {
     );
     if (!valid) throw new UnauthorizedException('Credenciales incorrectas');
 
-    const payload = { sub: user.id, type: 'platform' };
+    const store = await this.storesService.findByPlatformUserId(user.id);
+
+    const payload = {
+      sub: user.id,
+      type: 'platform',
+      storeId: store.id,
+      role: user.role.name, 
+    };
     const token = await this.jwtService.signAsync(payload);
 
     return {
       token,
-      user
+      user,
     };
   }
 
@@ -130,11 +140,12 @@ export class AuthService {
       sub: member?.id,
       type: 'customer',
       storeId: storeId,
+      role: member?.role.name, 
     });
 
     return {
       token,
-      member
+      member,
     };
   }
 
@@ -156,6 +167,7 @@ export class AuthService {
       email: user.email,
       type: 'customer',
       storeId: user.storeId,
+      role: user?.role.name,
     };
 
     const token = this.jwtService.sign(payload);
@@ -163,7 +175,7 @@ export class AuthService {
     return {
       token,
       user,
-      store
+      store,
     };
   }
 }

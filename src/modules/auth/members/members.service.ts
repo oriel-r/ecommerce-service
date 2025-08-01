@@ -16,6 +16,7 @@ import { hash } from 'bcrypt';
 import { AddressService } from 'src/modules/_support/geography/address/address.service';
 import { Store } from 'src/modules/_platform/stores/entities/store.entity';
 import { UpdateMemberBillingDto } from './dto/update-member-billing.dto';
+import { UpdateStatusMemberDto } from './dto/update-status-member.dto';
 
 @Injectable()
 export class MembersService {
@@ -152,22 +153,15 @@ export class MembersService {
     return this.memberRepo.save(member);
   }
 
-  async removeMember(id: string, storeId: string) {
-    const member = await this.memberRepo.findOne({
-      where: { id, storeId: storeId },
-      relations: ['role', 'addresses'],
-    });
-
-    if (!member)
-      throw new NotFoundException('Usuario no encontrado');
-    await this.memberRepo.remove(member);
-    return { message: 'Usuario eliminado correctamente' };
-  }
-
   async findMemberByEmailWithStore(email: string, store: Store) {
     const existing = await this.memberRepo.findOne({
       where: { email, storeId: store.id },
-      relations: ['role', 'addresses'],
+      relations: [
+      'role',
+      'addresses',
+      'addresses.city',
+      'addresses.city.province'
+  ],
     });
     if (!existing)
       throw new NotFoundException('No se ha encontrado el email indicado');
@@ -196,5 +190,11 @@ export class MembersService {
     }
 
     return this.memberRepo.save(member);
+  }
+
+  async updateStatusMember(id: string, updateStatusMember: UpdateStatusMemberDto) {
+      const member = await this.findOneById(id);
+      member.isActive = updateStatusMember.isActive;
+      return await this.memberRepo.save(member);
   }
 }
