@@ -12,7 +12,7 @@ export class OrderItem extends BaseEntity {
     productVariantId: string
 
     @Column({type: 'smallint', nullable: false})
-    quantity: Number
+    quantity: number
 
     @Column({type: 'decimal', precision: 12, scale: 2, nullable: false, name: 'price_at_purchase'})
     priceAtPurchase: number;

@@ -7,6 +7,7 @@ import {
   HttpStatus,
   InternalServerErrorException,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { SendEmailDto } from './dto/send-email.dto';
@@ -15,6 +16,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from 'src/common/guards/auth/auth.guard';
 import { RolesGuard } from 'src/common/guards/roles/roles.guard';
 import { MailService } from './mail.service';
+import { Roles } from 'src/common/decorators/roles/roles.decorators';
 
 @ApiTags('Mail') // Agrupa estas rutas bajo la etiqueta "Mail" en Swagger
 @Controller('Mail') // Prefijo para todas las rutas de este controlador: /Mail
@@ -89,7 +91,8 @@ export class MailController {
     status: 200,
     description: 'Listado de mensajes de contacto obtenido correctamente.',
   })
-  /* @UseGuards(AuthGuard, RolesGuard) */
+  @UseGuards(AuthGuard, RolesGuard)
+  @Roles('platform')
   async getAllInfoContact() {
     return await this.mailService.getAllInfoContact();
   }
