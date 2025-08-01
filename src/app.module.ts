@@ -15,7 +15,7 @@ import { Store } from './modules/_platform/stores/entities/store.entity';
 import { StoreResolverMiddleware } from './common/middlewares/store/store-resolver.middleware';
 import { dbConfig } from './database/data-source';
 import { RolesService } from './modules/auth/roles/roles.service';
-/* import { SeedersModule } from './database/seeding/seeders.module';  */
+import { SeedersModule } from './database/seeding/seeders.module'; 
 
  
 @Module({
@@ -54,7 +54,7 @@ import { RolesService } from './modules/auth/roles/roles.service';
     SupportModule, 
     AuthModule, 
     InventoryModule, 
-    SalesModule, /* SeedersModule */
+    SalesModule, SeedersModule
   ],
   controllers: [AppController],
   providers: [AppService],
