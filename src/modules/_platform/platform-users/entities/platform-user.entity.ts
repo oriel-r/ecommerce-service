@@ -5,9 +5,12 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  OneToMany
+  OneToMany,
+  ManyToOne,
+  JoinColumn
 } from 'typeorm';
 import { Store } from '../../stores/entities/store.entity';
+import { Role } from 'src/modules/auth/roles/entities/role.entity';
 
 @Entity()
 export class PlatformUser {
@@ -32,5 +35,9 @@ export class PlatformUser {
 
   @OneToMany(() => Store, store => store.platformUser)
   stores: Store[];
+
+  @ManyToOne(() => Role)
+  @JoinColumn({ name: 'roleId' })
+  role: Role;
 }
 

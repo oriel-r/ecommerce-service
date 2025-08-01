@@ -12,12 +12,14 @@ import { Store } from '../stores/entities/store.entity';
 import { plainToInstance } from 'class-transformer';
 import { PlatformUserResponseDto } from './dto/platform-user-response.dto';
 import { CreatePlatformUserDto } from './dto/create-platform-user.dto';
+import { RolesService } from 'src/modules/auth/roles/roles.service';
 
 @Injectable()
 export class PlatformUsersService {
   constructor(
     @InjectRepository(PlatformUser)
     private readonly platformUserRepo: Repository<PlatformUser>,
+    private readonly rolesService: RolesService,
   ) {}
 
   async create(
@@ -31,14 +33,26 @@ export class PlatformUsersService {
     const findOwner = await repo.findOne({ where: { email: dto.email } });
     if (findOwner) throw new ConflictException('Email existente');
 
+    const role = await this.rolesService.findByName('platform');
+
     const hashedPassword = await hash(dto.password, 10);
 
     const newOwner = repo.create({
       ...dto,
+      role,
       password: hashedPassword,
     });
 
-    return await repo.save(newOwner);
+    await repo.save(newOwner);
+
+    const user = await repo.findOne({
+      where: { id: newOwner.id },
+      relations: ['role'],
+    });
+
+    if (!user) throw new NotFoundException('Error al cargar el usuario creado');
+
+    return user;
   }
 
   async findByEmailWithStore(email: string, store: Store) {
@@ -56,8 +70,8 @@ export class PlatformUsersService {
 
   async findByEmail(email: string) {
     return await this.platformUserRepo.findOne({
-      where: {email},
-      relations: ['stores'],
+      where: { email },
+      relations: ['stores', 'role'],
     });
   }
 
@@ -80,8 +94,17 @@ export class PlatformUsersService {
     });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} platformUser`;
+   async findById(id: string): Promise<PlatformUser> {
+    const user = await this.platformUserRepo.findOne({
+      where: { id },
+      relations: ['stores'], 
+    });
+
+    if (!user) {
+      throw new NotFoundException('Admin no encontrado');
+    }
+
+    return user;
   }
 
   update(id: number, updatePlatformUserDto: UpdatePlatformUserDto) {

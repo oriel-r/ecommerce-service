@@ -17,20 +17,33 @@ export class RolesGuard implements CanActivate {
       [context.getHandler(), context.getClass()],
     );
 
-    const isPublic = this.reflector.get<boolean>(
-      'isPublic',
-      context.getHandler(),
-    );
+    const isPublic = this.reflector.get<boolean>('isPublic', context.getHandler());
     if (isPublic) return true;
+
+    // Si no hay roles requeridos, permite el acceso
+    if (!requiredRoles || requiredRoles.length === 0) {
+      return true;
+    }
 
     const request = context.switchToHttp().getRequest();
     const user = request.user;
 
-    if (!user || !user.roles) {
+    if (!user) {
       throw new UnauthorizedException('No tienes los permisos adecuados.');
     }
 
-    const userRoles = user.roles.map((ur) => ur.name);
+    let userRoles: string[] = [];
+
+    if (user.roles && Array.isArray(user.roles)) {
+      userRoles = user.roles.map((r) => r.name);
+    } else if (user.role && typeof user.role === 'string') {
+      userRoles = [user.role];
+    } else if (user.role && typeof user.role.name === 'string') {
+      userRoles = [user.role.name];
+    } else {
+      throw new UnauthorizedException('No tienes los permisos adecuados.');
+    }
+
     const hasRole = requiredRoles.some((role) => userRoles.includes(role));
 
     if (!hasRole) {
@@ -40,3 +53,6 @@ export class RolesGuard implements CanActivate {
     return true;
   }
 }
+
+
+

@@ -8,9 +8,11 @@ import { CategoryModule } from 'src/modules/inventory/categories/category.module
 import { CategorySeeder } from './category-seeder/category.seeder';
 import { ProductModule } from 'src/modules/inventory/products/product.module';
 import { ProductsSeeder } from './products-seeder/products.seeder';
+import { MembersModule } from 'src/modules/auth/members/members.module';
+import { RolesModule } from 'src/modules/auth/roles/roles.module';
 
 @Module({
-    imports: [PlatformModule, StoresModule, CategoryModule, ProductModule],
+    imports: [PlatformModule, StoresModule, CategoryModule, ProductModule, MembersModule, RolesModule],
     providers: [SeederService, PlatformUserSeeder, StoreSeeder, CategorySeeder, ProductsSeeder]
 })
 export class SeedersModule {}
