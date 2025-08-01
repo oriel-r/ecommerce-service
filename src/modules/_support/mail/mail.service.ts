@@ -18,6 +18,14 @@ export class MailService {
     private readonly configService: ConfigService,
   ) {}
 
+  async sendPaymentConfimed ({to, subject}: SendEmailDto){
+    await this.sendEmail({
+      to,
+      subject,
+      template: 
+    })
+  }
+
   async sendEmail(sendEmailDto: SendEmailDto): Promise<string> {
     const { to, subject, message, html } = sendEmailDto;
     await this.mailerService.sendMail({

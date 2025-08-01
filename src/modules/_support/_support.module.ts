@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { GeographyModule } from './geography/geography.module';
-import { MailModule } from './notifications/providers/mail/mail.module';
+import { MailModule } from './mail/mail.module';
 import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
