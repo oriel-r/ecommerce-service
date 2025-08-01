@@ -18,6 +18,33 @@ export class MailService {
     private readonly configService: ConfigService,
   ) {}
 
+  async sendPaymentConfimedAdmin ({to, subject}: SendEmailDto){
+    await this.sendEmail({
+      to,
+      subject,
+      template: 'admin-payments-notice'
+    })
+    return
+  }
+
+   async sendPaymentConfimedCustomer ({to, subject}: SendEmailDto){
+    await this.sendEmail({
+      to,
+      subject,
+      template: 'payments-confirmed'
+    })
+    return
+  }
+
+    async orderPendintToPayForCustomer ({to, subject}: SendEmailDto){
+    await this.sendEmail({
+      to,
+      subject,
+      template: 'order-pending-payment'
+    })
+    return
+  }
+
   async sendEmail(sendEmailDto: SendEmailDto): Promise<string> {
     const { to, subject, message, html, template, context } = sendEmailDto;
     await this.mailerService.sendMail({

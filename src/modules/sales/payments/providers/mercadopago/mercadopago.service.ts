@@ -70,6 +70,8 @@ export class MercadoPagoService {
         body: preferencePayload,
         requestOptions: { idempotencyKey: randomUUID() }
       });
+
+      this.logger.debug(result)
       
       return result;
     } catch (error) {
@@ -82,6 +84,8 @@ export class MercadoPagoService {
     if (payload.type !== 'payment') {
       return null;
     }
+
+    this.logger.debug(payload)
 
     try {
       const paymentId = payload.data.id;
