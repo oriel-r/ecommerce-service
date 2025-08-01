@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { NotificationListeners } from './listeners/notification.listeners';
 import { NotificationsService } from './notifications.service';
-import { MailModule } from '../mail/mail.module';
+import { MailModule } from './providers/mail/mail.module';
 import { OrdersModule } from 'src/modules/sales/orders/orders.module';
 import { MembersModule } from 'src/modules/auth/members/members.module';
 

@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { MembersService } from "src/modules/auth/members/members.service";
 import { OrdersService } from "src/modules/sales/orders/orders.service";
-import { MailService } from "../mail/mail.service";
+import { MailService } from "./providers/mail/mail.service";
 
 @Injectable()
 export class NotificationsService {

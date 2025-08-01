@@ -11,8 +11,8 @@ import { MailController } from './mail.controller';
 const isProduction = process.env.ENVIRONMENT === 'PRODUCTION';
 
 const templateDir = isProduction
-  ? join(process.cwd(), 'dist', 'modules', '_support', 'mail', 'templates')
-  : join(process.cwd(), 'src', 'modules', '_support', 'mail', 'templates');
+  ? join(process.cwd(), 'dist', 'modules', '_support', 'notifications', 'providers', 'mail', 'templates')
+  : join(process.cwd(), 'src', 'modules', '_support', 'notifications', 'providers', 'mail', 'templates');
 
 @Module({
   imports: [
