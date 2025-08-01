@@ -4,6 +4,7 @@ import { Category } from "src/modules/inventory/categories/entities/category.ent
 import { Product } from "src/modules/inventory/products/entities/product.entity";
 import { Cart } from "src/modules/sales/carts/entities/cart.entity";
 import { Order } from "src/modules/sales/orders/entities/order.entity";
+import { Payment } from "src/modules/sales/payments/entities/payment.entity";
 
 @Entity()
 export class Store {
@@ -40,4 +41,7 @@ export class Store {
 
     @OneToMany(() => Order, order => order.store)
     orders: Order[]
+
+    @OneToMany(() => Payment, payment => payment.store)
+    payments: Payment[]
 }

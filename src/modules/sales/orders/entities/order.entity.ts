@@ -5,6 +5,7 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColum
 import { OrderItem } from "./order-item.entity";
 import { OrderStatus } from "src/common/enums/order-status.enum";
 import { Address } from "src/modules/_support/geography/address/entities/address.entity";
+import { Payment } from "../../payments/entities/payment.entity";
 
 @Entity('orders')
 export class Order extends BaseEntity{
@@ -97,4 +98,10 @@ export class Order extends BaseEntity{
     @RelationId((order: Order) => order.member)
     memberId: string
 
+    @OneToMany(
+        () => Payment,
+        payment => payment.order,
+        {nullable: true}
+    )
+    payments: Payment[]
 }
