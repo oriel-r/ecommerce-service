@@ -45,6 +45,7 @@ export class OrdersRepository {
             },
             member: true,
             shippingAddress: true, // Asumo que quieres esto también
+            payments: true
         },
         });
     }
@@ -59,6 +60,7 @@ export class OrdersRepository {
                 },
             },
             member: true,
+            payments: true
         },
         });
     }

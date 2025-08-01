@@ -46,7 +46,7 @@ export class OrdersService {
         store: {id: member.storeId} as Store,
         shippingAddress: member.addresses[0],
         subTotal,
-        shippingCost: 0,
+        shippingCost: 9000,
         discountAmount: 0,
         totalAmount,
         status: OrderStatus.PENDING_PAYMENT,
