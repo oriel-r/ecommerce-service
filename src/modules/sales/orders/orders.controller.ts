@@ -36,7 +36,7 @@ export class OrdersController {
   @Post('orders')
   @UseGuards(AuthGuard)
   async createOrderFromMyCart(@CurrentMember() member: CurrentCustomer) {
-    return await this.ordersService.createOrderFromCart(member);
+    return await this.ordersService.createOrderFromCart({memberId: member.memberId, storeId: member.memberId});
   }
   
   @ApiOperation({
