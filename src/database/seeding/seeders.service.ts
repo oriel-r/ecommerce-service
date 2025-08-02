@@ -3,7 +3,7 @@ import { appDataSource } from '../data-source';
 import { PlatformUserSeeder } from './platform-seeder/platform-user.seeder';
 import { StoreSeeder } from './store-seeder/store.seeder';
 import { CategorySeeder } from './category-seeder/category.seeder';
-import { ProductsSeeder } from './products-seeder/products.seeder';
+import { ProductSeeder } from './products-seeder/products.seeder';
 
 // Importa los seeders que vas a utilizar
 
@@ -15,7 +15,7 @@ export class SeederService implements OnModuleInit {
         private readonly platformUserSeeder: PlatformUserSeeder,
         private readonly storeSeeder: StoreSeeder,
         private readonly categorySeeder: CategorySeeder,
-        private readonly productsSeeder: ProductsSeeder
+        private readonly productsSeeder: ProductSeeder
     ) {}
 
 
