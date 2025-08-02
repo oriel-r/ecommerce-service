@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, Req } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
@@ -9,6 +9,9 @@ import { StoreByIdPipe } from '../../_platform/stores/pipes/store-by-id/store-by
 import { Store } from 'src/modules/_platform/stores/entities/store.entity';
 import { createPaginatedResponseDto } from 'src/common/dtos/api-response-paginated.dto';
 import { CategoryTreeResponseDto } from './dto/category-array-responde.dto';
+import { AuthGuard } from 'src/common/guards/auth/auth.guard';
+import { RolesGuard } from 'src/common/guards/roles/roles.guard';
+import { Roles } from 'src/common/decorators/roles/roles.decorators';
 
 @Controller('stores/:storeId/categories')
 export class CategoriesController {
@@ -22,6 +25,8 @@ export class CategoriesController {
     name: 'storeId'
   })
   @ApiWrappedResponse(Category)
+  @Roles('platform')
+  @UseGuards(AuthGuard, RolesGuard)
   @Post()
   async create(
     @Param('storeId', StoreByIdPipe) store: Store,
@@ -63,6 +68,8 @@ export class CategoriesController {
   @ApiResponse({
     status: HttpStatus.NO_CONTENT, type: undefined
   })
+  @Roles('platform')
+  @UseGuards(AuthGuard, RolesGuard)
   @Patch(':id')
   async patch(
     @Param('storeId') storeId,
@@ -76,6 +83,8 @@ export class CategoriesController {
     summary: ''
   })
   @ApiResponse({})
+  @Roles('platform')
+  @UseGuards(AuthGuard, RolesGuard)
   @Delete(':id/force')
   async hardDelete(
     @Param('storeId') storeId,
@@ -88,6 +97,8 @@ export class CategoriesController {
     summary: ''
   })
   @ApiResponse({})
+  @Roles('platform')
+  @UseGuards(AuthGuard, RolesGuard)
   @Delete(':id')
   async softDelete(
     @Param('storeId') storeId,

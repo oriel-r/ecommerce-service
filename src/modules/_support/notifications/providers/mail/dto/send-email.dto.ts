@@ -54,7 +54,7 @@ export class SendEmailDto {
 
   @IsOptional()
   template?: string; 
-
+ 
   @IsOptional()
   context?: Record<string, any>;
 }

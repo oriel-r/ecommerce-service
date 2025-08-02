@@ -5,12 +5,14 @@ import { CurrentCustomer } from 'src/common/interfaces/current-customer.interfac
 import { CartsService } from '../carts/carts.service';
 import { ProductService } from 'src/modules/inventory/products/product.service';
 import { Order } from './entities/order.entity';
-import { OrderStatus } from 'src/common/enums/order-status.enum';
+import { OrderStatus } from 'src/common/enums/orders/order-status.enum';
 import { OrderItem } from './entities/order-item.entity';
 import { Member } from 'src/modules/auth/members/entities/member.entity';
 import { Store } from 'src/modules/_platform/stores/entities/store.entity';
 import { MembersService } from 'src/modules/auth/members/members.service';
 import { FindManyOptions, FindOptionsWhere } from 'typeorm';
+import { EventEmitter2 } from '@nestjs/event-emitter';
+import { OrderNotification } from 'src/common/enums/orders/orders-notifications.enum';
 
 @Injectable()
 export class OrdersService {
@@ -20,7 +22,8 @@ export class OrdersService {
         private readonly ordersRepository: OrdersRepository,
         private readonly cartsService: CartsService,
         private readonly membersService: MembersService,
-        private readonly productsService: ProductService
+        private readonly productsService: ProductService,
+        private readonly eventEmitter: EventEmitter2
     ) {}
 
     async createOrderFromCart(payload: CurrentCustomer): Promise<Order | null> {
@@ -46,7 +49,7 @@ export class OrdersService {
         store: {id: member.storeId} as Store,
         shippingAddress: member.addresses[0],
         subTotal,
-        shippingCost: 0,
+        shippingCost: 9000,
         discountAmount: 0,
         totalAmount,
         status: OrderStatus.PENDING_PAYMENT,
@@ -70,6 +73,8 @@ export class OrdersService {
         variantsToUpdate,
         cart.id,
         );
+
+        this.eventEmitter.emit(OrderNotification.CREATED, {orderId: newOrder.id})
 
         return this.ordersRepository.findOneBy({ id: newOrder.id });
     }

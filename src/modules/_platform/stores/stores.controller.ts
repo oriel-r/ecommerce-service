@@ -50,6 +50,8 @@ export class StoresController {
     return await this.storesService.findOneById(id);
   }
 
+  @Roles('platform')
+  @UseGuards(AuthGuard, RolesGuard)
   @Patch(':id/status')
   @ApiOperation({ summary: 'Actualizar el estado de una tienda por ID' })
   @ApiParam({ name: 'id', description: 'ID de la tienda' })
@@ -59,6 +61,8 @@ export class StoresController {
     return await this.storesService.updateStatusStore(id, updateStatusStoreDto);
   }
 
+  @Roles('platform')
+  @UseGuards(AuthGuard, RolesGuard)
   @Patch(':id')
   @ApiOperation({ summary: 'Actualizar una tienda por ID' })
   @ApiParam({ name: 'id', description: 'ID de la tienda' })

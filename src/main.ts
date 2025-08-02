@@ -7,7 +7,9 @@ import swaggerConfig from './config/api-docs';
 import { ClassSerializerInterceptor } from '@nestjs/common';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    bodyParser: true
+  });
 
   app.useGlobalInterceptors(
     new PerformanceLoggerInterceptor(),

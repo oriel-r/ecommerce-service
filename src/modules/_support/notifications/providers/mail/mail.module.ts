@@ -11,8 +11,8 @@ import { MailController } from './mail.controller';
 const isProduction = process.env.ENVIRONMENT === 'PRODUCTION';
 
 const templateDir = isProduction
-  ? join(process.cwd(), 'dist', 'modules', '_support', 'mail', 'templates')
-  : join(process.cwd(), 'src', 'modules', '_support', 'mail', 'templates');
+  ? join(process.cwd(), 'dist', 'modules', '_support', 'notifications', 'providers', 'mail', 'templates')
+  : join(process.cwd(), 'src', 'modules', '_support', 'notifications', 'providers', 'mail', 'templates');
 
 @Module({
   imports: [
@@ -30,10 +30,10 @@ const templateDir = isProduction
           auth: {
             user: configService.get<string>('MAIL_USERNAME'),
             pass: configService.get<string>('MAIL_PASSWORD'),
-          },
+          }, 
         },
         defaults: {
-          from: `CódigoTotal <${configService.get<string>('MAIL_USERNAME')}>`,
+          from: `Se Instala Shop <${configService.get<string>('MAIL_USERNAME')}>`,
         },
         template: {
           dir: templateDir,

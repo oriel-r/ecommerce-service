@@ -50,7 +50,7 @@ export class MailController {
       );
     }
   }
-
+ 
   /**
    * Procesa el formulario de contacto enviado desde el sitio web.
    * Guarda el mensaje en base de datos.

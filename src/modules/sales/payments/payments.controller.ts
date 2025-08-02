@@ -7,6 +7,8 @@ import {
   ParseUUIDPipe,
   HttpCode,
   HttpStatus,
+  Req,
+  Logger,
 } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation, ApiExcludeEndpoint } from '@nestjs/swagger';
 import { PaymentsService } from './payments.service';
@@ -17,10 +19,14 @@ import { AuthGuard } from 'src/common/guards/auth/auth.guard';
 import { CurrentMember } from 'src/common/decorators/current-curstomer/current-customer.decorator';
 import { CurrentCustomer } from 'src/common/interfaces/current-customer.interface';
 import { CreatePaymentPreferenceResponseDto } from './dto/create-payment-preference-responde.dto';
+import { Request } from 'express';
+import { MercadoPagoWebhookGuard } from 'src/common/guards/mercado-pago/mercado-pago.guard';
 
 @ApiTags('Payments')
 @Controller()
 export class PaymentsController {
+
+  private logger = new Logger(PaymentsController.name)
   constructor(
     private readonly paymentsService: PaymentsService,
     private readonly eventEmitter: EventEmitter2,
@@ -41,15 +47,18 @@ export class PaymentsController {
     return this.paymentsService.createPaymentPreference(orderId, member);
   }
 
-  @ApiExcludeEndpoint() // Excluimos este endpoint de la documentación pública de Swagger
+  @ApiExcludeEndpoint()
+  @UseGuards(MercadoPagoWebhookGuard) 
   @Post('webhooks/mercadopago')
   @HttpCode(HttpStatus.OK)
-  mercadoPagoWebhook(@Body() payload: any) {
-    // El controlador no procesa el webhook. Solo lo recibe y emite
-    // un evento interno para que un servicio desacoplado lo maneje.
+  mercadoPagoWebhook(
+    @Req() req: Request,
+    @Body() payload: any
+  ) {
+
     this.eventEmitter.emit('payment.webhook.received', 'mercadopago', payload);
     
-    // Responde inmediatamente a Mercado Pago para evitar timeouts y reintentos.
+  
     return { status: 'notification received' };
   }
 }
