@@ -3,7 +3,7 @@ import { Store } from "src/modules/_platform/stores/entities/store.entity";
 import { Member } from "src/modules/auth/members/entities/member.entity";
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, RelationId } from "typeorm";
 import { OrderItem } from "./order-item.entity";
-import { OrderStatus } from "src/common/enums/order-status.enum";
+import { OrderStatus } from "src/common/enums/orders/order-status.enum";
 import { Address } from "src/modules/_support/geography/address/entities/address.entity";
 import { Payment } from "../../payments/entities/payment.entity";
 

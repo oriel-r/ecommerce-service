@@ -15,6 +15,8 @@ import { ApiWrappedResponse } from 'src/common/decorators/api-wrapped-response/a
 import { AuthGuard } from 'src/common/guards/auth/auth.guard';
 import { CurrentMember } from 'src/common/decorators/current-curstomer/current-customer.decorator';
 import { CurrentCustomer } from 'src/common/interfaces/current-customer.interface';
+import { Roles } from 'src/common/decorators/roles/roles.decorators';
+import { RolesGuard } from 'src/common/guards/roles/roles.guard';
 
 @ApiTags('Orders')
 @ApiBearerAuth() 
@@ -71,6 +73,8 @@ Z
     summary: 'Get all orders for a specific store (Admin)',
     description: 'Retrieves a paginated list of all orders for a given store. Requires ADMIN role.',
   })
+  @Roles('platform')
+  @UseGuards(AuthGuard, RolesGuard)
   @Get('stores/:storeId/orders')
   @UseGuards(AuthGuard)
   async findAllForStore(
@@ -84,8 +88,9 @@ Z
     description: 'Retrieves a single order by its ID within a store context. Requires ADMIN role.',
   })
   @ApiWrappedResponse(Order)
+  @Roles('platform')
+  @UseGuards(AuthGuard, RolesGuard)
   @Get('stores/:storeId/orders/:orderId')
-  @UseGuards(AuthGuard)
   async findOneForStore(
     @Param('storeId', ParseUUIDPipe) storeId: string,
     @Param('orderId', ParseUUIDPipe) orderId: string,
