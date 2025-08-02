@@ -5,9 +5,7 @@ import { CartItem } from "src/modules/sales/carts/entities/cart-item.entity";
 import { OrderItem } from "src/modules/sales/orders/entities/order-item.entity";
 
 const imagesArray = [
-    "https://i.postimg.cc/0N524FMM/Screenshot-from-2025-07-25-14-42-31.png",
-    "https://i.postimg.cc/0N524FMM/Screenshot-from-2025-07-25-14-42-31.png",
-    "https://i.postimg.cc/0N524FMM/Screenshot-from-2025-07-25-14-42-31.png"
+    "https://res.cloudinary.com/ddhx1kogg/image/upload/v1754159044/LOGO_SE_INSTALA_1_uj4wg0.png",
 ]
 
 @Entity()

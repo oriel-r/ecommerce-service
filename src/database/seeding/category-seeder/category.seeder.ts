@@ -1,81 +1,82 @@
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
-import { Category } from 'src/modules/inventory/categories/entities/category.entity';
-import { UnprocessableEntityException } from '@nestjs/common';
-import { CategoryService } from 'src/modules/inventory/categories/category.service';
-import { StoresService } from 'src/modules/_platform/stores/stores.service';
-import { Store } from 'src/modules/_platform/stores/entities/store.entity';
+import { Injectable, Logger } from '@nestjs/common';
+import { DataSource } from 'typeorm';
 
-const categoriesMock = {
-    Herramientas: ['Espatulas', 'Pinzas', 'Accesorios', 'Otros'],
-    Consumibles: ['Pegamentos', 'Cintas']
-};
-
-type CategorySeedItem = { name: string; parentName?: string };
+import { Category } from 'src/modules/inventory/categories/entities/category.entity'; // Asegúrate que la ruta sea correcta
+import { Store } from 'src/modules/_platform/stores/entities/store.entity'; // Asegúrate que la ruta sea correcta
+import { categoriesMock, defaultStoreMock } from '../mocks'; // Ajusta la ruta a tu archivo de mocks
+import { appDataSource } from 'src/database/data-source';
 
 @Injectable()
 export class CategorySeeder {
     private readonly logger = new Logger(CategorySeeder.name);
+    private readonly dataSource: DataSource;
 
-    constructor(
-        private readonly categoriesService: CategoryService,
-        private readonly storesService: StoresService,
-    ) {}
-
-    async seedBaseCategories() {
-        try {
-            const defaultStore = await this.storesService.findByDomain('localhost');
-            if (!defaultStore) {
-                this.logger.error('No se encontró la tienda por defecto. Omitiendo seeding de categorías.');
-                return;
-            }
-
-            const flattenedCategories = Object.entries(categoriesMock).reduce((acc, [parentName, children]) => {
-                acc.push({ name: parentName });
-                children.forEach(childName => acc.push({ name: childName, parentName }));
-                return acc;
-            }, [] as CategorySeedItem[]);
-
-            const parentCategoriesMap = new Map<string, Category>();
-
-            const parentItems = flattenedCategories.filter(item => !item.parentName);
-            for (const item of parentItems) {
-                await this.createOrFetchCategory(defaultStore, item, parentCategoriesMap);
-            }
-
-            const childItems = flattenedCategories.filter(item => item.parentName);
-            for (const item of childItems) {
-                const parent = parentCategoriesMap.get(item.parentName!);
-                if (parent) {
-                    await this.createOrFetchCategory(defaultStore, { ...item, parentId: parent.id });
-                }
-            }
-            this.logger.log('Se agregaron las categorías base')
-        } catch (error) {
-            this.logger.error('Fallo inesperado durante el seeding de categorías:', error.stack);
-        }
+    constructor() {
+        this.dataSource = appDataSource;
     }
 
-    private async createOrFetchCategory(
-        store: Store,
-        item: CategorySeedItem & { parentId?: string },
-        map?: Map<string, Category>
-    ) {
-        try {
-            const newCategory = await this.categoriesService.create(store, { name: item.name, parentId: item.parentId });
-            if (map && !item.parentName) {
-                map.set(item.name, newCategory);
-            }
-        } catch (error) {
-            if (error instanceof UnprocessableEntityException) {
-                if (map && !item.parentName) {
-                    const existingCategory = await this.categoriesService.getByName(store.id, item.name);
-                    if (existingCategory) {
-                        map.set(item.name, existingCategory);
-                    }
-                }
+    async run() {
+        this.logger.log('Iniciando el seeder de Categorías...');
+
+        const categoryRepository = this.dataSource.getRepository(Category);
+        const storeRepository = this.dataSource.getRepository(Store);
+
+        const defaultStore = await storeRepository.findOneBy({ 
+            domain: defaultStoreMock.domain 
+        });
+
+        if (!defaultStore) {
+            this.logger.error(`Error crítico: La tienda por defecto con dominio '${defaultStoreMock.domain}' no fue encontrada.`);
+            this.logger.error('Asegúrese de que el seeder de Store se ejecute antes que este seeder.');
+            return;
+        }
+
+        this.logger.log(`Tienda encontrada (ID: ${defaultStore.id}). Procediendo a sembrar categorías...`);
+
+        const parentCategoriesMap = new Map<string, Category>();
+
+        for (const [parentName, childrenNames] of Object.entries(categoriesMock)) {
+            
+            let parentCategory = await categoryRepository.findOne({
+                where: { name: parentName, store: { id: defaultStore.id } }
+            });
+
+            if (parentCategory) {
+                this.logger.log(`La categoría padre '${parentName}' ya existe. Usando la existente.`);
             } else {
-                throw error;
+                this.logger.log(`Creando categoría padre: '${parentName}'...`);
+                parentCategory = categoryRepository.create({
+                    name: parentName,
+                    store: defaultStore,
+                    parent: null, // Los padres no tienen padre
+                });
+                await categoryRepository.save(parentCategory);
+                this.logger.log(`Categoría padre '${parentName}' creada.`);
+            }
+            
+            parentCategoriesMap.set(parentName, parentCategory);
+
+            
+            for (const childName of childrenNames) {
+                let childCategory = await categoryRepository.findOne({
+                    where: { name: childName, store: { id: defaultStore.id } }
+                });
+
+                if (childCategory) {
+                    this.logger.log(`La categoría hija '${childName}' ya existe. Omitiendo creación.`);
+                } else {
+                    this.logger.log(`Creando categoría hija '${childName}' para el padre '${parentName}'...`);
+                    childCategory = categoryRepository.create({
+                        name: childName,
+                        store: defaultStore,
+                        parent: parentCategory, // Asignar el padre
+                    });
+                    await categoryRepository.save(childCategory);
+                    this.logger.log(`Categoría hija '${childName}' creada.`);
+                }
             }
         }
+
+        this.logger.log('Seeding de categorías base completado.');
     }
 }

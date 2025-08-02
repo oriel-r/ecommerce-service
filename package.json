@@ -7,7 +7,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build && npm run copy-templates",
-    "copy-templates": "cpx \"src/modules/_support/mail/templates/**/*\" dist/modules/_support/mail/templates",
+    "copy-templates":  "cpx \"src/modules/_support/notifications/providers/mail/templates/**/*\" \"dist/modules/_support/notifications/providers/mail/templates\"",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",

@@ -40,7 +40,7 @@ export class OrdersService {
             0,
         );
 
-        const totalAmount = subTotal;
+        const totalAmount = subTotal + 9000;
 
         const member = await this.membersService.findOneByStore(payload.storeId, payload.memberId)
 

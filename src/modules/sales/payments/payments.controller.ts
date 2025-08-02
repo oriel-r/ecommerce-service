@@ -48,7 +48,7 @@ export class PaymentsController {
   }
 
   @ApiExcludeEndpoint()
-  @UseGuards(MercadoPagoWebhookGuard) 
+ // @UseGuards(MercadoPagoWebhookGuard) 
   @Post('webhooks/mercadopago')
   @HttpCode(HttpStatus.OK)
   mercadoPagoWebhook(
