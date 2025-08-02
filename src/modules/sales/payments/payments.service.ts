@@ -3,9 +3,10 @@ import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 import { PaymentsRepository } from './payments.repository';
 import { MercadoPagoService } from './providers/mercadopago/mercadopago.service';
 import { OrdersService } from '../orders/orders.service';
-import { PaymentStatus } from 'src/common/enums/payment-status.enum';
+import { PaymentStatus } from 'src/common/enums/payments/payment-status.enum';
 import { CurrentCustomer } from 'src/common/interfaces/current-customer.interface';
 import { CreatePaymentPreferenceResponseDto } from './dto/create-payment-preference-responde.dto';
+import { PaymentStatusNotification } from 'src/common/enums/payments/payment-notification.enum';
 
 @Injectable()
 export class PaymentsService {
@@ -63,13 +64,13 @@ export class PaymentsService {
     await this.paymentsRepository.save(payment);
 
     if (status === PaymentStatus.SUCCESSFUL) {
-      this.eventEmitter.emit('payment.successful', { orderId });
+      this.eventEmitter.emit(PaymentStatusNotification.SUCCESSFUL, { orderId });
     } else if (status === PaymentStatus.FAILED) {
       this.eventEmitter.emit('payment.failed', { orderId });
     }
   }
 
-  @OnEvent('payment.successful')
+  @OnEvent(PaymentStatusNotification.SUCCESSFUL)
   async handleSuccessfulPayment(payload: { orderId: string }) {
     await this.ordersService.markAsPaid(payload.orderId);
   }

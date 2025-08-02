@@ -9,6 +9,8 @@ import { Cart } from './entities/cart.entity';
 import { AddItemToCartDto } from './dto/add-item-to-cart.dto';
 import { Member } from 'src/modules/auth/members/entities/member.entity';
 import { UpdateCartItemDto } from './dto/update-cart-item.dto';
+import { Roles } from 'src/common/decorators/roles/roles.decorators';
+import { RolesGuard } from 'src/common/guards/roles/roles.guard';
 
 @Controller('carts')
 @UseGuards(AuthGuard)

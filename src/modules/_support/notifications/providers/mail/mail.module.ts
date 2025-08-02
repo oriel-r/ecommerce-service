@@ -30,10 +30,10 @@ const templateDir = isProduction
           auth: {
             user: configService.get<string>('MAIL_USERNAME'),
             pass: configService.get<string>('MAIL_PASSWORD'),
-          },
+          }, 
         },
         defaults: {
-          from: `CódigoTotal <${configService.get<string>('MAIL_USERNAME')}>`,
+          from: `Se Instala Shop <${configService.get<string>('MAIL_USERNAME')}>`,
         },
         template: {
           dir: templateDir,

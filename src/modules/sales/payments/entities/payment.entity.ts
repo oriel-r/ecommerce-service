@@ -2,7 +2,7 @@ import { Entity, Column, ManyToOne, JoinColumn, Index, PrimaryGeneratedColumn } 
 import { BaseEntity } from 'src/common/entities/base.entity';
 import { Store } from 'src/modules/_platform/stores/entities/store.entity';
 import { Order } from '../../orders/entities/order.entity';
-import { PaymentStatus } from 'src/common/enums/payment-status.enum';
+import { PaymentStatus } from 'src/common/enums/payments/payment-status.enum';
 
 @Entity('payments')
 export class Payment extends BaseEntity {

@@ -4,7 +4,7 @@ import { randomUUID } from 'crypto';
 import MercadoPagoConfig, { Payment, Preference } from 'mercadopago';
 import { Items } from 'mercadopago/dist/clients/commonTypes';
 import { PreferenceRequest } from 'mercadopago/dist/clients/preference/commonTypes';
-import { PaymentStatus } from 'src/common/enums/payment-status.enum';
+import { PaymentStatus } from 'src/common/enums/payments/payment-status.enum';
 import { Member } from 'src/modules/auth/members/entities/member.entity';
 import { Order } from 'src/modules/sales/orders/entities/order.entity';
 
