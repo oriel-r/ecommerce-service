@@ -21,7 +21,7 @@ export const defaultStoreMock = {
 
 export const categoriesMock = {
     Herramientas: ['Cutters y filos', 'Scrapers', 'Buffers y fundas', 'Accesorios', 'Otros'],
-    Consumibles: ['Guantes', 'Vonixx']
+    Consumibles: ['Guantes', 'Vonixx', 'Cintas']
 }
 
 export type ProductMock = {
