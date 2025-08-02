@@ -1,97 +1,94 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { DataSource } from 'typeorm';
+// Archivo: src/database/seeding/products.seeder.ts
 
-import { Store } from 'src/modules/_platform/stores/entities/store.entity';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { DataSource, In, Repository } from 'typeorm';
+import { productsMock } from '../mocks';
 import { Category } from 'src/modules/inventory/categories/entities/category.entity';
-import { Product } from 'src/modules/inventory/products/entities/product.entity';
-import { ProductVariant } from 'src/modules/inventory/products/entities/product-variant.entity';
 import { ProductCategory } from 'src/modules/inventory/products/entities/product-category.entity';
-import { defaultStoreMock, productsMock } from '../mocks'; // Ajusta la ruta a tu archivo de mocks
-import { appDataSource } from 'src/database/data-source';
+import { ProductVariant } from 'src/modules/inventory/products/entities/product-variant.entity';
+import { Product } from 'src/modules/inventory/products/entities/product.entity';
+
+const productsToSeed = productsMock;
+const images = ["https://res.cloudinary.com/ddhx1kogg/image/upload/v1754159044/LOGO_SE_INSTALA_1_uj4wg0.png"]
 
 @Injectable()
-export class ProductsSeeder {
-    private readonly logger = new Logger(ProductsSeeder.name);
-    private readonly dataSource: DataSource;
-
-    constructor() {
-        this.dataSource = appDataSource;
-    }
+export class ProductSeeder {
+    constructor(
+        private readonly dataSource: DataSource, // Inyectamos el DataSource para manejar transacciones
+        @InjectRepository(Product)
+        private readonly productRepository: Repository<Product>,
+    ) {}
 
     async run() {
-        this.logger.log('Iniciando el seeder de Productos...');
+        // Obtenemos el Query Runner para controlar la transacción
+        const queryRunner = this.dataSource.createQueryRunner();
+        await queryRunner.connect();
 
-        // Obtenemos todos los repositorios que vamos a necesitar
-        const storeRepository = this.dataSource.getRepository(Store);
-        const categoryRepository = this.dataSource.getRepository(Category);
-        const productRepository = this.dataSource.getRepository(Product);
-        const productCategoryRepository = this.dataSource.getRepository(ProductCategory);
+        console.log('Iniciando el seeder de Productos con entidad de unión explícita...');
 
-        const defaultStore = await storeRepository.findOneBy({ domain: defaultStoreMock.domain });
-
-        if (!defaultStore) {
-            this.logger.error(`Error crítico: La tienda por defecto con dominio '${defaultStoreMock.domain}' no fue encontrada. Se omite el seeding de productos.`);
-            return;
-        }
-
-        for (const productMock of productsMock) {
-            
-            const productExists = await productRepository.findOneBy({
-                name: productMock.name,
-                store: { id: defaultStore.id },
-            });
-
-            if (productExists) {
-                this.logger.log(`El producto '${productMock.name}' ya existe. Omitiendo.`);
-                continue; // Pasar al siguiente producto del mock
-            }
-
-            this.logger.log(`Procesando producto: '${productMock.name}'...`);
-
-            const categoriesToAssign: Category[] = [];
-            for (const categoryName of productMock.categories) {
-                const category = await categoryRepository.findOneBy({ name: categoryName, store: { id: defaultStore.id } });
-                if (category) {
-                    categoriesToAssign.push(category);
-                } else {
-                    this.logger.warn(`La categoría '${categoryName}' no fue encontrada para el producto '${productMock.name}'. Será omitida.`);
-                }
-            }
-
-            const { variants: variantsMock, ...productData } = productMock;
-
-            const variantsToCreate = variantsMock.map(variantMock => {
-                const variant = new ProductVariant();
-                Object.assign(variant, variantMock);
-                return variant;
-            });
-            
-            const productToCreate = productRepository.create({
-                ...productData,
-                store: defaultStore,
-                variants: variantsToCreate, // TypeORM se encargará de esto gracias a la relación
-            });
-
+        for (const productData of productsToSeed) {
+            await queryRunner.startTransaction(); // Iniciamos una transacción para cada producto
             try {
-                const savedProduct = await productRepository.save(productToCreate);
-                this.logger.log(`Producto '${savedProduct.name}' y sus ${savedProduct.variants.length} variantes creados exitosamente.`);
-
-                if (categoriesToAssign.length > 0) {
-                    const categoryAssignments = categoriesToAssign.map(category => 
-                        productCategoryRepository.create({
-                            productId: savedProduct.id,
-                            categoryId: category.id,
-                        })
-                    );
-                    await productCategoryRepository.save(categoryAssignments);
-                    this.logger.log(`Asignadas ${categoryAssignments.length} categorías a '${savedProduct.name}'.`);
+                const productExists = await queryRunner.manager.findOneBy(Product, { name: productData.name });
+                if (productExists) {
+                    console.log(`Producto "${productData.name}" ya existe, saltando.`);
+                    await queryRunner.rollbackTransaction(); // Revertimos la transacción vacía
+                    continue;
                 }
 
-            } catch (error) {
-                this.logger.error(`Falló la creación del producto '${productMock.name}'.`, error.stack);
+                // --- 1. Buscar las Categorías ---
+                const categoryRepo = queryRunner.manager.getRepository(Category);
+                const categoryEntities = await categoryRepo.find({
+                    where: { name: In(productData.categories) },
+                });
+
+                if (categoryEntities.length !== productData.categories.length) {
+                    console.warn(`Alerta: No se encontraron todas las categorías para "${productData.name}". Verifique que existan.`);
+                }
+                
+                // --- 2. Crear el Producto y sus Variantes (aún sin las categorías) ---
+                const newProduct = new Product();
+                newProduct.name = productData.name;
+                newProduct.description = productData.description!;
+                newProduct.variants = productData.variants.map(vData => {
+                    const variant = new ProductVariant();
+                    variant.price = vData.price;
+                    variant.stock = vData.stock ?? 999;
+                    variant.isDefault = vData.isDefault ?? false;
+                    variant.optionName = vData.optionName;
+                    variant.optionValue = vData.optionValue;
+                    variant.images = images
+                    return variant;
+                });
+                
+                // Guardamos el producto y sus variantes primero. La cascada se encargará de las variantes.
+                const savedProduct = await queryRunner.manager.save(newProduct);
+
+                // --- 3. Crear las Relaciones en la Tabla Intermedia ---
+                const productCategoryRepo = queryRunner.manager.getRepository(ProductCategory);
+                const relationsToCreate = categoryEntities.map(categoryEntity => {
+                    return productCategoryRepo.create({
+                        product: savedProduct,
+                        category: categoryEntity,
+                    });
+                });
+                
+                // Guardamos todas las relaciones
+                await productCategoryRepo.save(relationsToCreate);
+
+                // Si todo fue bien, confirmamos la transacción
+                await queryRunner.commitTransaction();
+                console.log(`Producto "${savedProduct.name}" y sus relaciones creados exitosamente.`);
+
+            } catch (err) {
+                // Si algo falla, revertimos todos los cambios de este producto
+                console.error(`Error al crear el producto "${productData.name}". Revirtiendo cambios.`, err);
+                await queryRunner.rollbackTransaction();
             }
         }
-
-        this.logger.log('Seeding de productos completado.');
+        // Liberamos el query runner al final
+        await queryRunner.release();
+        console.log('Seeder de Productos finalizado.');
     }
 }
