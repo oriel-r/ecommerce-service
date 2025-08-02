@@ -13,11 +13,10 @@ export class PlatformUserSeeder {
     private readonly dataSource: DataSource;
 
     constructor() {
-        // Inicializamos el DataSource directamente
         this.dataSource = appDataSource;
     }
 
-    async seed() {
+    async run() {
 
         this.logger.log('Iniciando el seeder de PlatformUser...');
 
