@@ -1,9 +1,22 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { MembersService } from './members.service';
 import { MembersController } from './members.controller';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Member } from './entities/member.entity';
+import { RolesModule } from '../roles/roles.module';
+import { StoresModule } from 'src/modules/_platform/stores/stores.module';
+import { AddressModule } from 'src/modules/_support/geography/address/address.module';
+import { PlatformModule } from 'src/modules/_platform/_platform.module';
 
 @Module({
+  imports: [TypeOrmModule.forFeature([Member]), 
+  forwardRef(() => RolesModule),
+  forwardRef(() => StoresModule),
+  forwardRef(() => AddressModule),
+  forwardRef(() => PlatformModule)
+],
   controllers: [MembersController],
   providers: [MembersService],
+  exports: [MembersService]
 })
 export class MembersModule {}

@@ -8,7 +8,7 @@ const isProduction = process.env.ENVIRONMENT === 'PRODUCTION';
 
 const dataSourceConfig: DataSourceOptions = {
   type: 'postgres',
-  host: isProduction ? process.env.DB_HOST_PRODUDCTION : process.env.DB_HOST_LOCAL,
+  host: isProduction ? `/cloudsql/${process.env.INSTANCE_CONNECTION_NAME}` : process.env.DB_HOST_LOCAL,
   port: parseInt(
     isProduction ? process.env.DB_PORT_PRODUCTION! : process.env.DB_PORT_LOCAL!,
   ),
@@ -19,10 +19,10 @@ const dataSourceConfig: DataSourceOptions = {
     ? process.env.DB_PASSWORD_PRODUCTION as string
     : process.env.DB_PASSWORD_LOCAL as string,
   database: isProduction ? process.env.DB_NAME_PRODUCTION : process.env.DB_NAME_LOCAL,
-  synchronize: true,
-  dropSchema: true,
+  synchronize: false,
+  dropSchema: false,  
   logging: ['error'],
-  ssl: isProduction ? { rejectUnauthorized: true } : false,
+  ssl: isProduction ? { rejectUnauthorized: false } : false,
   entities: ['dist/**/*.entity{.ts,.js}'],
   migrations: ['dist/database/migrations/*{.js,.ts}'],
 };
