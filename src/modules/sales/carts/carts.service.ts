@@ -20,9 +20,8 @@ export class CartsService {
     async getMemberCart(data: CurrentCustomer) {
       const {storeId, memberId} = data
 
-      this.logger.debug(data)    
       const cart = await this.cartsRepository.findOrCreate(storeId, memberId)
-      this.logger.debug(cart)
+
       if(!cart) throw new InternalServerErrorException('hubo un error desconocido al traer el carrito')
         return cart
     }
