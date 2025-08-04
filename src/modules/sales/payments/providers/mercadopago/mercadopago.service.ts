@@ -85,8 +85,6 @@ export class MercadoPagoService {
       return null;
     }
 
-    this.logger.debug(payload)
-
     try {
       const paymentId = payload.data.id;
       this.logger.log(`Handling webhook for payment ID: ${paymentId}`);
@@ -101,7 +99,6 @@ export class MercadoPagoService {
       
       const status = this.translateStatus(payment.status);
 
-      // 3. Devolver los datos procesados y estandarizados
       return {
         orderId,
         storeId: payment.metadata?.store_id, // Asume que guardaste store_id en metadata
