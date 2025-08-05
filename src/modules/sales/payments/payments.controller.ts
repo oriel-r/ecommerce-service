@@ -48,7 +48,7 @@ export class PaymentsController {
   }
 
   @ApiExcludeEndpoint()
- // @UseGuards(MercadoPagoWebhookGuard) 
+  @UseGuards(MercadoPagoWebhookGuard) 
   @Post('webhooks/mercadopago')
   @HttpCode(HttpStatus.OK)
   mercadoPagoWebhook(
@@ -58,7 +58,6 @@ export class PaymentsController {
 
     this.eventEmitter.emit('payment.webhook.received', 'mercadopago', payload);
     
-  
     return { status: 'notification received' };
   }
 }
