@@ -7,7 +7,7 @@ import { ProductVariant } from "src/modules/inventory/products/entities/product-
 import { DeepPartial } from "typeorm";
 
 export const platformUserMock: CreatePlatformUserWithStoreDto = {
-    email: 'administración@seintalashop.com',
+    email: 'administracion@seintalashop.com.ar',
     password: 'Admin@1234*',
     fullName: 'Usuario Admin',
     storeName: 'seinstalashop',
