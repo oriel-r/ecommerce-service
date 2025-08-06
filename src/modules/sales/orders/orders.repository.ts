@@ -45,7 +45,10 @@ export class OrdersRepository {
             },
             member: true,
             shippingAddress: true, // Asumo que quieres esto también
-            payments: true
+            payments: true,
+            store: {
+                platformUser: true
+            }
         },
         });
     }

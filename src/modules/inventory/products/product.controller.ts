@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, Put, Req } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, Put, Req, UseGuards } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { Request } from 'express';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
@@ -14,6 +14,10 @@ import { plainToInstance } from 'class-transformer';
 import { ProductArrayResponseDto } from './dto/product-array-response.dto';
 import { ProductReponseDto } from './dto/product-reponse.dto';
 import { CreateProductVariantDto } from './dto/create-product-variant.dto';
+import { AuthGuard } from 'src/common/guards/auth/auth.guard';
+import { RolesGuard } from 'src/common/guards/roles/roles.guard';
+import { Role } from 'src/modules/auth/roles/entities/role.entity';
+import { Roles } from 'src/common/decorators/roles/roles.decorators';
 
 @Controller('stores/:storeId/products')
 export class ProductController {
@@ -27,6 +31,8 @@ export class ProductController {
     description: 'Create new product'
   })
   @ApiWrappedResponse(Product)
+  @Roles('platform')
+  @UseGuards(AuthGuard, RolesGuard)
   @Post()
   async create(
     @Param('storeId', StoreByIdPipe ) store: Store,
@@ -65,6 +71,8 @@ export class ProductController {
     description: 'edit a product'
   })
   @ApiWrappedResponse(Product)
+  @Roles('platform')
+  @UseGuards(AuthGuard, RolesGuard)
   @Patch(':id')
   async patch(
     @Param('storeId') store: string,
@@ -77,6 +85,8 @@ export class ProductController {
   @ApiOperation({
     description: 'soft delete product'
   })
+  @Roles('platform')
+  @UseGuards(AuthGuard, RolesGuard)
   @Delete(':id')
   async softDelete(
     @Param('storeId') store: string,
@@ -88,6 +98,8 @@ export class ProductController {
   @ApiOperation({
     description: 'delete product'
   })
+  @Roles('platform')  
+  @UseGuards(AuthGuard, RolesGuard)
   @Delete(':id/force')
   async delete(
     @Param('storeId') store: string,
@@ -104,6 +116,8 @@ export class ProductController {
     description: 'assign categories to a product'
   })
   @ApiWrappedResponse(Product)
+  @Roles('platform') 
+  @UseGuards(AuthGuard, RolesGuard)
   @Post(':id/categories')
   async assignCategoryToProdut(
     @Param('storeId') store: string,
@@ -117,6 +131,8 @@ export class ProductController {
     description: 'Replace all categories assigned to a product'
   })
   @ApiWrappedResponse(Product)
+  @Roles('platform')
+  @UseGuards(AuthGuard, RolesGuard)
   @Put(':id/categories')
   async syncProductsCategories(
     @Param('storeId') store: string,
@@ -129,6 +145,8 @@ export class ProductController {
   @ApiOperation({
     description: 'delete product category'
   })
+  @Roles('platform')
+  @UseGuards(AuthGuard, RolesGuard)
   @Delete(':id/categories')
   async deleteProductCategory(
     @Param('storeId') store: string,
@@ -146,6 +164,8 @@ export class ProductController {
     description: 'create a product variant'
   })
   @ApiResponse({})
+  @Roles('platform')
+  @UseGuards(AuthGuard, RolesGuard)
   @Post(':productId/variants')
   async createProductVaraint(
     @Param('storeId') storeId: string,
@@ -160,6 +180,8 @@ export class ProductController {
       description: 'edit product variant'
   })
   @ApiResponse({})
+  @Roles('platform')
+  @UseGuards(AuthGuard, RolesGuard)
   @Patch(':productId/variants/:id')
   async editVariant(
     @Param('storeId') storeId: string,
@@ -172,6 +194,8 @@ export class ProductController {
 
   @ApiOperation({})
   @ApiResponse({})
+  @Roles('platform')
+  @UseGuards(AuthGuard, RolesGuard)
   @Delete(':productId/variants/:id')
   async deleteProductVariant(
     @Param('storeId') storeId: string,

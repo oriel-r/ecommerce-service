@@ -5,11 +5,17 @@ import { ResponseInterceptor } from './common/interceptors/response/response.int
 import { SwaggerModule } from '@nestjs/swagger';
 import swaggerConfig from './config/api-docs';
 import { ClassSerializerInterceptor } from '@nestjs/common';
+import { appDataSource } from './database/data-source';
 
 async function bootstrap() {
+  await appDataSource.initialize();
+  await appDataSource.runMigrations();
+  
   const app = await NestFactory.create(AppModule, {
     bodyParser: true
   });
+
+
 
   app.useGlobalInterceptors(
     new PerformanceLoggerInterceptor(),

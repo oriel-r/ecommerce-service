@@ -58,7 +58,6 @@ export class PaymentsController {
 
     this.eventEmitter.emit('payment.webhook.received', 'mercadopago', payload);
     
-  
     return { status: 'notification received' };
   }
 }

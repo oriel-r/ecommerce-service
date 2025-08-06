@@ -17,9 +17,12 @@ export class CartsService {
         private readonly productsService: ProductService
     ) {}
 
-    async getMemberCart(data: {memberId: string, storeId: string}) {
-        const cart = await this.cartsRepository.findOrCreate(data.storeId, data.memberId)
-        if(!cart) throw new InternalServerErrorException('hubo un error desconocido al traer el carrito')
+    async getMemberCart(data: CurrentCustomer) {
+      const {storeId, memberId} = data
+
+      const cart = await this.cartsRepository.findOrCreate(storeId, memberId)
+
+      if(!cart) throw new InternalServerErrorException('hubo un error desconocido al traer el carrito')
         return cart
     }
 

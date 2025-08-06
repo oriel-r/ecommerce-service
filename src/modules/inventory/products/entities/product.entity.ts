@@ -25,10 +25,10 @@ export class Product extends BaseEntity {
     @Column({type: 'boolean', default: false, name: 'is_featured'})
     isFeatured: boolean
 
-    @OneToMany(() => ProductCategory, productCategory => productCategory.product, {nullable: true})
+    @OneToMany(() => ProductCategory, productCategory => productCategory.product, {nullable: true, cascade: ['insert', 'update']})
     categoryAssignments: ProductCategory[]
 
-    @OneToMany(() => ProductVariant , productVariant => productVariant.product, {nullable: false})
+    @OneToMany(() => ProductVariant , productVariant => productVariant.product, {nullable: false, cascade: true})
     variants: ProductVariant[]
 
     @ManyToOne(() => Store, (store) => store.products, {nullable: false, onDelete: 'CASCADE'})
