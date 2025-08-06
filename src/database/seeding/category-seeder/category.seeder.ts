@@ -6,8 +6,8 @@ import { StoresService } from 'src/modules/_platform/stores/stores.service';
 import { Store } from 'src/modules/_platform/stores/entities/store.entity';
 
 const categoriesMock = {
-    Herramientas: ['Espatulas', 'Pinzas', 'Accesorios', 'Otros'],
-    Consumibles: ['Pegamentos', 'Cintas']
+    Herramientas: ['Espatulas', 'Pinzas', 'Accesorios', 'Otros', 'Cutters y filos', 'Scrapers', 'Buffers y fundas'],
+    Consumibles: ['Pegamentos', 'Cintas', 'Guantes', 'Vonixx']
 };
 
 type CategorySeedItem = { name: string; parentName?: string };

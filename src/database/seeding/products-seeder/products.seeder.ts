@@ -1,4 +1,4 @@
-import { Injectable, Logger } from "@nestjs/common";
+import { Injectable, Logger, UnprocessableEntityException } from "@nestjs/common";
 import { CategoryService } from "src/modules/inventory/categories/category.service";
 import { ProductService } from "src/modules/inventory/products/product.service";
 import { ProductMock, productsMock } from "../mocks";
@@ -28,7 +28,7 @@ export class ProductsSeeder {
                 for (const product of productsMock) {
                         await this.createProduct(product, store)
                     }
-                this.logger.log('Productos de muestra añadidos')    
+                this.logger.log('Productos de muestra añadidos')     
             } catch(error) {
                 this.logger.warn('Error desconocido al agregar productos', error)
                 return
@@ -44,23 +44,36 @@ export class ProductsSeeder {
         const categoriesToAssign = await Promise.all(
             categories.map(name => this.categoryService.getByName(store.id, name))
         )
-        const product = await this.productService.create(store, {
-            ...others,
-            name
-        })
-        const categoriesIds = categoriesToAssign.map(category => category.id)
+        
+        try {
+            const product = await this.productService.create(store, {
+                ...others,
+                name
+            })
 
-        const variantPromises = variants.map(
-            variant => this.productService.createProductVariant(store.id, product.id, variant)
-        )
+            const categoriesIds = categoriesToAssign.map(category => category.id)
 
-        await Promise.all(variantPromises)
+            const variantPromises = variants.map(
+                variant => this.productService.createProductVariant(store.id, product.id, variant)
+            )
 
-        await this.productService.assignCategoryToProduct(
-            {categoriesIds: categoriesIds},
-            product.id,
-            store.id
-        )
+            await Promise.all(variantPromises)
+
+            await this.productService.assignCategoryToProduct(
+                {categoriesIds: categoriesIds},
+                product.id,
+                store.id
+            )
+            
+        } catch (error) {
+            if (error instanceof UnprocessableEntityException) {
+                this.logger.warn(`El producto "${name}" ya existe. Omitiendo su creación.`);
+                // No hacemos nada más, simplemente el seeder continúa con el siguiente producto.
+            } else {
+                this.logger.error(`Fallo al crear el producto "${name}":`, error.stack);
+                throw error; // Lanzamos cualquier otro error inesperado.
+            }
+        }
 
         return
     }
