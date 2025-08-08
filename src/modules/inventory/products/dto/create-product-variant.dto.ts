@@ -10,7 +10,7 @@ export class CreateProductVariantDto {
     @IsNotEmpty({message: 'No puedes crear un producto sin su precio'})
     @IsNumber({maxDecimalPlaces: 2})
     @Min(0, {message: 'El precio debe ser mayor o igual a 0'})
-    price: number
+    listPrice: number
 
     @ApiProperty({
         description: "Variant's stock, optional at the moment"

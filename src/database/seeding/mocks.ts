@@ -39,8 +39,8 @@ export const productsMock: ProductMock[] = [
         description: 'Guantes Protools para wrapping de vehículos.',
         categories: ['Consumibles', 'Guantes'],
         variants: [
-            { isDefault: true, optionName: 'Talle', optionValue: '8', sku: 'PG008', price:11140.41 },
-            { optionName: 'Talle', optionValue: '9', sku: 'PG009', price:11140.41 },
+            { isDefault: true, optionName: 'Talle', optionValue: '8', sku: 'PG008', listPrice:11140.41 },
+            { optionName: 'Talle', optionValue: '9', sku: 'PG009', listPrice:11140.41 },
         ]
     },
     {
@@ -48,7 +48,7 @@ export const productsMock: ProductMock[] = [
         description: 'Cutter de 25mm para trabajos profesionales y semi-profesionales.',
         categories: ['Herramientas', 'Cutters y filos'],
         variants: [
-            { isDefault: true, optionName: 'Modelo', optionValue: '15-063XD', price: 15368.46 },
+            { isDefault: true, optionName: 'Modelo', optionValue: '15-063XD', listPrice: 15368.46 },
         ]
     },
     {
@@ -56,7 +56,7 @@ export const productsMock: ProductMock[] = [
         description: 'Scraper de plástico económico para trabajos de limpieza y preparación de superficies.',
         categories: ['Herramientas', 'Scrapers'],
         variants: [
-            { isDefault: true, optionName: 'Material', optionValue: 'Plastico', sku: '15-078', price: 4257.46 },
+            { isDefault: true, optionName: 'Material', optionValue: 'Plastico', sku: '15-078', listPrice: 4257.46 },
         ]
     },
     {
@@ -64,7 +64,7 @@ export const productsMock: ProductMock[] = [
         description: 'Scraper de plástico de alta resistencia para uso profesional.',
         categories: ['Herramientas', 'Scrapers'],
         variants: [
-            { isDefault: true, optionName: 'Modelo', optionValue: '15-079', price: 16532.05 },
+            { isDefault: true, optionName: 'Modelo', optionValue: '15-079', listPrice: 16532.05 },
         ]
     },
     {
@@ -72,7 +72,7 @@ export const productsMock: ProductMock[] = [
         description: 'Repuesto de filos de acero al carbono de 45° para cutters de 9mm.',
         categories: ['Herramientas', 'Cutters y filos'],
         variants: [
-            { isDefault: true, optionName: 'Angulo', optionValue: '45', sku: '2061SPRO', price: 5335.14 },
+            { isDefault: true, optionName: 'Angulo', optionValue: '45', sku: '2061SPRO', listPrice: 5335.14 },
         ]
     },
     {
@@ -80,7 +80,7 @@ export const productsMock: ProductMock[] = [
         description: 'Repuesto de filos de acero al carbono de 30° para cutters de 9mm.',
         categories: ['Herramientas', 'Cutters y filos'],
         variants: [
-            { isDefault: true, optionName: 'Angulo', optionValue: '30°', sku: '206130', price: 12691.76 },
+            { isDefault: true, optionName: 'Angulo', optionValue: '30°', sku: '206130', listPrice: 12691.76 },
         ]
     },
     {
@@ -88,7 +88,7 @@ export const productsMock: ProductMock[] = [
         description: 'Repuesto de filos de acero al carbono de 45° para cutters de 9mm.',
         categories: ['Herramientas', 'Cutters y filos'],
         variants: [
-            { isDefault: true, optionName: 'Modelo', optionValue: '2061CS', price: 2667.98 },
+            { isDefault: true, optionName: 'Modelo', optionValue: '2061CS', listPrice: 2667.98 },
         ]
     },
     {
@@ -96,7 +96,7 @@ export const productsMock: ProductMock[] = [
         description: 'Repuesto de filos de acero al carbono negros de 30° para cutters de 9mm.',
         categories: ['Herramientas', 'Cutters y filos'],
         variants: [
-            { isDefault: true, optionName: 'Modelo', optionValue: '2061BL30', price: 14709.78 },
+            { isDefault: true, optionName: 'Modelo', optionValue: '2061BL30', listPrice: 14709.78 },
         ]
     },
     {
@@ -104,7 +104,7 @@ export const productsMock: ProductMock[] = [
         description: 'Repuesto de filos de acero al carbono de 45° para cutters de 9mm de uso hobby.',
         categories: ['Herramientas', 'Cutters y filos'],
         variants: [
-            { isDefault: true, optionName: 'Modelo', optionValue: '2061HY', price: 2002.81 },
+            { isDefault: true, optionName: 'Modelo', optionValue: '2061HY', listPrice: 2002.81 },
         ]
     },
     {
@@ -112,7 +112,7 @@ export const productsMock: ProductMock[] = [
         description: 'Repuesto de filos de acero al carbono de 45° para cutters de 18mm.',
         categories: ['Herramientas', 'Cutters y filos'],
         variants: [
-            { isDefault: true, optionName: 'Modelo', optionValue: '2060SPRO', price: 8356.70 },
+            { isDefault: true, optionName: 'Modelo', optionValue: '2060SPRO', listPrice: 8356.70 },
         ]
     },
     {
@@ -120,7 +120,7 @@ export const productsMock: ProductMock[] = [
         description: 'Repuesto de filos de acero al carbono de 45° para cutters de 18mm de uso hobby.',
         categories: ['Herramientas', 'Cutters y filos'],
         variants: [
-            { isDefault: true, optionName: 'Modelo', optionValue: '2060HY', price: 2667.98
+            { isDefault: true, optionName: 'Modelo', optionValue: '2060HY', listPrice: 2667.98
  },
         ]
     },
@@ -129,7 +129,7 @@ export const productsMock: ProductMock[] = [
         description: 'Repuesto de filos de acero al carbono de 45° para cutters de 25mm.',
         categories: ['Herramientas', 'Cutters y filos'],
         variants: [
-            { isDefault: true, optionName: 'Modelo', optionValue: '2063SPRO', price: 19578.66
+            { isDefault: true, optionName: 'Modelo', optionValue: '2063SPRO', listPrice: 19578.66
  },
         ]
     },
@@ -138,7 +138,7 @@ export const productsMock: ProductMock[] = [
         description: 'Filos de plástico de color naranja para scrapers.',
         categories: ['Herramientas', 'Scrapers'],
         variants: [
-            { isDefault: true, optionName: 'Modelo', optionValue: '8-47PLJ', price: 909.51 },
+            { isDefault: true, optionName: 'Modelo', optionValue: '8-47PLJ', listPrice: 909.51 },
         ]
     },
     {
@@ -146,7 +146,7 @@ export const productsMock: ProductMock[] = [
         description: 'Filos de plástico de color amarillo para scrapers.',
         categories: ['Herramientas', 'Scrapers'],
         variants: [
-            { isDefault: true, optionName: 'Modelo', optionValue: '8-47PLAST', price: 909.51 },
+            { isDefault: true, optionName: 'Modelo', optionValue: '8-47PLAST', listPrice: 909.51 },
         ]
     },
     {
@@ -154,7 +154,7 @@ export const productsMock: ProductMock[] = [
         description: 'Láminas de plástico de color negro para scrapers.',
         categories: ['Herramientas', 'Scrapers'],
         variants: [
-            { isDefault: true, optionName: 'Modelo', optionValue: '847PBK', price: 909.51 },
+            { isDefault: true, optionName: 'Modelo', optionValue: '847PBK', listPrice: 909.51 },
         ]
     },
     {
@@ -162,7 +162,7 @@ export const productsMock: ProductMock[] = [
         description: 'Filos de acero al carbono para scrapers.',
         categories: ['Herramientas', 'Scrapers'],
         variants: [
-            { isDefault: true, optionName: 'Modelo', optionValue: '847C12', price: 909.51 },
+            { isDefault: true, optionName: 'Modelo', optionValue: '847C12', listPrice: 909.51 },
         ]
     },
     {
@@ -170,7 +170,7 @@ export const productsMock: ProductMock[] = [
         description: 'Cinta lineal Knifeless para corte de vinilo.',
         categories: ['Consumibles', 'Cintas'],
         variants: [
-            { isDefault: true, optionName: 'Modelo', optionValue: 'CFCUT', price: 33651.57 },
+            { isDefault: true, optionName: 'Modelo', optionValue: 'CFCUT', listPrice: 33651.57 },
         ]
     },
     {
@@ -178,7 +178,7 @@ export const productsMock: ProductMock[] = [
         description: 'Cutter especializado para el corte de vinilos.',
         categories: ['Herramientas', 'Otros'],
         variants: [
-            { isDefault: true, optionName: 'Modelo', optionValue: '15012', price: 9428.39 },
+            { isDefault: true, optionName: 'Modelo', optionValue: '15012', listPrice: 9428.39 },
         ]
     },
     {
@@ -186,7 +186,7 @@ export const productsMock: ProductMock[] = [
         description: 'Buffer para espátulas trapezoidales de 135mm.',
         categories: ['Herramientas', 'Buffers y fundas'],
         variants: [
-            { isDefault: true, optionName: 'Modelo', optionValue: '57345', price: 12659.20
+            { isDefault: true, optionName: 'Modelo', optionValue: '57345', listPrice: 12659.20
  },
         ]
     },
@@ -195,7 +195,7 @@ export const productsMock: ProductMock[] = [
         description: 'Buffer para espátulas trapezoidales grandes de 190mm.',
         categories: ['Herramientas', 'Buffers y fundas'],
         variants: [
-            { isDefault: true, optionName: 'Modelo', optionValue: '57352', price: 14007.18
+            { isDefault: true, optionName: 'Modelo', optionValue: '57352', listPrice: 14007.18
  },
         ]
     },
@@ -204,7 +204,7 @@ export const productsMock: ProductMock[] = [
         description: 'Buffer para espátulas rectangulares grandes de 190mm.',
         categories: ['Herramientas', 'Buffers y fundas'],
         variants: [
-            { isDefault: true, optionName: 'Modelo', optionValue: '57353', price: 14007.18
+            { isDefault: true, optionName: 'Modelo', optionValue: '57353', listPrice: 14007.18
  },
         ]
     },
@@ -213,7 +213,7 @@ export const productsMock: ProductMock[] = [
         description: 'Buffer para espátulas americanas de 135mm.',
         categories: ['Herramientas', 'Buffers y fundas'],
         variants: [
-            { isDefault: true, optionName: 'Modelo', optionValue: '57354', price: 12326.41
+            { isDefault: true, optionName: 'Modelo', optionValue: '57354', listPrice: 12326.41
  },
         ]
     },
@@ -222,7 +222,7 @@ export const productsMock: ProductMock[] = [
         description: 'Cutter de 9mm para uso profesional.',
         categories: ['Herramientas', 'Cutters y filos'],
         variants: [
-            { isDefault: true, optionName: 'Modelo', optionValue: '15-0439', price: 17203.20
+            { isDefault: true, optionName: 'Modelo', optionValue: '15-0439', listPrice: 17203.20
  },
         ]
     },
@@ -231,7 +231,7 @@ export const productsMock: ProductMock[] = [
         description: 'Cutter extra fino para trabajos de precisión.',
         categories: ['Herramientas', 'Cutters y filos'],
         variants: [
-            { isDefault: true, optionName: 'Modelo', optionValue: '15-400', price: 10106.24
+            { isDefault: true, optionName: 'Modelo', optionValue: '15-400', listPrice: 10106.24
  },
         ]
     },
@@ -240,7 +240,7 @@ export const productsMock: ProductMock[] = [
         description: 'Cutter de 9mm para uso profesional.',
         categories: ['Herramientas', 'Cutters y filos'],
         variants: [
-            { isDefault: true, optionName: 'Modelo', optionValue: '15-061PRO', price: 18311.91
+            { isDefault: true, optionName: 'Modelo', optionValue: '15-061PRO', listPrice: 18311.91
  },
         ]
     },
@@ -249,7 +249,7 @@ export const productsMock: ProductMock[] = [
         description: 'Cutter de 9mm para uso hobby.',
         categories: ['Herramientas', 'Cutters y filos'],
         variants: [
-            { isDefault: true, optionName: 'Modelo', optionValue: '15061HO', price: 5964.00
+            { isDefault: true, optionName: 'Modelo', optionValue: '15061HO', listPrice: 5964.00
  },
         ]
     },
@@ -258,7 +258,7 @@ export const productsMock: ProductMock[] = [
         description: 'Cutter extra fino para uso hobby.',
         categories: ['Herramientas', 'Cutters y filos'],
         variants: [
-            { isDefault: true, optionName: 'Modelo', optionValue: '15-409', price: 2002.81
+            { isDefault: true, optionName: 'Modelo', optionValue: '15-409', listPrice: 2002.81
  },
         ]
     },
@@ -267,7 +267,7 @@ export const productsMock: ProductMock[] = [
         description: 'Protector de plásticos de alta duración.',
         categories: ['Consumibles', 'Vonixx'],
         variants: [
-            { isDefault: true, optionName: 'Modelo', optionValue: '2018015', price: 135353.34
+            { isDefault: true, optionName: 'Modelo', optionValue: '2018015', listPrice: 135353.34
  },
         ]
     },
@@ -276,7 +276,7 @@ export const productsMock: ProductMock[] = [
         description: 'Barra descontaminante para la limpieza de superficies.',
         categories: ['Consumibles', 'Vonixx'],
         variants: [
-            { isDefault: true, optionName: 'Modelo', optionValue: '2011093', price: 22855.51
+            { isDefault: true, optionName: 'Modelo', optionValue: '2011093', listPrice: 22855.51
  },
         ]
     },
@@ -285,7 +285,7 @@ export const productsMock: ProductMock[] = [
         description: 'Limpiador desengrasante biodegradable.',
         categories: ['Consumibles', 'Vonixx'],
         variants: [
-            { isDefault: true, optionName: 'Modelo', optionValue: '2011070', price: 18714.95
+            { isDefault: true, optionName: 'Modelo', optionValue: '2011070', listPrice: 18714.95
  },
         ]
     },
@@ -294,7 +294,7 @@ export const productsMock: ProductMock[] = [
         description: 'Shampoo de alta performance para lavado de vehículos.',
         categories: ['Consumibles', 'Vonixx'],
         variants: [
-            { isDefault: true, optionName: 'Modelo', optionValue: '2011004', price: 41489.48
+            { isDefault: true, optionName: 'Modelo', optionValue: '2011004', listPrice: 41489.48
  },
         ]
     },
@@ -303,7 +303,7 @@ export const productsMock: ProductMock[] = [
         description: 'Shampoo de alta performance para lavado de vehículos.',
         categories: ['Consumibles', 'Vonixx'],
         variants: [
-            { isDefault: true, optionName: 'Modelo', optionValue: '2011069', price: 20744.74
+            { isDefault: true, optionName: 'Modelo', optionValue: '2011069', listPrice: 20744.74
  },
         ]
     },
@@ -312,7 +312,7 @@ export const productsMock: ProductMock[] = [
         description: 'Removedor de ceras, selladores y siliconas.',
         categories: ['Consumibles', 'Vonixx'],
         variants: [
-            { isDefault: true, optionName: 'Modelo', optionValue: '2018010', price: 41489.48
+            { isDefault: true, optionName: 'Modelo', optionValue: '2018010', listPrice: 41489.48
  },
         ]
     },
@@ -321,7 +321,7 @@ export const productsMock: ProductMock[] = [
         description: 'Removedor de ceras, selladores y siliconas en formato de 1.5L.',
         categories: ['Consumibles', 'Vonixx'],
         variants: [
-            { isDefault: true, optionName: 'Modelo', optionValue: '2018020', price: 93427.40
+            { isDefault: true, optionName: 'Modelo', optionValue: '2018020', listPrice: 93427.40
  },
         ]
     },
@@ -330,7 +330,7 @@ export const productsMock: ProductMock[] = [
         description: 'Producto para mantenimiento de superficies con recubrimiento de sílice.',
         categories: ['Consumibles', 'Vonixx'],
         variants: [
-            { isDefault: true, optionName: 'Modelo', optionValue: '2018005', price: 51368.60
+            { isDefault: true, optionName: 'Modelo', optionValue: '2018005', listPrice: 51368.60
  },
         ]
     },
@@ -339,7 +339,7 @@ export const productsMock: ProductMock[] = [
         description: 'Cera en spray para vehículos de color negro.',
         categories: ['Consumibles', 'Vonixx'],
         variants: [
-            { isDefault: true, optionName: 'Modelo', optionValue: '2026005', price: 51268.80 },
+            { isDefault: true, optionName: 'Modelo', optionValue: '2026005', listPrice: 51268.80 },
         ]
     },
     {
@@ -347,7 +347,7 @@ export const productsMock: ProductMock[] = [
         description: 'Cera en spray para todo tipo de vehículos.',
         categories: ['Consumibles', 'Vonixx'],
         variants: [
-            { isDefault: true, optionName: 'Modelo', optionValue: '2026002', price: 52001.21
+            { isDefault: true, optionName: 'Modelo', optionValue: '2026002', listPrice: 52001.21
  },
         ]
     },
@@ -356,7 +356,7 @@ export const productsMock: ProductMock[] = [
         description: 'Limpiador de superficies para detailing.',
         categories: ['Consumibles', 'Vonixx'],
         variants: [
-            { isDefault: true, optionName: 'Modelo', optionValue: '2009036', price: 31957.10
+            { isDefault: true, optionName: 'Modelo', optionValue: '2009036', listPrice: 31957.10
  },
         ]
     },
@@ -365,7 +365,7 @@ export const productsMock: ProductMock[] = [
         description: 'Abrillantador de alta calidad para pinturas.',
         categories: ['Consumibles', 'Vonixx'],
         variants: [
-            { isDefault: true, optionName: 'Modelo', optionValue: '2009033', price: 37400.10
+            { isDefault: true, optionName: 'Modelo', optionValue: '2009033', listPrice: 37400.10
  },
         ]
     },
@@ -374,7 +374,7 @@ export const productsMock: ProductMock[] = [
         description: 'Cutter con mango largo para corte de liner de vinilo.',
         categories: ['Herramientas', 'Otros'],
         variants: [
-            { isDefault: true, optionName: 'Modelo', optionValue: '15-010M', price: 33800.97
+            { isDefault: true, optionName: 'Modelo', optionValue: '15-010M', listPrice: 33800.97
  },
         ]
     },
@@ -383,7 +383,7 @@ export const productsMock: ProductMock[] = [
         description: 'Kit de imanes fuertes para sujetar vinilo.',
         categories: ['Herramientas', 'Accesorios'],
         variants: [
-            { isDefault: true, optionName: 'Modelo', optionValue: '50025', price: 40896.00
+            { isDefault: true, optionName: 'Modelo', optionValue: '50025', listPrice: 40896.00
  },
         ]
     },
@@ -392,7 +392,7 @@ export const productsMock: ProductMock[] = [
         description: 'Barra magnética azul extra fuerte.',
         categories: ['Herramientas', 'Accesorios'],
         variants: [
-            { isDefault: true, optionName: 'Modelo', optionValue: '50029', price: 41992.34
+            { isDefault: true, optionName: 'Modelo', optionValue: '50029', listPrice: 41992.34
  },
         ]
     },
@@ -401,7 +401,7 @@ export const productsMock: ProductMock[] = [
         description: 'Imán grande para colgar sopladores.',
         categories: ['Herramientas', 'Accesorios'],
         variants: [
-            { isDefault: true, optionName: 'Modelo', optionValue: '97384', price: 80426.97
+            { isDefault: true, optionName: 'Modelo', optionValue: '97384', listPrice: 80426.97
  },
         ]
     }

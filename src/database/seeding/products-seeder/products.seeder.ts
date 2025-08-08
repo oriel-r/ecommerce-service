@@ -68,7 +68,7 @@ export class ProductSeeder {
                 newProduct.store = defaultStore; // <-- CAMBIO: Asignar la tienda
                 newProduct.variants = productData.variants.map(vData => {
                     const variant = new ProductVariant();
-                    variant.price = vData.price;
+                    variant.listPrice = vData.listPrice;
                     variant.stock = vData.stock ?? 999;
                     variant.isDefault = vData.isDefault ?? false;
                     variant.optionName = vData.optionName;

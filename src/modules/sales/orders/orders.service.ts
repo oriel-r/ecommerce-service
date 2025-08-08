@@ -34,14 +34,14 @@ export class OrdersService {
         }
 
         await this.productsService.validateStockForOrder(cart.items);
-
+        
         const subTotal = cart.items.reduce(
             (sum, item) => sum + item.productVariant.price * item.quantity,
             0,
         );
-
+        
         const totalAmount = subTotal + 9000;
-
+        
         const member = await this.membersService.findOneByStore(payload.storeId, payload.memberId)
 
         const orderData: Partial<Order> = {
@@ -49,7 +49,7 @@ export class OrdersService {
         store: {id: member.storeId} as Store,
         shippingAddress: member.addresses[0],
         subTotal,
-        shippingCost: 9000,
+        shippingCost: 10000,
         discountAmount: 0,
         totalAmount,
         status: OrderStatus.PENDING_PAYMENT,
@@ -75,8 +75,9 @@ export class OrdersService {
         );
 
         this.eventEmitter.emit(OrderNotification.CREATED, {orderId: newOrder.id})
-
-        return this.ordersRepository.findOneBy({ id: newOrder.id });
+    
+        const order = await this.ordersRepository.findOneBy({ id: newOrder.id });
+        return order
     }
 
     async findAllForAdmin(storeId: string) {
@@ -88,7 +89,7 @@ export class OrdersService {
         items: true,
       },
     });
-  }
+  } 
 
     async findAllForMember(memberId: string) {
         return await this.ordersRepository.find({
