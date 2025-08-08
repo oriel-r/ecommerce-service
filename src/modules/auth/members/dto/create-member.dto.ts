@@ -7,6 +7,7 @@ import {
   IsArray,
   ValidateNested,
   IsDateString,
+  IsOptional,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { CreateAddressDto } from 'src/modules/_support/geography/address/dto/create-address.dto';
@@ -43,9 +44,9 @@ export class CreateMemberDto {
   @IsNotEmpty()
   cuit: string;
 
+  @IsOptional()
   @IsString()
-  @IsNotEmpty()
-  taxCondition: string;
+  taxCondition?: string;
 
   @IsArray()
   @ValidateNested({ each: true })

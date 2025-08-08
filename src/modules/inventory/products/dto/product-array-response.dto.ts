@@ -32,7 +32,7 @@ export class ProductArrayResponseDto {
         this.price = defaultVariant?.price || 0;
         this.stock = defaultVariant?.stock || 0;
         this.images = defaultVariant?.images || [];
-        this.offer = { percentage: defaultVariant?.discount || null };
+        this.offer = { percentage: defaultVariant?.discountPercentage || null };
         this.variants= product.variants
         const assignments = product.categoryAssignments || [];
         const lastAssignment = assignments[assignments.length - 1];

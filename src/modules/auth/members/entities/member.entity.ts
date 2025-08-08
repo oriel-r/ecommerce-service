@@ -14,6 +14,7 @@ import { Address } from 'src/modules/_support/geography/address/entities/address
 import { Exclude } from 'class-transformer';
 import { Cart } from 'src/modules/sales/carts/entities/cart.entity';
 import { Order } from 'src/modules/sales/orders/entities/order.entity';
+import { TaxCondition } from 'src/common/enums/tax-condition.enum';
 
 @Entity()
 export class Member {
@@ -48,7 +49,12 @@ export class Member {
   @Column({ nullable: true })
   cuit?: string;
 
-  @Column({ nullable: true })
+  @Column({ 
+    type: 'enum',
+    enum: TaxCondition,
+    default: TaxCondition.CONSUMIDOR_FINAL,
+    nullable: true,
+   })
   taxCondition?: string;
 
   @CreateDateColumn()

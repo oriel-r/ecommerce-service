@@ -8,8 +8,8 @@ import { ClassSerializerInterceptor } from '@nestjs/common';
 import { appDataSource } from './database/data-source';
 
 async function bootstrap() {
-  await appDataSource.initialize();
-  await appDataSource.runMigrations();
+  //await appDataSource.initialize();
+  //await appDataSource.runMigrations();
   
   const app = await NestFactory.create(AppModule, {
     bodyParser: true

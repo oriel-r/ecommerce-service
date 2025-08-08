@@ -17,7 +17,32 @@ export class ProductVariant extends BaseEntity {
     @Column({
         type: 'decimal',
         precision: 11,
-        scale: 2
+        scale: 2,
+        name: 'list_price'
+    })
+    listPrice: number
+
+    @Column({
+        type: 'smallint',
+        nullable: false,
+        default: 0,
+        name: 'discount_percentage'
+    })
+    discountPercentage: number
+
+    @Column({
+        type: 'decimal',
+        precision: 11,
+        scale: 2,
+        name: 'price',
+        generatedType: 'STORED',
+        asExpression: `
+            CASE
+                WHEN "discount_percentage" > 0 AND "discount_percentage" < 100
+                THEN ROUND(("list_price" * (1 - "discount_percentage" / 100.0)), 2)
+                ELSE "list_price"
+            END
+        `
     })
     price: number
 
@@ -70,9 +95,6 @@ export class ProductVariant extends BaseEntity {
         name: 'is_default'
     })
     isDefault: boolean
-
-    @Column({type: 'int', nullable: true })
-    discount: number | null
 
     @ManyToOne(() => Product, product => product.variants, {nullable: false, onDelete: 'CASCADE'})
     @JoinColumn({name: 'product_id'})
