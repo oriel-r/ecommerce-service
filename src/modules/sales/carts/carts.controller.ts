@@ -11,6 +11,7 @@ import { Member } from 'src/modules/auth/members/entities/member.entity';
 import { UpdateCartItemDto } from './dto/update-cart-item.dto';
 import { Roles } from 'src/common/decorators/roles/roles.decorators';
 import { RolesGuard } from 'src/common/guards/roles/roles.guard';
+import { CartResponseDto } from './dto/cart-reponse.dto';
 
 @Controller('carts')
 @UseGuards(AuthGuard)
@@ -23,14 +24,16 @@ export class CartsController {
   @ApiWrappedResponse(Cart)
   @Get()
   async get(@CurrentMember() data: CurrentCustomer) {
-    return await this.cartsService.getMemberCart(data)
+    const cart = await this.cartsService.getMemberCart(data)
+    return new CartResponseDto(cart)
   }
 
   @Post('items')
   async addItem(
     @CurrentMember() member: CurrentCustomer,
     @Body() data: AddItemToCartDto ) {
-    return await this.cartsService.addItem(member, data)
+    const cartWithNewItem = await this.cartsService.addItem(member, data)
+      return new CartResponseDto(cartWithNewItem)
   }
 
   @Patch('items/:productVariantId')
@@ -39,21 +42,22 @@ export class CartsController {
     @Param('productVariantId', ParseUUIDPipe) productVariantId: string,
     @Body() updateCartItemDto: UpdateCartItemDto,
   ) {
-    return this.cartsService.updateItemQuantity(
+    const cart = await this.cartsService.updateItemQuantity(
       member,
       productVariantId,
       updateCartItemDto,
     );
+    return new CartResponseDto(cart)
   }
 
   @Delete('items/:productVariantId')
   @HttpCode(HttpStatus.NO_CONTENT)
-  removeMyCartItem(
+  async removeMyCartItem(
     @CurrentMember() member: CurrentCustomer,
     @Param('productVariantId', ParseUUIDPipe) productVariantId: string,
   ) {
-    return this.cartsService.removeItem(member, productVariantId);
-
+    const cart = await this.cartsService.removeItem(member, productVariantId);
+    return new CartResponseDto(cart)
   }
 
   @Delete()

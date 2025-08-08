@@ -17,6 +17,7 @@ import { CurrentMember } from 'src/common/decorators/current-curstomer/current-c
 import { CurrentCustomer } from 'src/common/interfaces/current-customer.interface';
 import { Roles } from 'src/common/decorators/roles/roles.decorators';
 import { RolesGuard } from 'src/common/guards/roles/roles.guard';
+import { OrderResponseDto } from './dto/order-response.dto';
 
 @ApiTags('Orders')
 @ApiBearerAuth() 
@@ -36,7 +37,8 @@ export class OrdersController {
   @Post('orders')
   @UseGuards(AuthGuard)
   async createOrderFromMyCart(@CurrentMember() member: CurrentCustomer) {
-    return await this.ordersService.createOrderFromCart(member);
+    const newOrder = await this.ordersService.createOrderFromCart(member);
+    return new OrderResponseDto(newOrder!)
   }
   
   @ApiOperation({
@@ -48,7 +50,9 @@ export class OrdersController {
   async findMyOrders(
     @CurrentMember() member: Member,
   ) {
-    return await this.ordersService.findAllForMember(member.id);
+    const orders = await this.ordersService.findAllForMember(member.id);
+    if(orders.length === 0) return orders
+    return orders.map(order => new OrderResponseDto(order))
   }
 
   @ApiOperation({
@@ -62,9 +66,10 @@ export class OrdersController {
     @CurrentMember() member: CurrentCustomer,
     @Param('orderId', ParseUUIDPipe) orderId: string,
   ) {
-    return await this.ordersService.findOne(orderId, member.memberId);
+    const order = await this.ordersService.findOne(orderId, member.memberId);
+    return new OrderResponseDto(order)
   }
-Z
+
 //                                                  //
 // ------------------- PLATFORM ------------------- //
 //                                                  //

@@ -12,17 +12,32 @@ export class Cart extends BaseEntity {
     @Column('uuid', {name: 'store_id', nullable: false})
     storeId: string
 
-    @ManyToOne(() => Store, store => store.carts, {nullable: false, onDelete: 'CASCADE'})
+    @ManyToOne(
+        () => Store,
+        store => store.carts,
+        {nullable: false, onDelete: 'CASCADE'}
+    )
     @JoinColumn({ name: 'store_id'})
     store: Store
 
-    @Column('uuid', {name: 'member_id', nullable: false})
+    @Column(
+        'uuid',
+        {name: 'member_id', nullable: false}
+    )
     memberId: string
 
-    @OneToOne(() => Member, member => member.cart, {onDelete: 'CASCADE'})
+    @OneToOne(
+        () => Member,
+        member => member.cart,
+        {onDelete: 'CASCADE'}
+    )
     @JoinColumn({ name: 'member_id'})
     member: Member
 
-    @OneToMany(() => CartItem, cartItem => cartItem.cart)
+    @OneToMany(
+        () => CartItem,
+        cartItem => cartItem.cart
+    )
     items: CartItem[]
+
 }

@@ -22,7 +22,7 @@ export class ProductReponseDto  {
             price: variant.price,
             images: variant.images,
             weight: variant.weight,
-            discount: variant.discount,
+            discount: variant.discountPercentage,
             isDefault: variant.isDefault
         }}),
         this.categoryAssignments = categoryAssignments.map(
