@@ -66,5 +66,9 @@ export class CreateProductVariantDto {
     @Max(100)
     @IsOptional()
     discount?: number
+    
+    @IsString()
+    @IsOptional()
+    detail?: string | null
 
 }
