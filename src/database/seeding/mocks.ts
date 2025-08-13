@@ -30,12 +30,12 @@ export type ProductMock = {
     longDescription?: string;
     isFeatured?: boolean;
     categories: string[];
-    variants: CreateProductVariantDto[];
+    variants: Record<string, string | string[] | number | boolean>[];
 };
 
 export const productsMock: ProductMock[] = [
     {
-        name: 'PROTOOLS WRAP GLOVES / Guantes Protools',
+        name: 'Guantes Protools',
         description: 'Guantes Protools para wrapping de vehículos.',
         categories: ['Consumibles', 'Guantes'],
         variants: [
@@ -56,7 +56,8 @@ export const productsMock: ProductMock[] = [
         description: 'Scraper de plástico económico para trabajos de limpieza y preparación de superficies.',
         categories: ['Herramientas', 'Scrapers'],
         variants: [
-            { isDefault: true, optionName: 'Material', optionValue: 'Plastico', sku: '15-078', listPrice: 4338.58 },
+            {   images: ['https://storage.googleapis.com/ecommerce-uploads/FOTO%2037_processed.webp'],
+                isDefault: true, optionName: 'Material', optionValue: 'Plastico', sku: '15-078', listPrice: 4338.58 },
         ]
     },
     {
@@ -64,7 +65,8 @@ export const productsMock: ProductMock[] = [
         description: 'Scraper de plástico de alta resistencia para uso profesional.',
         categories: ['Herramientas', 'Scrapers'],
         variants: [
-            { isDefault: true, optionName: 'Material', optionValue: 'Plastico', sku: '15-079', listPrice: 16866.43 },
+            {   images: ['https://storage.googleapis.com/ecommerce-uploads/FOTO%2038_processed.webp'],
+                isDefault: true, optionName: 'Material', optionValue: 'Plastico', sku: '15-079', listPrice: 16866.43 },
         ]
     },
     {
@@ -72,11 +74,16 @@ export const productsMock: ProductMock[] = [
         description: 'Repuesto de filos para cutters de 9mm en acero al carbono.',
         categories: ['Herramientas', 'Cutters y filos'],
         variants: [
-            { isDefault: true, optionName: 'Tipo/Angulo', optionValue: 'Profesional 45°', sku: '2061SPRO', listPrice: 5436.29 },
-            { optionName: 'Tipo/Angulo', optionValue: 'Profesional 30°', sku: '206130', listPrice: 12928.61 },
+            { isDefault: true, optionName: 'Tipo/Angulo', optionValue: 'Profesional 45°', sku: '2061SPRO', listPrice: 5436.29,
+                images: ['https://storage.googleapis.com/ecommerce-uploads/FOTO%2060_processed.webp']
+            },
+            { optionName: 'Tipo/Angulo', optionValue: 'Profesional 30°', sku: '206130', listPrice: 12928.61,
+                images: ['https://storage.googleapis.com/ecommerce-uploads/FOTO%2061_processed.webp']
+            },
             { optionName: 'Tipo/Angulo', optionValue: 'Black 45°', sku: '2061CS', listPrice: 12691.76 },
             { optionName: 'Tipo/Angulo', optionValue: 'Cs 30°', sku: '2061BL30', listPrice: 2718.14 },
-            { optionName: 'Tipo/Angulo', optionValue: 'Hobby 45°', sku: '2061HY', listPrice: 2038.61 }
+            { images: ['https://storage.googleapis.com/ecommerce-uploads/FOTO%2064_processed.webp']
+                , optionName: 'Tipo/Angulo', optionValue: 'Hobby 45°', sku: '2061HY', listPrice: 2038.61 }
         ]
     },
     {
@@ -84,8 +91,12 @@ export const productsMock: ProductMock[] = [
         description: 'Repuesto de filos de acero al carbono de 45° para cutters de 18mm.',
         categories: ['Herramientas', 'Cutters y filos'],
         variants: [
-            { isDefault: true, optionName: 'Tipo', optionValue: 'Profesional', sku: '2060SPRO', listPrice: 8537.76 },
-            {optionName: 'Tipo', optionValue: 'Hobby' ,sku:'2060HY', listPrice: 2718.14}
+            { isDefault: true, optionName: 'Tipo', optionValue: 'Profesional', sku: '2060SPRO', listPrice: 8537.76,
+                images: ['https://storage.googleapis.com/ecommerce-uploads/FOTO%2057_processed.webp']
+             },
+            {optionName: 'Tipo', optionValue: 'Hobby' ,sku:'2060HY', listPrice: 2718.14,
+                images: ['https://storage.googleapis.com/ecommerce-uploads/FOTO%2063_processed.webp']
+            }
         ]
     },
     {
@@ -102,7 +113,9 @@ export const productsMock: ProductMock[] = [
         longDescription: 'Filo para quitar adhesivo de superficies blandas. Indicada para carrocería de autos, madera acabada, plástico y superficies con pintura.',
         categories: ['Herramientas', 'Scrapers'],
         variants: [
-            { isDefault: true, optionName: 'Modelo', optionValue: '8-47PLJ', listPrice: 923.47 },
+            { isDefault: true, optionName: 'Modelo', optionValue: '8-47PLJ', listPrice: 923.47,
+                images: ['https://storage.googleapis.com/ecommerce-uploads/repuesto%20naranja_processed.webp']
+            },
         ]
     },
     {
@@ -111,7 +124,7 @@ export const productsMock: ProductMock[] = [
         longDescription: 'Filo para quitar adhesivo de superficies rígidas. Indicada para vidrio, granito y mármol, metales, madera sin terminar. Color amarillo',
         categories: ['Herramientas', 'Scrapers'],
         variants: [
-            { isDefault: true, optionName: 'Modelo', optionValue: '8-47PLAST', listPrice: 923.47 },
+            { isDefault: true, optionName: 'Modelo', optionValue: '8-47PLAST', listPrice: 923.47},
         ]
     },
     {
@@ -129,7 +142,9 @@ export const productsMock: ProductMock[] = [
         longDescription: 'Ideal para quitar pegamento o vinilo de las superficies evitando rayaduras y daños',
         categories: ['Herramientas', 'Scrapers'],
         variants: [
-            { isDefault: true, optionName: 'Modelo', optionValue: '847C12', listPrice: 923.47 },
+            { isDefault: true, optionName: 'Modelo', optionValue: '847C12', listPrice: 923.47,
+                images: ['https://storage.googleapis.com/ecommerce-uploads/repuesto%20metal_processed.webp']
+            },
         ]
     },
     {
@@ -138,7 +153,9 @@ export const productsMock: ProductMock[] = [
         longDescription: 'Logra instalaciones más rápidas y con un acabado perfecto. Esta herramienta te permite realizar cortes precisos sin arriesgarte a rayar el automóvil, ya que no necesitarás utilizar un cúter.',
         categories: ['Consumibles', 'Cintas'],
         variants: [
-            { isDefault: true, optionName: 'Modelo', optionValue: 'CFCUT', listPrice: 33651.57 },
+            { isDefault: true, optionName: 'Modelo', optionValue: 'CFCUT', listPrice: 33651.57,
+                images: ['https://storage.googleapis.com/ecommerce-uploads/FOTO%2053_processed.webp']
+            },
         ]
     },
     {
@@ -156,10 +173,18 @@ export const productsMock: ProductMock[] = [
         longDescription: 'Optimiza tus instalaciones de vinilo con los buffers de fieltro Exfak. Elige entre los modelos Americana, Trapezoidal o Rectangular para un deslizamiento suave y una aplicación sin rayas.',
         categories: ['Herramientas', 'Buffers y fundas'],
         variants: [
-            { optionName: 'P/ Espatula', optionValue: 'Trapezoidal 135mm' , sku: '57345', listPrice: 12912.18 },
-            { optionName: 'P/ Espatula', optionValue: 'Trapezoidal BIG 190mm' , sku: '57352', listPrice: 14270.26 },
-            { optionName: 'P/ Espatula', optionValue: 'Rectangular 190mm' , sku: '57353', listPrice: 14270.26 },
-            { isDefault: true, optionName: 'P/ Espatula', optionValue: 'Americana 135mm' , sku: '57354', listPrice: 12580.36 },    
+            { optionName: 'P/ Espatula', optionValue: 'Trapezoidal 135mm' , sku: '57345', listPrice: 12912.18,
+                images: ['https://storage.googleapis.com/ecommerce-uploads/buffer%20para%20espatula%201.35mm%2057345_processed.webp']
+            },
+            { optionName: 'P/ Espatula', optionValue: 'Trapezoidal BIG 190mm' , sku: '57352', listPrice: 14270.26,
+                images: ['https://storage.googleapis.com/ecommerce-uploads/bufferpara%20espatula%201.90mm%2057352_processed.webp']
+            },
+            { optionName: 'P/ Espatula', optionValue: 'Rectangular 190mm' , sku: '57353', listPrice: 14270.26,
+                images: ['https://storage.googleapis.com/ecommerce-uploads/Fieltro%20big%20rectangular%20amarillo%205%20und%20%2057353_processed.webp']
+            },
+            { isDefault: true, optionName: 'P/ Espatula', optionValue: 'Americana 135mm' , sku: '57354', listPrice: 12580.36,
+                images: ['https://storage.googleapis.com/ecommerce-uploads/buffer%20para%20espatula%201.35mm%2057354_processed.webp']
+            },    
         ]
     },
     {
@@ -168,8 +193,10 @@ export const productsMock: ProductMock[] = [
         longDescription: 'La herramienta definitiva para el uso diario y los trabajos más exigentes. Construido con un cuerpo metálico y un sistema de bloqueo superior, este cutter está diseñado para ofrecer máxima durabilidad y un rendimiento inquebrantable. La elección de los expertos.',
         categories: ['Herramientas', 'Cutters y filos'],
         variants: [
-            { isDefault: true, optionName: 'Modelo', optionValue: '15-0439 - 30°', listPrice: 19497.46 },
-            { isDefault: true, optionName: 'Modelo', optionValue: '15-061PRO - 45°', listPrice: 18643.68 },
+            { isDefault: true, optionName: 'Modelo', optionValue: '15-0439 - 30°', listPrice: 19497.46,
+                images: ['https://storage.googleapis.com/ecommerce-uploads/FOTO%2054_processed.webp']
+            },
+            { optionName: 'Modelo', optionValue: '15-061PRO - 45°', listPrice: 18643.68 },
         ]
     },
     {
@@ -177,7 +204,9 @@ export const productsMock: ProductMock[] = [
         description: 'Cutter extra fino para trabajos de precisión.',
         categories: ['Herramientas', 'Cutters y filos'],
         variants: [
-            { isDefault: true, optionName: 'Modelo', optionValue: '15-400', listPrice: 10297.58 },
+            { isDefault: true, optionName: 'Modelo', optionValue: '15-400', listPrice: 10297.58,
+                images: ['https://storage.googleapis.com/ecommerce-uploads/FOTO%2022_processed.webp']
+             },
         ]
     },
     {
@@ -195,7 +224,9 @@ export const productsMock: ProductMock[] = [
         longDescription: 'La herramienta esencial para tus proyectos creativos y manualidades. Ligero, manejable y preciso, es perfecto para cortar papel, cartulina y vinilo. Disponible con hoja estrecha para cortes generales o hoja extra fina para el máximo detalle.',
         categories: ['Herramientas', 'Cutters y filos'],
         variants: [
-            { isDefault: true, optionName: 'Modelo', optionValue: '15061HO - 45°', listPrice: 6098.40 },
+            { isDefault: true, optionName: 'Modelo', optionValue: '15061HO - 45°', listPrice: 6098.40,
+                images: ['https://storage.googleapis.com/ecommerce-uploads/FOTO%2055_processed.webp']
+            },
             { optionName: 'Modelo', optionValue: '15-409 - 30°', listPrice: 2038.61}
         ]
     },
@@ -214,7 +245,9 @@ export const productsMock: ProductMock[] = [
         longDescription: 'Elimina fácilmente contaminantes como pulverizados de pintura, savia y residuos industriales de la pintura, cristales y cromados.',
         categories: ['Consumibles', 'Vonixx'],
         variants: [
-            { isDefault: true, optionName: 'Modelo', optionValue: '2011093', listPrice: 23268.00 },
+            { isDefault: true, optionName: 'Modelo', optionValue: '2011093', listPrice: 23268.00,
+                images: ['https://storage.googleapis.com/ecommerce-uploads/FOTO%2047_processed.webp']
+            },
         ]
     },
     {
@@ -282,12 +315,25 @@ export const productsMock: ProductMock[] = [
         ]
     },
     {
+        name: 'Cutter de liner Doble C/ mango largo EXFAK',
+        description: 'Cutter con mango largo para corte de liner de vinilo.',
+        longDescription: 'Este instrumento está diseñado para que el instalador pueda cortar el papel protector del vinilo con total seguridad, evitando cualquier daño o corte accidental sobre el material.',
+        categories: ['Herramientas', 'Otros'],
+        variants: [
+            { isDefault: true, optionName: 'Modelo', optionValue: '15-010MD', listPrice: 43108.98,
+                images: ['https://storage.googleapis.com/ecommerce-uploads/FOTO%2024_processed.webp']
+            },
+        ]
+    },
+        {
         name: 'Cutter de liner C/ mango largo EXFAK',
         description: 'Cutter con mango largo para corte de liner de vinilo.',
         longDescription: 'Corta el liner, no el vinilo. La herramienta esencial para exponer el adhesivo con precisión y seguridad, facilitando las instalaciones más complejas sin dañar el material.',
         categories: ['Herramientas', 'Otros'],
         variants: [
-            { isDefault: true, optionName: 'Modelo', optionValue: '15-010M', listPrice: 34447.25 },
+            { isDefault: true, optionName: 'Modelo', optionValue: '15-010M', listPrice: 43108.98,
+                images: ['https://storage.googleapis.com/ecommerce-uploads/FOTO%2017_processed.webp']
+            },
         ]
     },
     {
@@ -296,7 +342,9 @@ export const productsMock: ProductMock[] = [
         longDescription: 'Herramienta indispensablepara el ploteo, carwrap, gráfica y polarizados vehicular. incluye dos imanes ',
         categories: ['Herramientas', 'Accesorios'],
         variants: [
-            { isDefault: true, optionName: 'Modelo', optionValue: '50025', listPrice: 41817.40 },
+            { isDefault: true, optionName: 'Modelo', optionValue: '50025', listPrice: 41817.40,
+            images: ['https://storage.googleapis.com/ecommerce-uploads/FOTO%206_processed.webp']
+            }
         ]
     },
     {
