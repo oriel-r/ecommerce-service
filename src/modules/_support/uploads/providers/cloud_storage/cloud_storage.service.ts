@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { Storage } from '@google-cloud/storage';
 import { ConfigService } from '@nestjs/config';
 
@@ -33,5 +33,21 @@ if (!this.bucketName) {
       stream.on('error', (err) => reject(err));
       stream.end(file.buffer);
     });
+  }
+
+  async listFiles(): Promise<string[]> {
+    const bucket = this.storage.bucket(this.bucketName);
+    const [files] = await bucket.getFiles();
+    return files.map(f => `https://storage.googleapis.com/${this.bucketName}/${f.name}`);
+  }
+
+  async deleteFile(filename: string): Promise<{ message: string }> {
+    try {
+      const bucket = this.storage.bucket(this.bucketName);
+      await bucket.file(filename).delete();
+      return { message: 'Archivo eliminado correctamente' };
+    } catch (err) {
+      throw new BadRequestException(`No se pudo eliminar el archivo: ${err.message}`);
+    }
   }
 }

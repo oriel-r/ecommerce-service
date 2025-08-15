@@ -8,4 +8,12 @@ export class UploadsService {
   async uploadFile(file: Express.Multer.File) {
     return await this.cloudStorageService.uploadFile(file);
   }
+
+  async listFiles() {
+    return await this.cloudStorageService.listFiles();
+  }
+
+  async deleteFile(filename: string) {
+    return await this.cloudStorageService.deleteFile(filename);
+  }
 }
