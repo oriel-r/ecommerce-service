@@ -1,4 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger"
+import { Transform } from "class-transformer"
 import { IsBoolean, IsDecimal, IsInt, IsNotEmpty, IsNumber, IsOptional, IsString, Max, Min } from "class-validator"
 
 export class CreateProductVariantDto {
@@ -23,7 +24,7 @@ export class CreateProductVariantDto {
     @ApiProperty({
         description: "variant's sku"
     })
-    @IsString()
+    @Transform(({ value }) => value === '' ? null : value)
     @IsOptional()
     sku?: string
 

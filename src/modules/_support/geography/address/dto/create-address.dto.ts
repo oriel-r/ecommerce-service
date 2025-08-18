@@ -27,6 +27,7 @@ export class CreateAddressDto {
 
   @IsUUID()
   @IsNotEmpty()
-  memberId: string;
+  @IsOptional()
+  memberId?: string;
 }
 

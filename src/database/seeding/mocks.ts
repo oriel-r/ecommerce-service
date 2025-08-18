@@ -325,7 +325,7 @@ export const productsMock: ProductMock[] = [
             },
         ]
     },
-        {
+    {
         name: 'Cutter de liner C/ mango largo EXFAK',
         description: 'Cutter con mango largo para corte de liner de vinilo.',
         longDescription: 'Corta el liner, no el vinilo. La herramienta esencial para exponer el adhesivo con precisión y seguridad, facilitando las instalaciones más complejas sin dañar el material.',

@@ -68,12 +68,12 @@ export class ProductSeeder {
                 newProduct.store = defaultStore; // <-- CAMBIO: Asignar la tienda
                 newProduct.variants = productData.variants.map(vData => {
                     const variant = new ProductVariant();
-                    variant.listPrice = vData.listPrice;
-                    variant.stock = vData.stock ?? 999;
-                    variant.isDefault = vData.isDefault ?? false;
-                    variant.optionName = vData.optionName;
-                    variant.optionValue = vData.optionValue;
-                    variant.images = images
+                    variant.listPrice = vData.listPrice as number;
+                    variant.stock = vData.stock as number ?? 999;
+                    variant.isDefault = vData.isDefault as boolean ?? false ;
+                    variant.optionName = vData.optionName as string;
+                    variant.optionValue = vData.optionValue as string;
+                    variant.images = vData.images as string[] ?? images
                     return variant;
                 });
                 
