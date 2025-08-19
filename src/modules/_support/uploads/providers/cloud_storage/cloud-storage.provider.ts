@@ -32,6 +32,5 @@ export const CloudStorageProvider = {
           projectId,
           keyFilename,
         });
-    }
   },
 };
