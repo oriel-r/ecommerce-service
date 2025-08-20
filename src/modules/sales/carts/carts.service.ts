@@ -6,6 +6,8 @@ import { ProductService } from 'src/modules/inventory/products/product.service';
 import { AddItemToCartDto } from './dto/add-item-to-cart.dto';
 import { CurrentCustomer } from 'src/common/interfaces/current-customer.interface';
 import { UpdateCartItemDto } from './dto/update-cart-item.dto';
+import { AddressService } from 'src/modules/_support/geography/address/address.service';
+import { ShippingService } from '../shipping/shipping.service';
 
 @Injectable()
 export class CartsService {
@@ -14,16 +16,24 @@ export class CartsService {
     constructor(
         private readonly cartsRepository: CartsRepository,
         private readonly cartItemsRepository: cartItemsRepository,
-        private readonly productsService: ProductService
+        private readonly productsService: ProductService,
+        private readonly addressService: AddressService,
+        private readonly shippingService: ShippingService  
     ) {}
 
     async getMemberCart(data: CurrentCustomer) {
       const {storeId, memberId} = data
 
-      const cart = await this.cartsRepository.findOrCreate(storeId, memberId)
+      const [cart, addresses] = await Promise.all([
+       this.cartsRepository.findOrCreate(storeId, memberId),
+       this.addressService.findAllByMember(memberId)
+      ])
 
       if(!cart) throw new InternalServerErrorException('hubo un error desconocido al traer el carrito')
-        return cart
+      
+      const shippingOptions = await this.shippingService.getShippingOptions(addresses[0])
+
+      return {cart, shippingOptions}
     }
 
     async addItem(member: CurrentCustomer, data: AddItemToCartDto) {
@@ -39,7 +49,7 @@ export class CartsService {
         throw new BadRequestException('No hay suficiente stock disponible.');
         }
 
-        const cart = await this.getMemberCart(member);
+        const {cart, shippingOptions} = await this.getMemberCart(member);
 
         let item = await this.cartItemsRepository.findOneBy({
         cartId: cart.id,
