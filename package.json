@@ -7,7 +7,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build && npm run copy-templates",
-    "copy-templates":  "cpx \"src/modules/_support/notifications/providers/mail/templates/**/*\" \"dist/modules/_support/notifications/providers/mail/templates\"",
+    "copy-templates": "cpx \"src/modules/_support/notifications/providers/mail/templates/**/*\" \"dist/modules/_support/notifications/providers/mail/templates\"",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
@@ -27,6 +27,7 @@
     "migration:show": "npm run typeorm -- migration:show -d ./src/database/data-source.ts"
   },
   "dependencies": {
+    "@google-cloud/storage": "^7.16.0",
     "@nestjs-modules/mailer": "^2.0.2",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.2",
@@ -69,7 +70,7 @@
     "@types/eslint": "^9.6.1",
     "@types/eslint-scope": "^8.3.1",
     "@types/estree": "^1.0.8",
-    "@types/express": "^5.0.0",
+    "@types/express": "^5.0.3",
     "@types/graceful-fs": "^4.1.9",
     "@types/http-cache-semantics": "^4.0.4",
     "@types/istanbul-lib-coverage": "^2.0.6",
@@ -78,6 +79,7 @@
     "@types/jest": "^29.5.14",
     "@types/json-schema": "^7.0.15",
     "@types/methods": "^1.1.4",
+    "@types/multer": "^2.0.0",
     "@types/node": "^22.10.7",
     "@types/nodemailer": "^6.4.17",
     "@types/stack-utils": "^2.0.3",

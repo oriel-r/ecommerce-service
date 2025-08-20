@@ -1,7 +1,7 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, Put, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Patch, Post, Put, Req, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { Request } from 'express';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiBody, ApiConsumes, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CreateProductDto } from './dto/create-product.dto';
 import { StoreByIdPipe } from 'src/modules/_platform/stores/pipes/store-by-id/store-by-id.pipe';
 import { Store } from 'src/modules/_platform/stores/entities/store.entity';
@@ -18,6 +18,9 @@ import { AuthGuard } from 'src/common/guards/auth/auth.guard';
 import { RolesGuard } from 'src/common/guards/roles/roles.guard';
 import { Role } from 'src/modules/auth/roles/entities/role.entity';
 import { Roles } from 'src/common/decorators/roles/roles.decorators';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import { FilesPipe } from 'src/common/pipes/files/files.pipe';
+import { DeleteVariantImage } from './dto/delete-variant-image.dto';
 
 @Controller('stores/:storeId/products')
 export class ProductController {
@@ -175,6 +178,55 @@ export class ProductController {
     const productWithNewVariant = await this.productService.createProductVariant(storeId, productId, data)
     return new ProductReponseDto(productWithNewVariant!)
   }
+
+
+  @ApiOperation({ summary: 'Subir un archivo al bucket' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    description: 'Archivo a subir',
+    schema: {
+      type: 'object',
+      properties: {
+        file: { type: 'string', format: 'binary' },
+      },
+        required: ['file'],
+      },
+    })
+    @ApiResponse({
+      status: 201,
+      description: 'Archivo subido correctamente',
+      schema: {
+        type: 'object',
+        properties: {
+          url: { type: 'string', example: 'https://storage.googleapis.com/mi-bucket/archivo.jpg' },
+        },
+      },
+    })
+  @Post(':productId/variants/:variantId/images')
+  @UseInterceptors(FilesInterceptor('files'))
+  async uploadFile(
+    @Param('storeId') storeId: string,
+    @Param('productId') productId: string,
+    @Param('variantId') variantId: string,
+    @UploadedFiles(new FilesPipe(0, 20000000,  ['image/png', 'image/jpeg', 'image/webp'])) files: Express.Multer.File[] ) {
+      const productVariant = await this.productService.uploadVarintImages(storeId, productId, variantId,files);
+      return productVariant    
+  }
+  
+  @ApiOperation({
+    summary: 'Eliminar una imagen por su url'
+  })
+  @Delete(':productId/variants/:variantId/images')
+  @UseInterceptors(FilesInterceptor('files'))
+  async deleteImage(
+    @Param('storeId') storeId: string,
+    @Param('productId') productId: string,
+    @Param('variantId') variantId: string,
+    @Body() image: DeleteVariantImage) {
+      const productVariant = await this.productService.deleteVariantImage(storeId, productId, variantId, image);
+      return productVariant    
+  }
+
 
   @ApiOperation({
       description: 'edit product variant'

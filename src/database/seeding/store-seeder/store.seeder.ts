@@ -1,10 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-
-// Importamos la configuración, entidades y los mocks mejorados
-import { Store } from 'src/modules/_platform/stores/entities/store.entity'; // Asegúrate que la ruta sea correcta
-import { PlatformUser } from 'src/modules/_platform/platform-users/entities/platform-user.entity'; // Asegúrate que la ruta sea correcta
-import { defaultStoreMock, platformUserMock } from '../mocks'; // Ajusta la ruta a tu archivo de mocks
+import { Store } from 'src/modules/_platform/stores/entities/store.entity';
+import { PlatformUser } from 'src/modules/_platform/platform-users/entities/platform-user.entity';
+import { defaultStoreMock, platformUserMock } from '../mocks';
 import { appDataSource } from 'src/database/data-source';
 
 @Injectable()
@@ -16,7 +14,7 @@ export class StoreSeeder {
         this.dataSource = appDataSource;
     }
 
-    async run() {
+    async run(): Promise<Store> { // <-- Devuelve la tienda creada
         this.logger.log('Iniciando el seeder de Store...');
 
         const storeRepository = this.dataSource.getRepository(Store);
@@ -27,8 +25,8 @@ export class StoreSeeder {
         });
 
         if (storeExists) {
-            this.logger.warn(`La tienda con el dominio '${defaultStoreMock.domain}' ya existe. No se realizarán acciones.`);
-            return;
+            this.logger.warn(`La tienda con el dominio '${defaultStoreMock.domain}' ya existe. Se usará esta tienda.`);
+            return storeExists; // <-- Devuelve la tienda existente
         }
 
         const adminUser = await platformUserRepository.findOneBy({
@@ -36,9 +34,9 @@ export class StoreSeeder {
         });
 
         if (!adminUser) {
-            this.logger.error(`Error crítico: El usuario dueño '${platformUserMock.email}' no fue encontrado.`);
-            this.logger.error('Asegúrese de que el seeder de PlatformUser se ejecute antes que el seeder de Store.');
-            return; 
+            throw new Error(
+                `El usuario '${platformUserMock.email}' no fue encontrado. Ejecuta primero PlatformUserSeeder.`
+            );
         }
 
         try {
@@ -46,14 +44,18 @@ export class StoreSeeder {
 
             const newStore = storeRepository.create({
                 ...defaultStoreMock,
-                platformUser: adminUser, // TypeORM se encarga de asignar la relación usando el objeto completo.
+                platformUser: adminUser, // TypeORM asigna la relación
             });
 
-            await storeRepository.save(newStore);
+            const savedStore = await storeRepository.save(newStore);
+
             this.logger.log(`Tienda '${defaultStoreMock.name}' creada exitosamente y asignada a '${adminUser.email}'.`);
+
+            return savedStore; // <-- Devuelve la tienda creada
 
         } catch (error) {
             this.logger.error(`Ocurrió un error inesperado al crear la tienda.`, error.stack);
+            throw error; // Lanzar el error para que SeederService lo capture
         }
     }
 }

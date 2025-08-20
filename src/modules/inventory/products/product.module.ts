@@ -10,6 +10,7 @@ import { CategoryModule } from '../categories/category.module';
 import { ProductVariantRepository } from './product-variant.repository';
 import { ProductCategoryRepository } from './product-category,repository';
 import { StoresModule } from 'src/modules/_platform/stores/stores.module';
+import { UploadsModule } from 'src/modules/_support/uploads/uploads.module';
 
 @Module({
   imports: [TypeOrmModule.forFeature([
@@ -18,7 +19,8 @@ import { StoresModule } from 'src/modules/_platform/stores/stores.module';
     ProductCategory,
   ]),
     StoresModule, 
-    CategoryModule
+    CategoryModule,
+    UploadsModule
   ],
   controllers: [ProductController],
   providers: [
