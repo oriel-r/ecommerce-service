@@ -83,8 +83,6 @@ export class StoresController {
   @ApiOperation({
     summary: 'Obtener configuración publica según dominio'
   })
-  @Roles('platform')
-  @UseGuards(AuthGuard, RolesGuard)
   @Get('storefront')
   async getStoreConfig(
     @Req() req: any
@@ -96,7 +94,8 @@ export class StoresController {
   @ApiOperation({
     summary: 'Obtener configuración publica según dominio'
   })
-  
+  @Roles('platform')
+  @UseGuards(AuthGuard, RolesGuard)
   @Put('stores/:storeId/config')
   async updateStoreConfig(
     @Param('storeId') storeId: string,
