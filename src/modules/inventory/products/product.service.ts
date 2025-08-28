@@ -34,7 +34,7 @@ export class ProductService {
 
     async create(store: Store, data: CreateProductDto) {
 
-        const { name, ...otherData } = data;
+        const { name, detail, ...otherData } = data;
 
         const existName = await this.productRepository.findOneByName(store.id, name);;
 
@@ -45,6 +45,7 @@ export class ProductService {
 
         const newProduct = await this.productRepository.create({
             ...otherData,
+            longDescription: detail,
             name,
             store
         });
@@ -228,6 +229,7 @@ export class ProductService {
         if(data.isDefault) {
             await this.productVariantRepository.unsetCurrentDefault(productId)
         }
+        console.log(data)
 
         const newProductVariant = await this.productVariantRepository.create(
             {

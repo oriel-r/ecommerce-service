@@ -19,7 +19,7 @@ const dataSourceConfig: DataSourceOptions = {
     ? process.env.DB_PASSWORD_PRODUCTION as string
     : process.env.DB_PASSWORD_LOCAL as string,
   database: isProduction ? process.env.DB_NAME_PRODUCTION : process.env.DB_NAME_LOCAL,
-  synchronize: true,
+  synchronize: false,
   dropSchema: false,  
   logging: ['error'],
   ssl: isProduction ? false : false,

@@ -209,6 +209,12 @@ export class ProductController {
     @Param('productId') productId: string,
     @Param('variantId') variantId: string,
     @UploadedFiles(new FilesPipe(0, 20000000,  ['image/png', 'image/jpeg', 'image/webp'])) files: Express.Multer.File[] ) {
+      console.log({
+        storeId,
+        productId,
+        variantId,
+        files: files.length
+      })
       const productVariant = await this.productService.uploadVarintImages(storeId, productId, variantId,files);
       return productVariant    
   }
