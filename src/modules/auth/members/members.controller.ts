@@ -6,6 +6,9 @@ import {
   Patch,
   Param,
   UseGuards,
+  Query,
+  DefaultValuePipe,
+  ParseBoolPipe,
 } from '@nestjs/common';
 import { MembersService } from './members.service';
 import { CreateMemberDto } from './dto/create-member.dto';
@@ -17,9 +20,12 @@ import { Roles } from 'src/common/decorators/roles/roles.decorators';
 import { AuthGuard } from 'src/common/guards/auth/auth.guard';
 import { RolesGuard } from 'src/common/guards/roles/roles.guard';
 import { StoreAccessGuard } from 'src/common/guards/auth/store-access.guard';
-import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Member } from './entities/member.entity';
 import { UpdateStatusMemberDto } from './dto/update-status-member.dto';
+import { boolean } from 'yargs';
+import { CurrentMember } from 'src/common/decorators/current-curstomer/current-customer.decorator';
+import { CurrentCustomer } from 'src/common/interfaces/current-customer.interface';
 
 @ApiTags('Members')
 @UseGuards(AuthGuard, RolesGuard, StoreAccessGuard)
@@ -98,6 +104,32 @@ export class MembersController {
     @ApiResponse({ status: 404, description: 'Usuario no encontrado' })
     async updateStatusMember(@Param('id') id: string, @Body() updateStatusMemberDto: UpdateStatusMemberDto) {
       return await this.membersService.updateStatusMember(id, updateStatusMemberDto);
+    }
+
+    //                                                  //
+    // -------------------- ADDRESS ------------------- //
+    //                                                  // 
+
+    @ApiOperation({
+      summary: 'get addresses'
+    })
+    @ApiQuery({
+      name: 'isDefaul',
+      required: false,
+      type: boolean,
+      description: 'If you send this in true return the default address'
+    })
+    @Get('address')
+    async getMemberAdresses(
+      @CurrentMember() member: CurrentCustomer,
+      @Query(
+        'isDefault',
+        new DefaultValuePipe(false),
+        new ParseBoolPipe({optional: true})
+      )
+      isDefault?: boolean,
+    ) {
+      return await this.membersService.getAddresses(member, isDefault)
     }
 
 }

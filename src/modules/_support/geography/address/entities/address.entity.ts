@@ -4,13 +4,19 @@ import {
   Column,
   ManyToOne,
   OneToMany,
+  Index,
 } from 'typeorm';
 import { City } from '../../city/entities/city.entity';
 import { Member } from 'src/modules/auth/members/entities/member.entity';
 import { Order } from 'src/modules/sales/orders/entities/order.entity';
+import { BaseEntity } from 'src/common/entities/base.entity';
 
 @Entity()
-export class Address {
+@Index('IDX_unique_default_address_per_member', ['member'], {
+    unique: true,
+    where: '"is_default" IS TRUE'
+})
+export class Address extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -31,6 +37,13 @@ export class Address {
 
   @ManyToOne(() => Member, (member) => member.addresses, { onDelete: 'CASCADE' })
   member: Member;
+
+  @Column({
+    type: 'boolean',
+    name: 'is_default',
+    default: 'false'
+  })
+  isDefaul: boolean
 
   @OneToMany(
     () => Order,
