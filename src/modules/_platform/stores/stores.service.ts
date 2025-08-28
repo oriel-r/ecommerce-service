@@ -143,7 +143,10 @@ export class StoresService {
     async updateStoreConfiguration(id: string, config: CreateStoreConfigurationDto) {
         await this.exist(id)
         const configuration = await this.storeConfigurationsRepository.getByStoreId(id)
-        configuration!.data = config
+        if(!configuration) {
+          return await this.createStoreConfig(id, config)
+        }
+        configuration.data = config
         await this.storeConfigurationsRepository.save(configuration!)
         return configuration
     }

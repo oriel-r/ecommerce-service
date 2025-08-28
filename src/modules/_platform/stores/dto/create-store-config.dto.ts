@@ -1,7 +1,7 @@
-import { IsObject } from "class-validator";
+import { IsJSON, IsObject } from "class-validator";
 
 export class CreateStoreConfigurationDto {
 
-    @IsObject()
-    data: Record<string, any>
+    @IsJSON()
+    data: JSON
 }

@@ -5,11 +5,25 @@ import { CreateCategoryDto } from "src/modules/inventory/categories/dto/create-c
 import { CreateProductVariantDto } from "src/modules/inventory/products/dto/create-product-variant.dto";
 import { ProductVariant } from "src/modules/inventory/products/entities/product-variant.entity";
 import { DeepPartial } from "typeorm";
+import { config as dotenvConfig }from 'dotenv'
+
+dotenvConfig({ path: '.env.development.local' });
+
+const adminUsername = process.env.TEST_ADMIN_USERNAME
+const adminPass = process.env.TEST_ADMIN_PASSWORD
+
+const getData = () => {
+    if(!adminPass || !adminUsername) throw Error
+    return {
+        email: adminUsername,
+        password: adminPass
+    }
+}
 
 export const platformUserMock: CreatePlatformUserWithStoreDto = {
-    email: 'administracion@seintalashop.com.ar',
-    password: 'Admin@1234*',
-    fullName: 'Usuario Admin',
+    email: getData().email,
+    password: getData().password,
+    fullName: 'SeInstala Shop',
     storeName: 'seinstalashop',
     domain: 'localhost',
 }

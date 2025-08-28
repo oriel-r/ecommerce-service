@@ -19,7 +19,7 @@ import { AuthGuard } from 'src/common/guards/auth/auth.guard';
 import { RolesGuard } from 'src/common/guards/roles/roles.guard';
 import { Roles } from 'src/common/decorators/roles/roles.decorators';
 import { UpdateStatusStoreDto} from './dto/update-status-store.dto';
-import { Request } from 'express';
+import { request, Request, RequestHandler } from 'express';
 import { CreateStoreConfigurationDto } from './dto/create-store-config.dto';
 
 @ApiTags('Stores')
@@ -83,6 +83,8 @@ export class StoresController {
   @ApiOperation({
     summary: 'Obtener configuración publica según dominio'
   })
+  @Roles('platform')
+  @UseGuards(AuthGuard, RolesGuard)
   @Get('storefront')
   async getStoreConfig(
     @Req() req: any
@@ -94,10 +96,12 @@ export class StoresController {
   @ApiOperation({
     summary: 'Obtener configuración publica según dominio'
   })
+  
   @Put('stores/:storeId/config')
   async updateStoreConfig(
     @Param('storeId') storeId: string,
-    @Body() configuration: CreateStoreConfigurationDto
+    @Req() req: Request,
+    @Body() configuration /*CreateStoreConfigurationDto */
   ) {
     return await this.storesService.updateStoreConfiguration(storeId, configuration)
   }
