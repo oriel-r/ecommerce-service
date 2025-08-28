@@ -1,7 +1,4 @@
 import { CreatePlatformUserWithStoreDto } from "src/modules/_platform/platform-users/dto/create-platform-user-with-store.dto";
-import { CreatePlatformUserDto } from "src/modules/_platform/platform-users/dto/create-platform-user.dto";
-import { CreateStoreDto } from "src/modules/_platform/stores/dto/create-store.dto";
-import { CreateCategoryDto } from "src/modules/inventory/categories/dto/create-category.dto";
 import { CreateProductVariantDto } from "src/modules/inventory/products/dto/create-product-variant.dto";
 import { ProductVariant } from "src/modules/inventory/products/entities/product-variant.entity";
 import { DeepPartial } from "typeorm";
@@ -19,6 +16,7 @@ const getData = () => {
         password: adminPass
     }
 }
+
 
 export const platformUserMock: CreatePlatformUserWithStoreDto = {
     email: getData().email,
