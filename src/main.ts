@@ -4,7 +4,7 @@ import { PerformanceLoggerInterceptor } from './common/interceptors/performance/
 import { ResponseInterceptor } from './common/interceptors/response/response.interceptor';
 import { SwaggerModule } from '@nestjs/swagger';
 import swaggerConfig from './config/api-docs';
-import { ClassSerializerInterceptor } from '@nestjs/common';
+import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { appDataSource } from './database/data-source';
 
 async function bootstrap() {
@@ -15,13 +15,17 @@ async function bootstrap() {
     bodyParser: true
   });
 
-
-
   app.useGlobalInterceptors(
-    new PerformanceLoggerInterceptor(),
-    new ResponseInterceptor(),
-    new ClassSerializerInterceptor(app.get(Reflector)),
+      new PerformanceLoggerInterceptor(),
+      new ResponseInterceptor(),
+      new ClassSerializerInterceptor(app.get(Reflector)),
   )
+
+  app.useGlobalPipes(new ValidationPipe({
+    transform: true,
+    whitelist: true
+  }));
+
 
   if(process.env.ENVIRONMENT !== 'PRODUCTION') {
     const documentation = () => SwaggerModule.createDocument(app, swaggerConfig)

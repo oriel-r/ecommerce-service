@@ -16,6 +16,8 @@ import { Store } from 'src/modules/_platform/stores/entities/store.entity';
 import { CreateProductVariantDto } from './dto/create-product-variant.dto';
 import { UpdateProductVariantDto } from './dto/update-variant.dto';
 import { CartItem } from 'src/modules/sales/carts/entities/cart-item.entity';
+import { CloudStorageService } from 'src/modules/_support/uploads/providers/cloud_storage/cloud_storage.service';
+import { DeleteVariantImage } from './dto/delete-variant-image.dto';
 
 @Injectable()
 export class ProductService {
@@ -26,12 +28,13 @@ export class ProductService {
         private readonly productRepository: ProductRepository,
         private readonly productVariantRepository: ProductVariantRepository,
         private readonly productCategoryRepository: ProductCategoryRepository,
-        private readonly categoriesService: CategoryService
+        private readonly categoriesService: CategoryService,
+        private readonly cloudStorageService: CloudStorageService
     ) {}
 
     async create(store: Store, data: CreateProductDto) {
 
-        const { name, ...otherData } = data;
+        const { name, detail, ...otherData } = data;
 
         const existName = await this.productRepository.findOneByName(store.id, name);;
 
@@ -42,6 +45,7 @@ export class ProductService {
 
         const newProduct = await this.productRepository.create({
             ...otherData,
+            longDescription: detail,
             name,
             store
         });
@@ -225,6 +229,7 @@ export class ProductService {
         if(data.isDefault) {
             await this.productVariantRepository.unsetCurrentDefault(productId)
         }
+        console.log(data)
 
         const newProductVariant = await this.productVariantRepository.create(
             {
@@ -235,6 +240,44 @@ export class ProductService {
         if(!newProductVariant) throw new InternalServerErrorException('Hubo un error inesperado al crear la variante')
         
         return await this.productRepository.findById(storeId, productId)
+    }
+
+    async uploadVarintImages(storeId: string, productId: string, variantId: string, images: Express.Multer.File[]) {
+        const variant = await this.productVariantRepository.findByStoreIdWhereStoreAndProduct(storeId, productId, variantId)
+        
+        if(!variant) throw new NotFoundException('La variante que estas buscnado no existe o los IDs son incorrectos')
+
+        const urls = await Promise.all(images.map((image) => {
+            const url = this.cloudStorageService.uploadFile(image);
+            return url
+        }))
+
+        variant.images = urls
+        await this.productVariantRepository.save(variant)
+        return variant
+    }
+
+    async deleteVariantImage(storeId: string, productId: string, variantId: string, data: DeleteVariantImage) {
+        const variant = await this.productVariantRepository.findByStoreIdWhereStoreAndProduct(storeId, productId, variantId)
+        
+        if(!variant) throw new NotFoundException('La variante que estas buscnado no existe o los IDs son incorrectos')
+
+        const newImagesArray = variant.images.filter(image => image !== data.url)
+
+        if(newImagesArray.length === variant.images.length) throw new NotFoundException('La imagen no existe en esta variante') 
+     
+        variant.images = newImagesArray
+    
+        const urlParts = data.url.split('/');
+        const fileName = urlParts[urlParts.length - 1];
+
+        await Promise.all([
+            this.cloudStorageService.deleteFile(fileName),
+            this.productVariantRepository.save(variant)   
+        ])
+
+        return variant
+
     }
 
     async deleteProductVariant ( sotreId: string, productId: string, variantId: string) {

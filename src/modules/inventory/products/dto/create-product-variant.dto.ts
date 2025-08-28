@@ -1,4 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger"
+import { Transform } from "class-transformer"
 import { IsBoolean, IsDecimal, IsInt, IsNotEmpty, IsNumber, IsOptional, IsString, Max, Min } from "class-validator"
 
 export class CreateProductVariantDto {
@@ -10,7 +11,7 @@ export class CreateProductVariantDto {
     @IsNotEmpty({message: 'No puedes crear un producto sin su precio'})
     @IsNumber({maxDecimalPlaces: 2})
     @Min(0, {message: 'El precio debe ser mayor o igual a 0'})
-    price: number
+    listPrice: number
 
     @ApiProperty({
         description: "Variant's stock, optional at the moment"
@@ -23,7 +24,7 @@ export class CreateProductVariantDto {
     @ApiProperty({
         description: "variant's sku"
     })
-    @IsString()
+    @Transform(({ value }) => value === '' ? null : value)
     @IsOptional()
     sku?: string
 
@@ -65,6 +66,10 @@ export class CreateProductVariantDto {
     @IsInt()
     @Max(100)
     @IsOptional()
-    discount?: number
+    discountPercentage?: number
+    
+    @IsString()
+    @IsOptional()
+    detail?: string | null
 
 }

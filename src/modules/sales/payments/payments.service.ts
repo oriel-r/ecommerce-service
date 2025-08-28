@@ -26,7 +26,7 @@ export class PaymentsService {
 
     const preference = await this.mercadoPagoService.createPreference(order);
     
-        return new CreatePaymentPreferenceResponseDto({
+      return new CreatePaymentPreferenceResponseDto({
       orderId: order.id,
       preferenceId: preference.id,
       paymentLink: preference.init_point,

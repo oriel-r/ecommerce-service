@@ -10,9 +10,10 @@ import { ProductModule } from 'src/modules/inventory/products/product.module';
 import { ProductSeeder } from './products-seeder/products.seeder';
 import { MembersModule } from 'src/modules/auth/members/members.module';
 import { RolesModule } from 'src/modules/auth/roles/roles.module';
+import { MembersSeeder } from './member-seeder/member.seeder';
 
 @Module({
     imports: [PlatformModule, StoresModule, CategoryModule, ProductModule, MembersModule, RolesModule],
-    providers: [SeederService, PlatformUserSeeder, StoreSeeder, CategorySeeder, ProductSeeder]
+    providers: [SeederService, PlatformUserSeeder, StoreSeeder, CategorySeeder, ProductSeeder, MembersSeeder ]
 })
 export class SeedersModule {}

@@ -17,6 +17,7 @@ import { AddressService } from 'src/modules/_support/geography/address/address.s
 import { Store } from 'src/modules/_platform/stores/entities/store.entity';
 import { UpdateMemberBillingDto } from './dto/update-member-billing.dto';
 import { UpdateStatusMemberDto } from './dto/update-status-member.dto';
+import { CurrentCustomer } from 'src/common/interfaces/current-customer.interface';
 
 @Injectable()
 export class MembersService {
@@ -77,12 +78,16 @@ export class MembersService {
 
     await this.memberRepo.save(newUser);
 
-    for (const addressDto of addresses) {
+    const defaultAddress = addresses[0]
+    const defaulValue = defaultAddress.isDefault ?? false
+
+    defaultAddress.isDefault = defaulValue
+
       await this.addressService.createAddress({
-        ...addressDto,
+        ...defaultAddress,
         memberId: newUser.id,
       });
-    }
+    
 
     const userWithRelations = await this.memberRepo.findOne({
       where: { id: newUser.id },
@@ -197,4 +202,45 @@ export class MembersService {
       member.isActive = updateStatusMember.isActive;
       return await this.memberRepo.save(member);
   }
+
+  private async existMember(member: CurrentCustomer) {
+    const {memberId, storeId} = member
+    const count = await this.memberRepo.count({
+      where: {
+        id: memberId,
+        storeId
+      }
+    })
+
+    if(count === 0)
+       throw new NotFoundException('El cliente no existe')
+
+  }
+
+    //                                                  //
+    // -------------------- ADDRESS ------------------- //
+    //                                                  // 
+
+  async getAddresses(member: CurrentCustomer, isDefault?: boolean) {
+    await this.existMember(member)
+
+    const addresses = await this.addressService.findAllByMember(member.memberId);
+    
+    if(!isDefault)
+      return addresses
+    
+    const defaultAddress = addresses.filter(address => address.isDefaul)
+
+    return defaultAddress
+
+  }
+
+  async changeDefaultAddress(member: CurrentCustomer) {
+    await this.existMember(member)
+    return
+
+  }
+
+
+
 }

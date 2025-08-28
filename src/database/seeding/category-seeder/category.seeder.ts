@@ -1,6 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-
 import { Category } from 'src/modules/inventory/categories/entities/category.entity'; // Asegúrate que la ruta sea correcta
 import { Store } from 'src/modules/_platform/stores/entities/store.entity'; // Asegúrate que la ruta sea correcta
 import { categoriesMock, defaultStoreMock } from '../mocks'; // Ajusta la ruta a tu archivo de mocks

@@ -4,6 +4,7 @@ import { PlatformUserSeeder } from './platform-seeder/platform-user.seeder';
 import { StoreSeeder } from './store-seeder/store.seeder';
 import { CategorySeeder } from './category-seeder/category.seeder';
 import { ProductSeeder } from './products-seeder/products.seeder';
+import { MembersSeeder } from './member-seeder/member.seeder';
 
 // Importa los seeders que vas a utilizar
 
@@ -13,9 +14,10 @@ export class SeederService implements OnModuleInit {
 
     constructor(
         private readonly platformUserSeeder: PlatformUserSeeder,
-        private readonly storeSeeder: StoreSeeder,
+        private readonly storeSeeder: StoreSeeder, 
         private readonly categorySeeder: CategorySeeder,
-        private readonly productsSeeder: ProductSeeder
+        private readonly productsSeeder: ProductSeeder,
+        private readonly membersSeeder: MembersSeeder,
     ) {}
 
 
@@ -42,7 +44,8 @@ export class SeederService implements OnModuleInit {
             this.logger.log('--- Iniciando ejecución de seeders secuenciales ---');
             
             await this.platformUserSeeder.run();
-            await this.storeSeeder.run();
+            const store = await this.storeSeeder.run();
+            await this.membersSeeder.run(store.id);
             await this.categorySeeder.run();
             await this.productsSeeder.run();
             

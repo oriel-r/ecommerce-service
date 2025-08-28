@@ -32,7 +32,7 @@ export class MercadoPagoService {
 
   async createPreference(order: Order): Promise<any> {
 
-    const items: Items[] = order.items.map(item => {
+    const productItems: Items[] = order.items.map(item => {
       const product = item.productVariant.product;
       const variant = item.productVariant;
 
@@ -47,8 +47,21 @@ export class MercadoPagoService {
       };
     });
 
+        const allItems = [...productItems];
+    if (Number(order.shippingCost) > 0) {
+      const shippingItem: Items = {
+        id: 'shipping',
+        title: 'Costo de Envío',
+        description: 'Costo de envío y manejo para tu pedido',
+        quantity: 1,
+        unit_price: Number(order.shippingCost),
+        currency_id: 'ARS',
+      };
+      allItems.push(shippingItem);
+    }
+
     const preferencePayload: PreferenceRequest = {
-      items: items,
+      items: allItems,
       back_urls: {
         success: this.configService.get<string>('FRONTEND_URL_SUCCESS'),
         failure: this.configService.get<string>('FRONTEND_URL_FAILURE'),
