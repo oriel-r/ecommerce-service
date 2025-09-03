@@ -11,6 +11,8 @@ import { ApiTags, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 import { AddressService } from './address.service';
 import { CreateAddressDto } from './dto/create-address.dto';
 import { UpdateAddressDto } from './dto/update-address.dto';
+import { CurrentMember } from 'src/common/decorators/current-curstomer/current-customer.decorator';
+import { CurrentCustomer } from 'src/common/interfaces/current-customer.interface';
 
 @ApiTags('Addresses')
 @Controller('addresses')
@@ -21,8 +23,11 @@ export class AddressController {
   @ApiOperation({ summary: 'Crear una nueva dirección para un miembro' })
   @ApiResponse({ status: 201, description: 'Dirección creada exitosamente' })
   @ApiResponse({ status: 400, description: 'Datos inválidos' })
-  async createAddress(@Body() createAddressDto: CreateAddressDto) {
-    return await this.addressService.createAddress(createAddressDto);
+  async createAddress(
+    @CurrentMember() memeber: CurrentCustomer,
+    @Body() createAddressDto: CreateAddressDto
+  ) {
+    return await this.addressService.createAddress(createAddressDto, memeber);
   }
 
   @Get('member/:memberId')

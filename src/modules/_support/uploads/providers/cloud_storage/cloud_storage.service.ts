@@ -9,12 +9,13 @@ export class CloudStorageService {
   constructor(
     @Inject('CLOUD_STORAGE') private readonly storage: Storage,
     private readonly configService: ConfigService,
-  ) {
-    this.bucketName = this.configService.get<string>('GCP_BUCKET_NAME') ?? '';
-if (!this.bucketName) {
-  throw new Error('GCP_BUCKET_NAME no está definido en las variables de entorno');
-}
-  }
+    ) {
+        this.bucketName = this.configService.get<string>('GCP_BUCKET_NAME') ?? '';
+    if (!this.bucketName) {
+      throw new Error('GCP_BUCKET_NAME no está definido en las variables de entorno');
+      }
+    }
+
 
   async uploadFile(file: Express.Multer.File): Promise<string> {
     const bucket = this.storage.bucket(this.bucketName);

@@ -22,10 +22,9 @@ export class MembersSeeder {
     const roleRepo = this.dataSource.getRepository(Role);
     const addressRepo = this.dataSource.getRepository(Address);
 
-    // Verificar que el role exista
-    const role = await roleRepo.findOneBy({ name: 'customer' });
+    let role = await roleRepo.findOneBy({ name: 'customer' });
     if (!role) {
-      throw new Error('Role "customer" no encontrado. Ejecuta RoleSeeder primero.');
+      role = await roleRepo.save(roleRepo.create({name: 'customer'}))
     }
 
     // Datos de miembros

@@ -27,7 +27,7 @@ export class OrdersService {
     ) {}
 
     async createOrderFromCart(payload: CurrentCustomer): Promise<Order | null> {
-        const cart = await this.cartsService.getMemberCart(payload);
+        const {cart, shippingOptions} = await this.cartsService.getMemberCart(payload);
         
         if (!cart || cart.items.length === 0) {
             throw new BadRequestException('El carrito está vacío.');
@@ -40,7 +40,7 @@ export class OrdersService {
             0,
         );
         
-        const totalAmount = subTotal + 9000;
+        const totalAmount = subTotal + shippingOptions[0].cost;
         
         const member = await this.membersService.findOneByStore(payload.storeId, payload.memberId)
 
@@ -49,7 +49,7 @@ export class OrdersService {
         store: {id: member.storeId} as Store,
         shippingAddress: member.addresses[0],
         subTotal,
-        shippingCost: 10000,
+        shippingCost: shippingOptions[0].cost,
         discountAmount: 0,
         totalAmount,
         status: OrderStatus.PENDING_PAYMENT,

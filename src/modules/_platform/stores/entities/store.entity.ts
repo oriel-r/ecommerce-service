@@ -1,10 +1,11 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { PlatformUser } from "../../platform-users/entities/platform-user.entity";
 import { Category } from "src/modules/inventory/categories/entities/category.entity";
 import { Product } from "src/modules/inventory/products/entities/product.entity";
 import { Cart } from "src/modules/sales/carts/entities/cart.entity";
 import { Order } from "src/modules/sales/orders/entities/order.entity";
 import { Payment } from "src/modules/sales/payments/entities/payment.entity";
+import { StoreConfiguration } from "./store-configuration.entity";
 
 @Entity()
 export class Store {
@@ -44,4 +45,10 @@ export class Store {
 
     @OneToMany(() => Payment, payment => payment.store)
     payments: Payment[]
+
+    @OneToOne(
+        () => StoreConfiguration,
+        storeConfig => storeConfig.store
+    )
+    configurations: StoreConfiguration
 }

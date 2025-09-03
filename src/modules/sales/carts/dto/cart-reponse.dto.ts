@@ -5,6 +5,12 @@ import { CartItem } from '../entities/cart-item.entity';
 import { ProductVariant } from 'src/modules/inventory/products/entities/product-variant.entity';
 import { Product } from 'src/modules/inventory/products/entities/product.entity';
 import { string } from 'yargs';
+import { ShippingOptionDto } from '../../shipping/dto/shipping-option.dto';
+
+interface CreateCartResponse {
+  cart: Cart,
+  shippingOptions: ShippingOptionDto[]
+}
 
 
 class ProductSummaryDto {
@@ -47,7 +53,6 @@ class ProductVariantResponseDto {
   @ApiProperty({type: 'string', isArray: true})
   images: string[]
   
-  // ... puedes añadir otros campos de la variante que el frontend necesite (sku, images, etc.)
 
   constructor(variant: ProductVariant) {
     this.id = variant.id;
@@ -91,7 +96,6 @@ class CartSummaryDto {
   total: number;
 }
 
-// --- DTO Principal de Respuesta ---
 
 export class CartResponseDto {
   @ApiProperty()
@@ -108,8 +112,7 @@ export class CartResponseDto {
   @Type(() => CartSummaryDto)
   summary: CartSummaryDto;
 
-  constructor(cart: Cart) {
-    // 1. Mapeo de Propiedades Base
+  constructor({cart, shippingOptions}: CreateCartResponse ) {
     this.cartId = cart.id;
     this.storeId = cart.storeId;
     this.items = cart.items.map(item => new CartItemResponseDto(item));
@@ -119,7 +122,7 @@ export class CartResponseDto {
       (sum, item) => sum + (item.variant.price * item.quantity),
       0
     );
-    summary.shipping = 10000.00 // 
+    summary.shipping = shippingOptions[0].cost
     summary.total = summary.subtotal + summary.shipping;
     this.summary = summary;
   }

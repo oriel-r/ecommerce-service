@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Address } from './entities/address.entity';
 import { Repository } from 'typeorm';
 import { CreateCityDto } from '../city/dto/create-city.dto';
+import { CurrentCustomer } from 'src/common/interfaces/current-customer.interface';
 
 @Injectable()
 export class AddressService {
@@ -18,8 +19,9 @@ export class AddressService {
     private readonly memberService: MembersService
   ) {}
 
-  async createAddress(createAddressDto: CreateAddressDto) {
-    const { memberId } = createAddressDto;
+  async createAddress(createAddressDto: CreateAddressDto, customer?: CurrentCustomer) {
+    
+    const memberId = customer ? customer.memberId : createAddressDto.memberId
 
     const cityData: CreateCityDto = {
     name: createAddressDto.city,           
@@ -27,7 +29,7 @@ export class AddressService {
   };
     const city = await this.cityService.findOrCreateCity(cityData);
 
-    const member = await this.memberService.findOneById(memberId);
+    const member = await this.memberService.findOneById(memberId!);
 
     const address = this.addressRepository.create({
       ...createAddressDto,
