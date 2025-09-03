@@ -1,13 +1,13 @@
 import { IsEmail, IsNotEmpty, IsString, Matches} from 'class-validator';
 
 export class CreatePlatformUserDto {
-  @IsString()
-  @IsNotEmpty()
-  fullName: string;
-
   @IsEmail()
   @IsNotEmpty()
   email: string;
+
+  @IsString()
+  @IsNotEmpty()
+  cuit: string;
 
   @IsString()
   @IsNotEmpty()
@@ -16,4 +16,8 @@ export class CreatePlatformUserDto {
       'La contraseña debe tener al menos 8 caracteres, incluyendo una letra mayúscula, una minúscula, un número y un carácter especial',
   })
   password: string;
+
+  @IsString()
+  @IsNotEmpty()
+  storeName: string;
 }

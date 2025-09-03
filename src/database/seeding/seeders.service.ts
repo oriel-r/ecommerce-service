@@ -5,6 +5,7 @@ import { StoreSeeder } from './store-seeder/store.seeder';
 import { CategorySeeder } from './category-seeder/category.seeder';
 import { ProductSeeder } from './products-seeder/products.seeder';
 import { MembersSeeder } from './member-seeder/member.seeder';
+import { RolesService } from 'src/modules/auth/roles/roles.service';
 
 // Importa los seeders que vas a utilizar
 
@@ -13,6 +14,7 @@ export class SeederService implements OnModuleInit {
     private readonly logger = new Logger(SeederService.name);
 
     constructor(
+        private readonly roleService: RolesService, 
         private readonly platformUserSeeder: PlatformUserSeeder,
         private readonly storeSeeder: StoreSeeder, 
         private readonly categorySeeder: CategorySeeder,
@@ -42,6 +44,8 @@ export class SeederService implements OnModuleInit {
 
         try {
             this.logger.log('--- Iniciando ejecución de seeders secuenciales ---');
+
+              await this.roleService.createRoleIfNotExists('customer');
             
             await this.platformUserSeeder.run();
             const store = await this.storeSeeder.run();

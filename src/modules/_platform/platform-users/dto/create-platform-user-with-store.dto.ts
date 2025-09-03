@@ -1,8 +1,9 @@
 import { IsEmail, IsNotEmpty, IsString, Matches, MinLength } from 'class-validator';
 
 export class CreatePlatformUserWithStoreDto {
+  @IsString()
   @IsNotEmpty()
-  fullName: string;
+  cuit: string;
 
   @IsEmail()
   @IsNotEmpty()
@@ -16,9 +17,7 @@ export class CreatePlatformUserWithStoreDto {
   })
   password: string;
 
+  @IsString()
   @IsNotEmpty()
   storeName: string;
-
-  @IsNotEmpty()
-  domain: string;
 }

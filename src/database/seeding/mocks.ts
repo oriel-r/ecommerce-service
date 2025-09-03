@@ -19,15 +19,14 @@ const getData = () => {
 
 
 export const platformUserMock: CreatePlatformUserWithStoreDto = {
+    cuit: '23-4367437-3',
+    storeName: 'localhost',
     email: getData().email,
-    password: getData().password,
-    fullName: 'SeInstala Shop',
-    storeName: 'seinstalashop',
-    domain: 'localhost',
+    password: getData().password
 }
 
 export const defaultStoreMock = {
-    name: 'seinstalashop',
+    name: 'localhost',
     domain: 'localhost',
 };
 

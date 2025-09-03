@@ -37,10 +37,12 @@ export class AuthService {
     await queryRunner.startTransaction();
 
     try {
+      const normalizedStoreName = dto.storeName.toLowerCase();
+
       const existingStore = await queryRunner.manager.findOne(Store, {
-        where: { domain: dto.domain },
+        where: { domain: normalizedStoreName },
       });
-      if (existingStore) throw new ConflictException('Dominio ya registrado');
+      if (existingStore) throw new ConflictException('El nombre de la tienda ya esta registrado');
 
       const existingUser = await queryRunner.manager.findOne(PlatformUser, {
         where: { email: dto.email },
@@ -49,9 +51,10 @@ export class AuthService {
 
       const user = await this.platformUserService.create(
         {
-          fullName: dto.fullName,
+          cuit: dto.cuit,
           email: dto.email,
           password: dto.password,
+          storeName: normalizedStoreName
         },
         queryRunner.manager,
       );
@@ -59,7 +62,7 @@ export class AuthService {
       const store = await this.storesService.createStore(
         {
           name: dto.storeName,
-          domain: dto.domain,
+          domain: normalizedStoreName,
           platformUserId: user.id,
         },
         queryRunner.manager,
