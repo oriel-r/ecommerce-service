@@ -50,7 +50,7 @@ export class PlatformUserSeeder {
             const hashedPassword = await bcrypt.hash(platformUserMock.password, salt);
 
             const newUser = platformUserRepository.create({
-                fullName: platformUserMock.fullName,
+                cuit: platformUserMock.cuit,
                 email: platformUserMock.email,
                 password: hashedPassword,
                 role: platformRole, 
