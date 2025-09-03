@@ -32,7 +32,7 @@ export class ProductSeeder {
         // --- CAMBIO: OBTENER TIENDA POR DEFECTO ---
         let defaultStore: Store;
         try {
-            defaultStore = await this.dataSource.getRepository(Store).findOneOrFail({ where: {name: 'seinstalashop'} });
+            defaultStore = await this.dataSource.getRepository(Store).findOneOrFail({ where: {name: 'localhost'} });
         } catch (error) {
             this.logger.error('No se encontró ninguna tienda. Por favor, ejecuta primero el seeder de tiendas.', error.stack);
             await queryRunner.release();

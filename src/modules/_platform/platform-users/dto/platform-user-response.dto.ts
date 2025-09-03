@@ -16,6 +16,9 @@ export class PlatformUserResponseDto {
   createdAt: Date;
 
   @Expose()
+  cuit: string;
+
+  @Expose()
   updatedAt: Date;
 
   @Expose()

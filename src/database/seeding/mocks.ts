@@ -2,15 +2,14 @@ import { CreatePlatformUserWithStoreDto } from "src/modules/_platform/platform-u
 import { CreateProductVariantDto } from "src/modules/inventory/products/dto/create-product-variant.dto";
 
 export const platformUserMock: CreatePlatformUserWithStoreDto = {
+    cuit: '23-4367437-3',
     email: 'administracion@seintalashop.com.ar',
     password: 'Admin@1234*',
-    fullName: 'Usuario Admin',
-    storeName: 'seinstalashop',
-    domain: 'localhost',
+    storeName: 'localhost',
 }
 
 export const defaultStoreMock = {
-    name: 'seinstalashop',
+    name: 'localhost',
     domain: 'localhost',
 };
 

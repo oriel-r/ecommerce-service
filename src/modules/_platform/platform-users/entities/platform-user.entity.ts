@@ -17,9 +17,6 @@ export class PlatformUser {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
-  fullName: string;
-
   @Column({unique: true})
   email: string;
 
@@ -29,6 +26,9 @@ export class PlatformUser {
 
   @CreateDateColumn()
   createdAt: Date;
+
+  @Column()
+  cuit: string;
 
   @UpdateDateColumn()
   updatedAt: Date;
